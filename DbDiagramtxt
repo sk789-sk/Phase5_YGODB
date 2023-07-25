@@ -1,0 +1,61 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table User {
+  id integer [pk]
+  username varchar
+  password varchar
+  created_at timestamp 
+}
+
+Table Inventory {
+  id integer [primary key]
+  user_id UserFK
+  card_id CardFK
+  quantity integer
+  created_at timestamp
+}
+
+Table Card {
+  id integer [primary key]
+  name varchar
+  ReleaseDate datetime
+  Alt_Name listnotsuremaybeadict
+  rarity varchar
+  release_set varchar
+}
+
+Table Decks {
+  id integer [pk]
+  name varchar
+  user_id UserFK
+  card_id CardFK
+}
+
+Table BanlistCard {
+  id integer [pk]
+  banlist_id BanFK
+  card_ID BanFK
+  quantity integer
+}
+
+Table Banlist {
+  id integer [pk]
+  name varchar
+  start_date datetime
+  end_date datetime
+}
+
+
+
+Ref: "User"."id" < "Inventory"."user_id"
+
+Ref: "Card"."id" < "Inventory"."card_id"
+
+Ref: "Decks"."user_id" < "User"."id"
+
+Ref: "Decks"."card_id" < "Inventory"."card_id"
+
+Ref: "BanlistCard"."card_ID" < "Card"."id"
+
+Ref: "Banlist"."id" < "BanlistCard"."banlist_id"
