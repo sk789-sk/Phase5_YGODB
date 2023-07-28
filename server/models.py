@@ -8,7 +8,7 @@ from sqlalchemy_serializer import SerializerMixin
 from config import db
 
 class User(db.Model, SerializerMixin):
-    __tablename__ = 'users'
+    __tablename__ = 'Users'
     #table columns
         #usesrname, password, email, profile picture, created at
     id = db.Column(db.Integer, primary_key = True)
@@ -23,7 +23,9 @@ class User(db.Model, SerializerMixin):
     #relationships
     
     card_in_inventory = db.relationship("Inventory" , backref = "user")
+
     card_in_deck = db.relationship("Deck",backref = "user")
+
     #validations
     
 
@@ -70,17 +72,17 @@ class Card(db.Model, SerializerMixin):
     defense = db.Column(db.Integer)
     level = db.Column(db.Integer)
     card_type = db.Column(db.String) #normal monster, spell , trap, effect monster 
-    card_race = db.column(db.String) #this is card type spellcaster/gemini/winged beast for monsters. For spells it is quickplay, spell, etc, for traps cont counter etc
+    card_race = db.Column(db.String) #this is card type spellcaster/gemini/winged beast for monsters. For spells it is quickplay, spell, etc, for traps cont counter etc
     card_attribute = db.Column(db.String) 
     LegalDate = db.Column #first printing or when the card became legal
-    isFirstEd = db.Column(db.boolean) 
+    isFirstEd = db.Column(db.Boolean) 
     card_image = db.Column(db.String) #Reference to location on disk
     rarity = db.Column(db.String) #Should there be a table list of rarities, will there be a use for that table not sure yet
    
     ygopro_id = db.Column(db.Integer)
     #ForeignKeys
 
-    releaseSet = db.Column(db.Integer, db.ForeignKey('ReleaseSet.id')) 
+    releaseSet = db.Column(db.Integer, db.ForeignKey('ReleaseSets.id')) 
     
     #relationships
     
@@ -103,9 +105,11 @@ class Deck(db.Model, SerializerMixin):
     name = db.Column(db.String)
     created_at = db.Column(db.DateTime(timezone=True), default= db.func.now())
     quantity = db.Column(db.Integer)
+
     #ForeignKeys
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
+
     #relationships
 
 
@@ -122,7 +126,7 @@ class ReleaseSet(db.Model, SerializerMixin):
     #table columns
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
-    releaseDate = db.Column(db.Datetime)
+    releaseDate = db.Column(db.String)
     card_count = db.Column(db.Integer)
 
     #ForeignKeys
@@ -143,8 +147,8 @@ class Banlist(db.Model, SerializerMixin):
     __tablename__ = 'Banlists'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
-    start_date = db.Column(db.Datetime)
-    end_date = db.Column(db.Datetime)
+    start_date = db.Column(db.String)
+    end_date = db.Column(db.String)
 
     #foreignKey
 
