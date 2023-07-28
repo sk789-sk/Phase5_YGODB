@@ -5,6 +5,8 @@ Table User {
   id integer [pk]
   username varchar
   password varchar
+  email varchar
+  profilepicture varchar 
   created_at timestamp 
 }
 
@@ -19,10 +21,17 @@ Table Inventory {
 Table Card {
   id integer [primary key]
   name varchar
-  ReleaseDate datetime
-  Alt_Name listnotsuremaybeadict
-  rarity varchar
+  atk integer
+  def integer
+  level integer
+  type varchar
+  attribute varchar
+  playableDate datetime
   release_set varchar
+  Legal_set varchar
+  isFirstEd boolean
+  card_image varcharpcloc
+  rarity varchar
 }
 
 Table Decks {
@@ -30,9 +39,11 @@ Table Decks {
   name varchar
   user_id UserFK
   card_id CardFK
+  quantity integer
 }
 
 Table BanlistCard {
+  //table to join banlist and card down the line
   id integer [pk]
   banlist_id BanFK
   card_ID BanFK
@@ -46,7 +57,17 @@ Table Banlist {
   end_date datetime
 }
 
+Table Rarity {
+  id integer pk
+  name varchar
+}
 
+Table ReleaseSets {
+  id integer pk
+  name varchar
+  releaseDate datetime
+  card_count integer
+}
 
 Ref: "User"."id" < "Inventory"."user_id"
 
@@ -54,8 +75,10 @@ Ref: "Card"."id" < "Inventory"."card_id"
 
 Ref: "Decks"."user_id" < "User"."id"
 
-Ref: "Decks"."card_id" < "Inventory"."card_id"
+Ref: "Decks"."card_id" < "Card"."id"
 
-Ref: "BanlistCard"."card_ID" < "Card"."id"
+
+
+Ref: "ReleaseSets"."name" < "Card"."release_set"
 
 Ref: "Banlist"."id" < "BanlistCard"."banlist_id"
