@@ -24,7 +24,7 @@ class User(db.Model, SerializerMixin):
     
     card_in_inventory = db.relationship("Inventory" , backref = "user")
 
-    card_in_deck = db.relationship("Deck",backref = "user")
+    user_deck = db.relationship("Deck",backref = "user")
 
     #validations
     
@@ -34,14 +34,12 @@ class User(db.Model, SerializerMixin):
     
     #Serializer Rules
     
-    serialize_rules = ('-card_in_inventory.user','-card_in_deck.user',)
+    serialize_rules = ('-card_in_inventory.user','-user_deck.user',)
     
     
     #repr
 
-
-
-    
+  
 
 class Inventory(db.Model, SerializerMixin):
     __tablename__ = 'Inventories'
@@ -50,6 +48,7 @@ class Inventory(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key = True)
     quantity = db.Column(db.Integer)
     created_at = db.Column(db.DateTime(timezone=True), default= db.func.now())
+    isFirstEd = db.Column(db.Boolean)
 
     #ForeignKeys
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
@@ -75,19 +74,19 @@ class Card(db.Model, SerializerMixin):
     card_race = db.Column(db.String) #this is card type spellcaster/gemini/winged beast for monsters. For spells it is quickplay, spell, etc, for traps cont counter etc
     card_attribute = db.Column(db.String) 
     LegalDate = db.Column #first printing or when the card became legal
-    isFirstEd = db.Column(db.Boolean) 
     card_image = db.Column(db.String) #Reference to location on disk
     rarity = db.Column(db.String) #Should there be a table list of rarities, will there be a use for that table not sure yet
    
     ygopro_id = db.Column(db.Integer)
     #ForeignKeys
 
-    releaseSet = db.Column(db.Integer, db.ForeignKey('ReleaseSets.id')) 
+    releasedSet = db.Column(db.Integer, db.ForeignKey('ReleaseSets.id')) 
     
     #relationships
     
     card_in_inventory = db.relationship("Inventory" , backref = "card") 
-    card_in_deck = db.relationship("Deck",backref = "card")
+
+    card_in_deck = db.relationship("CardinDeck",backref = "card") 
     
     card_on_banlist = db.relationship('BanlistCard',backref='card')
     
@@ -104,22 +103,35 @@ class Deck(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
     created_at = db.Column(db.DateTime(timezone=True), default= db.func.now())
-    quantity = db.Column(db.Integer)
 
     #ForeignKeys
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
-    card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
+
 
     #relationships
+    #need relationship between deck and cards in deck then
 
+    card_in_deck = db.relationship('CardinDeck', backref = 'deck')
 
     #validations
-    #Cards in a deck can not have more than 3 copies.
-    
+    #Cards in a deck can not have more than 3 copies. 
     #Serializer Rules
-    serialize_rules = ('-user.card_in_deck','-card.card_in_deck')
+    serialize_rules = ('-user.card_in_deck')
 
     #repr
+
+class CardinDeck(db.Model, SerializerMixin):
+    __tablename__ = 'CardsinDecks'
+    id = db.Column(db.Integer, primary_key = True)
+    
+    #foreignKeys
+    deck_id = db.Column(db.Integer, db.ForeignKey('Decks.id'))
+    card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
+
+    #SeralizerRules
+    serialize_rules = ('-deck.card_in_deck','-card.card_in_deck')
+
+
 
 class ReleaseSet(db.Model, SerializerMixin):
     __tablename__ = 'ReleaseSets'
@@ -142,6 +154,17 @@ class ReleaseSet(db.Model, SerializerMixin):
         return f'f{self.name} was released on {self.releaseDate}'
     
 #TODOLater if Time permits
+
+
+
+
+
+
+
+
+
+
+#Extra DowntheLine
     
 class Banlist(db.Model, SerializerMixin):
     __tablename__ = 'Banlists'

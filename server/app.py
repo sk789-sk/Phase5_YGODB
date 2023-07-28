@@ -30,4 +30,13 @@ api = Api(app)
 
 @app.route('/')
 def home():
-    return ''
+    return 'testing base'
+
+@app.route('/users')
+def users():
+    userinfo = db.session.query(User).first()
+    response = make_response(userinfo.to_dict(),200)
+    return response
+
+if __name__ == '__main__':
+    app.run(port=5555, debug=True)

@@ -38,8 +38,6 @@ Table Decks {
   id integer [pk]
   name varchar
   user_id UserFK
-  card_id CardFK
-  quantity integer
 }
 
 Table BanlistCard {
@@ -69,16 +67,29 @@ Table ReleaseSets {
   card_count integer
 }
 
+Table CardsinDeck {
+  id integer pk
+  Deck_id integer 
+  Card_id integer 
+
+}
+
 Ref: "User"."id" < "Inventory"."user_id"
 
 Ref: "Card"."id" < "Inventory"."card_id"
 
 Ref: "Decks"."user_id" < "User"."id"
 
-Ref: "Decks"."card_id" < "Card"."id"
+
 
 
 
 Ref: "ReleaseSets"."name" < "Card"."release_set"
 
 Ref: "Banlist"."id" < "BanlistCard"."banlist_id"
+
+Ref: "Decks"."id" < "CardsinDeck"."Deck_id"
+
+Ref: "CardsinDeck"."Card_id" < "Card"."id"
+
+Ref: "BanlistCard"."card_ID" < "Card"."id"
