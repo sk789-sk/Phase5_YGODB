@@ -73,7 +73,7 @@ class Card(db.Model, SerializerMixin):
     card_type = db.Column(db.String) #normal monster, spell , trap, effect monster 
     card_race = db.Column(db.String) #this is card type spellcaster/gemini/winged beast for monsters. For spells it is quickplay, spell, etc, for traps cont counter etc
     card_attribute = db.Column(db.String) 
-    LegalDate = db.Column #first printing or when the card became legal
+    LegalDate = db.Column(db.String) #first printing or when the card became legal
     card_image = db.Column(db.String) #Reference to location on disk
     rarity = db.Column(db.String) #Should there be a table list of rarities, will there be a use for that table not sure yet
    
@@ -140,6 +140,7 @@ class ReleaseSet(db.Model, SerializerMixin):
     name = db.Column(db.String)
     releaseDate = db.Column(db.String)
     card_count = db.Column(db.Integer)
+    set_code = db.Column(db.Integer)
 
     #ForeignKeys
 
@@ -148,7 +149,7 @@ class ReleaseSet(db.Model, SerializerMixin):
 
     #validations
     #Serializer Rules
-    serialize_rules = ('-cards_in_set.releaseSet')
+
     #repr
     def __reper__(self):
         return f'f{self.name} was released on {self.releaseDate}'

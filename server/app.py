@@ -38,5 +38,31 @@ def users():
     response = make_response(userinfo.to_dict(),200)
     return response
 
+@app.route('/cards')
+def cards():
+    cardinfo = db.session.query(Card).all()
+    card_list = []
+    for card in cardinfo:
+        card_list.append(card.to_dict())
+    response = make_response(
+        jsonify(card_list),200)
+    return response
+
+@app.route('/Sets')
+def sets():
+    setinfo = db.session.query(ReleaseSet).all()
+    set_list = []
+    for pack in setinfo:
+        set_list.append(pack.to_dict())
+    response = make_response(
+        jsonify(set_list),200
+    )
+    return response
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
