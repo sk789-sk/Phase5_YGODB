@@ -7,37 +7,57 @@ from models import *
 
 fake = Faker()
 
+
+f = open("ErrorList.txt",'w')
+q = open("ReleaseSets.txt",'w')
+
+
 #add some test data to see if the relationships are working in the DB
 
 
-# def create_activities():
-#     activities = []
-#     for _ in range(10):
-#         a = Activity(
-#             name=fake.sentence(),
-#             difficulty=randint(1, 5)
-#         )
-#         activities.append(a)
+def create_Monster_Cards():
+    #test 
+    #We should add first do mosnters and spell traps seperately since they each have different data back from the APi. irrelevant stuff can be nulled i suppose. 
 
-#     return activities
+    #We get back a dictionary as (data: [{}])
+    #each card is an object in the list we get from the data key. 
+    #Each card object has a key card_sets which is a list that contains objects with each set they are printed in. 
+    #Since we want each possible card and printing we get a card get all the card_sets it is a part of and then for each one of those fill out a card object and add to db. 
 
-
-def create_cards():
-    cards = []
-    for _ in range(20):
-        a = Card(
-            name = fake.name(),
-            attack = (randint(0,25)*100),
-            defense = (randint(0,25)*100),
-            level = (randint(0,10)),
-            card_type = fake.name(),
-            card_attribute = fake.name(),
-            LegalDate = '1.1.1',
-            card_image = 'linktosrc',
-            rarity = 'max'
-        )
-        cards.append(a)
-    return cards
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Dark%20Magician'
+    
+    response = requests.get(url)
+    card_info = response.json()
+    outlist = []
+    errorlist = []
+    i = 0
+    for card in card_info['data']: #now each card is a dict i think
+        #for the released set we will need a dictionary map for name to ID
+        i+=1
+        name_card = card['name']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
+        for setname in card['card_sets']:
+            rarity_card = setname['set_rarity']
+            a = Card(
+                name = name_card,
+                attack = attack_card,
+                defense = defense_card,
+                level = level_card,
+                card_type = card_type_card,
+                card_race = card_race_card,
+                card_attribute = card_attribute_card,
+                card_image = card_image_card,
+                rarity = rarity_card,
+                releasedSet = randint(1,10)
+            )
+            outlist.append(a)
+    return outlist
 
 
 def get_release_sets():
@@ -59,10 +79,12 @@ def get_release_sets():
                 name = card_set['set_name'],
                 releaseDate = card_set['tcg_date'],
                 card_count = card_set['num_of_cards'],    
-                set_code = card_set['set_code']        
+                set_code = card_set['set_code']       
             )
+            q.write(str(pack)+'\n') 
         except:
-            error_list.append((i,card_set['set_name']))
+            error_list.append((i,card_set))
+            f.write(str(card_set)+'\n')
             continue
         
         outlist.append(pack)
@@ -77,10 +99,11 @@ if __name__ == '__main__':
 
     with app.app_context():
         print("Clearing db...")
-        # Activity.query.delete()
+
 
         User.query.delete()
         ReleaseSet.query.delete()
+        Card.query.delete()
 
         print("Seeding activities...")
         usertest = User(
@@ -92,18 +115,22 @@ if __name__ == '__main__':
 
         db.session.add(usertest)
 
-        cards = create_cards()
-        db.session.add_all(cards)
+        # cards = create_cards()
+        # db.session.add_all(cards)
         
         releaseSets = get_release_sets()
+        cards = create_Monster_Cards()
 
         db.session.add_all(releaseSets)
-        
+        db.session.add_all(cards)
+
         db.session.commit()
 
 
 
         print("Done seeding!")
+
+        f.close()
 
 
 

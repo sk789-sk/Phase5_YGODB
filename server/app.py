@@ -59,6 +59,17 @@ def sets():
     )
     return response
 
+@app.route('/Banlists')
+def Banlists():
+    banListInfo = db.session.query(Banlist).all()
+    banList = []
+    for banlist in banListInfo:
+        banList.append(banlist.to_dict())
+    response = make_response(
+        jsonify(banList,200)
+    )
+    return response
+
 
 
 

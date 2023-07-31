@@ -13,8 +13,11 @@ class User(db.Model, SerializerMixin):
         #usesrname, password, email, profile picture, created at
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String)
-    password = db.Column(db.String) #encrypt?
+    password = db.Column(db.String)
+    # salt = db.Column(db.String) #store as hashsalt
+    # hash = db.Column(db.Integer) #part of hashsalt for pass
     email = db.Column(db.String) #encrypt?
+    
     profile = db.Column(db.String) #path to profile picture
     created_at = db.Column(db.DateTime(timezone=True), default= db.func.now())
     
@@ -149,6 +152,8 @@ class ReleaseSet(db.Model, SerializerMixin):
 
     #validations
     #Serializer Rules
+
+    serialize_rules = ('-cards_in_set.releaseSet',)
 
     #repr
     def __reper__(self):
