@@ -96,6 +96,18 @@ def cardindeck():
     )
     return response
 
+@app.route('/invent')
+def invent():
+    decks = db.session.query(Inventory).all()
+    deckList = []
+    for deck in decks:
+        deckList.append(deck.to_dict())
+    response = make_response(
+        jsonify(deckList,200)
+    )
+    return response
+
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -13,12 +13,10 @@ class User(db.Model, SerializerMixin):
         #usesrname, password, email, profile picture, created at
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String)
-    password = db.Column(db.String)
-    # salt = db.Column(db.String) #store as hashsalt
-    # hash = db.Column(db.Integer) #part of hashsalt for pass
+    password = db.Column(db.String) #hash/salt instead
     email = db.Column(db.String) #encrypt?
     
-    profile = db.Column(db.String) #path to profile picture
+    profile = db.Column(db.String) #path to profile
     created_at = db.Column(db.DateTime(timezone=True), default= db.func.now())
     
     #ForeignKeys
@@ -36,10 +34,12 @@ class User(db.Model, SerializerMixin):
     
     
     #Serializer Rules
+
+
+    serialize_rules = ('-card_in_inventory.user','-user_decks.user','-card_in_inventory.card','-user_decks.card_in_deck')
     
-    serialize_rules = ('-card_in_inventory.user','-user_decks.user',)
     
-    
+
     #repr
 
   
@@ -61,7 +61,7 @@ class Inventory(db.Model, SerializerMixin):
     #validations
 
     #Serializer Rules
-    serialize_rules = ('-user.card_in_inventory','-card.card_in_inventory')
+    serialize_rules = ('-user.card_in_inventory','-card.card_in_inventory','-card.releaseSet','-card.card_in_deck','-user.user_decks')  
     
     #repr
 
@@ -95,7 +95,7 @@ class Card(db.Model, SerializerMixin):
     
     #validations
     #Serializer Rules
-    serialize_rules = ('-card_in_inventory.card','-card_in_deck.card','-card_on_banlist.card','-releaseSet.cards_in_set')
+    serialize_rules = ('-card_in_inventory.card','-card_in_deck.card','-card_in_inventory.user','-card_on_banlist.card','-releaseSet.cards_in_set')
 
     def __repr__(self):
         return f'detailed information can be found at endpoint {self.ygopro_id}'
@@ -112,6 +112,7 @@ class Deck(db.Model, SerializerMixin):
 
 
     #relationships
+
     #need relationship between deck and cards in deck then
 
     card_in_deck = db.relationship('CardinDeck', backref = 'deck')
@@ -119,22 +120,23 @@ class Deck(db.Model, SerializerMixin):
     #validations
     #Cards in a deck can not have more than 3 copies. 
     #Serializer Rules
-    serialize_rules = ('-card_in_deck.deck','-user.user_decks')
+    
+    serialize_rules = ('-card_in_deck.deck','-user.user_decks','-user.card_in_inventory')
 
     #repr
 
 class CardinDeck(db.Model, SerializerMixin):
     __tablename__ = 'CardsinDecks'
     id = db.Column(db.Integer, primary_key = True)
+    quantity = db.Column(db.Integer)
     
     #foreignKeys
     deck_id = db.Column(db.Integer, db.ForeignKey('Decks.id'))
     card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
 
     #SeralizerRules
-    serialize_rules = ('-deck.card_in_deck','-card.card_in_deck')
 
-
+    serialize_rules = ('-deck.card_in_deck','-card.card_in_deck','-card.card_in_inventory','-card.releaseSet')
 
 class ReleaseSet(db.Model, SerializerMixin):
     __tablename__ = 'ReleaseSets'
