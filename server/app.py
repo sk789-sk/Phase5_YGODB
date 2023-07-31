@@ -11,7 +11,7 @@ import os
 
 # Local imports
 from config import app, db, api
-from models import User
+from models import User, Card, Deck, Banlist, BanlistCard 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.environ.get(
@@ -34,8 +34,12 @@ def home():
 
 @app.route('/users')
 def users():
-    userinfo = db.session.query(User).first()
-    response = make_response(userinfo.to_dict(),200)
+    userinfo = db.session.query(User).all()
+    user_list = []
+    for user in userinfo:
+        user_list.append(user.to_dict())
+
+    response = make_response(jsonify(user_list),200)
     return response
 
 @app.route('/cards')
@@ -70,9 +74,27 @@ def Banlists():
     )
     return response
 
+@app.route('/Decks')
+def Decks():
+    decks = db.session.query(Deck).all()
+    deckList = []
+    for deck in decks:
+        deckList.append(deck.to_dict())
+    response = make_response(
+        jsonify(deckList,200)
+    )
+    return response
 
-
-
+@app.route('/cardindeck')
+def cardindeck():
+    decks = db.session.query(CardinDeck).all()
+    deckList = []
+    for deck in decks:
+        deckList.append(deck.to_dict())
+    response = make_response(
+        jsonify(deckList,200)
+    )
+    return response
 
 
 if __name__ == '__main__':

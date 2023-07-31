@@ -27,7 +27,7 @@ class User(db.Model, SerializerMixin):
     
     card_in_inventory = db.relationship("Inventory" , backref = "user")
 
-    user_deck = db.relationship("Deck",backref = "user")
+    user_decks = db.relationship("Deck",backref = "user")
 
     #validations
     
@@ -37,7 +37,7 @@ class User(db.Model, SerializerMixin):
     
     #Serializer Rules
     
-    serialize_rules = ('-card_in_inventory.user','-user_deck.user',)
+    serialize_rules = ('-card_in_inventory.user','-user_decks.user',)
     
     
     #repr
@@ -95,7 +95,7 @@ class Card(db.Model, SerializerMixin):
     
     #validations
     #Serializer Rules
-    serialize_rules = ('-card_in_inventory.card','-card_in_deck.card','-card_on_banlist.card')
+    serialize_rules = ('-card_in_inventory.card','-card_in_deck.card','-card_on_banlist.card','-releaseSet.cards_in_set')
 
     def __repr__(self):
         return f'detailed information can be found at endpoint {self.ygopro_id}'
@@ -119,7 +119,7 @@ class Deck(db.Model, SerializerMixin):
     #validations
     #Cards in a deck can not have more than 3 copies. 
     #Serializer Rules
-    serialize_rules = ('-user.card_in_deck')
+    serialize_rules = ('-card_in_deck.deck','-user.user_decks')
 
     #repr
 
@@ -208,3 +208,10 @@ class BanlistCard(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Card with id {self.card_id} is limited to {self.quantity} copies in banlist {self.banlist_id}'
+    
+
+
+
+# #General Rule for serializer rules that works for me 
+# 1. If you have the foreign key kill the backref.relationshipname
+# 2. If you have the relationship kill the relationship.backref

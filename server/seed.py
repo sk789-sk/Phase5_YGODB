@@ -11,6 +11,10 @@ fake = Faker()
 f = open("ErrorList.txt",'w')
 q = open("ReleaseSets.txt",'w')
 
+#When filling out the card DB we have to match set name to DB it. We can manage that with a dictionary for everytime we upload to the DB we add to the dict. 
+
+set_to_id_map = {}
+
 
 #add some test data to see if the relationships are working in the DB
 
@@ -101,19 +105,19 @@ if __name__ == '__main__':
         print("Clearing db...")
 
 
-        User.query.delete()
+        # User.query.delete()
         ReleaseSet.query.delete()
         Card.query.delete()
 
         print("Seeding activities...")
-        usertest = User(
-            username = 'bob',
-            password = 'bob2',
-            email = 'haha@gmail.com',
-            profile = 'path2file'
-        )
+        # usertest = User(
+        #     username = 'bob',
+        #     password = 'bob2',
+        #     email = 'haha@gmail.com',
+        #     profile = 'path2file'
+        # )
 
-        db.session.add(usertest)
+        # db.session.add(usertest)
 
         # cards = create_cards()
         # db.session.add_all(cards)
@@ -131,7 +135,7 @@ if __name__ == '__main__':
         print("Done seeding!")
 
         f.close()
-
+        q.close()
 
 
 
