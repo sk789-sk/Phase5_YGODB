@@ -28,7 +28,7 @@ def create_Monster_Cards():
     #Each card object has a key card_sets which is a list that contains objects with each set they are printed in. 
     #Since we want each possible card and printing we get a card get all the card_sets it is a part of and then for each one of those fill out a card object and add to db. 
 
-    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Dark%20Magician'
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Baby%20Dragon|Time%20Wizard'
     
     response = requests.get(url)
     card_info = response.json()
@@ -48,6 +48,7 @@ def create_Monster_Cards():
         card_image_card = card['card_images'][0]["image_url"]
         for setname in card['card_sets']:
             rarity_card = setname['set_rarity']
+            set_code_card = setname['set_code']
             a = Card(
                 name = name_card,
                 attack = attack_card,
@@ -58,7 +59,8 @@ def create_Monster_Cards():
                 card_attribute = card_attribute_card,
                 card_image = card_image_card,
                 rarity = rarity_card,
-                releasedSet = randint(1,10)
+                releasedSet = randint(1,10),
+                set_id = set_code_card
             )
             outlist.append(a)
     return outlist

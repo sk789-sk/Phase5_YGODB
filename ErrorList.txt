@@ -1,0 +1,3 @@
+{'set_name': 'Adidas collaboration card', 'set_code': 'ADC1', 'num_of_cards': 1}
+{'set_name': 'The Lost Art Promotion 2023', 'set_code': 'LART', 'num_of_cards': 2, 'set_image': 'https://images.ygoprodeck.com/images/sets/LART.jpg'}
+{'set_name': 'The Lost Art Promotion 2023 G', 'set_code': 'LART', 'num_of_cards': 1, 'set_image': 'https://images.ygoprodeck.com/images/sets/LART.jpg'}

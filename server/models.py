@@ -79,7 +79,7 @@ class Card(db.Model, SerializerMixin):
     LegalDate = db.Column(db.String) #first printing or when the card became legal
     card_image = db.Column(db.String) #Reference to location on disk
     rarity = db.Column(db.String) #Should there be a table list of rarities, will there be a use for that table not sure yet
-   
+    set_id = db.Column(db.String)
     ygopro_id = db.Column(db.Integer)
     #ForeignKeys
 

@@ -58,7 +58,7 @@ def logIn():
 # 2) View a specific card. This will have detailed information such as description all sets and rarities it has been released in.
 
 
-@app.route('/cards')
+@app.route('/cards') #Load all card info. Ideally we only need the info of 1 card and not reprints/etc so just the first instance of the name. Only 1 name instead of loading 5682 copies of DMG
 def cards():
     cardinfo = db.session.query(Card).all()
     card_list = []
@@ -71,6 +71,16 @@ def cards():
 @app.route('/cards/<int:id>')
 def cards_by_id(id):
     return 'card by id'
+
+@app.route('/cards/<string:name>')
+def cards_by_name(name):
+    all_cards = Card.query.filter(Card.name == name).all()
+    card_list = []
+    for card in all_cards:
+        card_list.append(card.to_dict())
+    response = make_response(
+        jsonify(card_list),200)
+    return response
 
 #Set Routes
 #1. View All Sets 
@@ -89,7 +99,20 @@ def sets():
 
 @app.route('/Sets/<int:id>')
 def sets_by_id(id):
-    return 'set by id'
+    #need to get the card info for a set
+    card_list = Card.query.filter(Card.releasedSet == id).all()
+    output_cards = []
+    for card in card_list:
+        output_cards.append(card.to_dict(only=('name','set_id','rarity','releaseSet.name','releaseSet.releaseDate')))
+    response = make_response(
+        jsonify(output_cards),200
+    )
+    return response
+
+@app.route('/Sets/<string:name>') 
+def sets_by_name(name):
+    #need to get the card info for a set
+    card_list = db.session.query.filter(Card.set_id)
 
 #Decks.
 #Global Deck, User all decks, user 1 deck
@@ -105,11 +128,11 @@ def Decks():
     )
     return response
 
-@app.route('/Deck/<int:id>')
+@app.route('/Deck/<int:id>', methods = (['GET','DELETE','POST']))
 def all_user_deck(id):
     return 'all decks a user has'
 
-@app.route('/Deck/<int:id>/<int:deckid>')
+@app.route('/Deck/<int:id>/<int:deckid>', methods = ['GET','PATCH','POST','DELETE'] )
 def one_user_deck(id,deckid):
     return '1 deck a user has'
 
@@ -136,7 +159,7 @@ def invent_by_id(id):
         if request.method == 'GET':
             response = make_response()
 
-@app.route('/invent/<int:id>/<int:card_id>') #a users card in inventory
+@app.route('/invent/<int:id>/<int:card_id>', methods = ['GET', 'PATCH','POST','DELETE']) #a users card in inventory
 def user_invent_card(id,card_id):
     return 'details for a usercard'
 
