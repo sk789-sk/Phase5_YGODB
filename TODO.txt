@@ -1,0 +1,5 @@
+TODO-
+
+1. Add Mapping for Card Set Name to DB ID when adding cards to DB
+2. Check rest of SeralizerRules add some fake data to play with and see
+3. Populate DB with actual data. What to do for cards with alt images. Checking URL with each card is tedious and i dont wanna 

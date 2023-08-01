@@ -34,6 +34,11 @@ User (id[pk], username, password[encrypt?], date_created,...(what else does a us
 Inventory (id[pk], user_id,card_id,quantity)
 
 Card (id[pk], Name, Release_Date, Alt_Name(how to represent dict of alt names?) , Rarity, Set_Released_with_konami_id)
+    
+    - Since this is cards that the user would own 2 copies of the same card from different sets are different elements. Each card would then have multiples of itself with different set releases. Also works with rarities need to get this data out of the api and put in our db. 
+    - When determining card legality then we need to see the earliest release date and set that as the legal date. I dont wanna make repeat searches for that
+
+
 
 A deck is a collection of cards that a user combined. Does not have to be user owned cards. 
 
