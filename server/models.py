@@ -13,7 +13,7 @@ class User(db.Model, SerializerMixin):
         #usesrname, password, email, profile picture, created at
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String)
-    password = db.Column(db.String) #hash/salt instead
+    password = db.Column(db.String) #hash after
     email = db.Column(db.String) #encrypt?
     
     profile = db.Column(db.String) #path to profile
@@ -106,6 +106,7 @@ class Deck(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
     created_at = db.Column(db.DateTime(timezone=True), default= db.func.now())
+    isPublic = db.Column(db.Boolean, default=False)
 
     #ForeignKeys
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
