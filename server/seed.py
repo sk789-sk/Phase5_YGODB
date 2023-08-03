@@ -28,7 +28,7 @@ def create_Monster_Cards():
     #Each card object has a key card_sets which is a list that contains objects with each set they are printed in. 
     #Since we want each possible card and printing we get a card get all the card_sets it is a part of and then for each one of those fill out a card object and add to db. 
 
-    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Baby%20Dragon|Time%20Wizard'
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Baby%20Dragon|Time%20Wizard|Dark%20Magician'
     
     response = requests.get(url)
     card_info = response.json()

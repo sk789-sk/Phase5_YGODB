@@ -365,7 +365,7 @@ def cardindeck(deck_id,card_id, methods = ['GET','PATCH','POST','DELETE']):
 #Inventory.
 #Card Invent dunno, User entire inventory, user specific card details.
 
-@app.route('/invent')
+@app.route('/inventory')
 def invent():
     invent_all = db.session.query(Inventory).all()
     inventList = []
@@ -376,7 +376,7 @@ def invent():
     )
     return response
 
-@app.route('/invent/<int:id>', methods = ['GET', 'POST','DELETE'])
+@app.route('/inventory/<int:id>', methods = ['GET', 'POST','DELETE'])
 def invent_by_id(id):
 
     inventory = Inventory.query.filter(Inventory.user_id == id).all()
