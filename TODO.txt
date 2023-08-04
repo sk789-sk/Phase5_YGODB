@@ -5,9 +5,10 @@ TODO-
 
 
 
+
+
 - Add Mapping for Card Set Name to DB ID when adding cards to DB
-
-
-
-
-- Populate DB with actual data. What to do for cards with alt images. Checking URL with each card is tedious and i dont wanna lol
+- Populate DB with actual data. What to do for cards with alt images. Checking URL with each card is tedious and i dont wanna lol. Probably just have 1 default image we use for all. 
+-Refactor the way set codes are stored for search. Better to have in dict and not array
+-Do Not allow duplicate rows in inventory
+-

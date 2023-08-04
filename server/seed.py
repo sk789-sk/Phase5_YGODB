@@ -34,6 +34,7 @@ def create_Monster_Cards():
     card_info = response.json()
     outlist = []
     errorlist = []
+    setid_to_dbid = {}
     i = 0
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
@@ -62,7 +63,7 @@ def create_Monster_Cards():
                 releasedSet = randint(1,10),
                 set_id = set_code_card
             )
-            outlist.append(a)
+        outlist.append(a)
     return outlist
 
 

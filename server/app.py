@@ -145,7 +145,15 @@ def cards_by_name(name):
         jsonify(card_list),200)
     return response
 
-
+@app.route('/cards/id2db')
+def card_code_to_db_id():
+    cardinfo = db.session.query(Card).all() 
+    card_list = []
+    for card in cardinfo:
+        card_list.append(card.to_dict(only=('id','set_id')))
+    response = make_response(
+    jsonify(card_list),200)
+    return response
 
 #Set Routes
 #1. View All Sets 
@@ -398,7 +406,7 @@ def invent_by_id(id):
                     quantity = data['quantity'],
                     isFirstEd = data['isFirstEd'],
                     user_id = data['user_id'],
-                    card_id = data['user_id']
+                    card_id = data['card_id']
                 )
                 db.session.add(new_card_invent)
                 db.session.commit()
@@ -423,12 +431,12 @@ def invent_by_id(id):
         )
     return response
 
-@app.route('/invent/<int:id>/<int:card_id>', methods = ['GET', 'PATCH','POST','DELETE']) #a users card in inventory. We can add delete/ adjust quantity etc here, get detailed info and picture that are uploaded. Since i am more likely to own duplicates of a card i think it makes more sense to go by card name instead of card id. card_id means i cant filter by 
+@app.route('/inventory/<int:id>/<int:card_id>', methods = ['GET', 'PATCH','DELETE']) #a users card in inventory. We can add delete/ adjust quantity etc here, get detailed info and picture that are uploaded. Since i am more likely to own duplicates of a card i think it makes more sense to go by card name instead of card id. card_id means i cant filter by 
 
 #Maybe query all and then filter inventory cards by name? 
 def user_invent_card(id,card_id):
 
-    copies_of_card=Inventory.query.filter(Inventory.user_id==id,Inventory.card_id==card_id).first()
+    card=Inventory.query.filter(Inventory.user_id==id,Inventory.card_id==card_id).first()
 
     #What I actually want to do is use the id to filter by cards that a user owns. Then check the card_table for ones that match in name
 
@@ -437,19 +445,34 @@ def user_invent_card(id,card_id):
     #join is the way to go? db.session.query(Inventory).join(Inventory.card_id)
 
 
-    if copies_of_card:
+    if card:
 
         if request.method == 'GET':
-            response = make_response(copies_of_card.to_dict(),200)
+            response = make_response(card.to_dict(),200)
 
-        if request.method == 'PATCH':
-            response = 'patch'
+        elif request.method == 'PATCH':
+            data = request.get_json()
 
-        if request.method == 'POST':
-            response = 'post'
+            try:
+                for key in data:
+                    setattr(card,key,data[key])
+
+                    db.session.add(card)
+                    db.session.commit
+                
+                response = make_response(card.to_dict(),200)
+            except ValueError: 
+                    response = make_response(
+                    { "errors": ["validation errors,attribute errors"] },
+                    400
+                    )
+
 
         if request.method == 'DELETE':
-            response = 'delete'
+            #User deletes 1 card from inventory
+            db.session.delete(card)
+            db.session.commit()
+            response = make_response({}, 204)
     
     else:
         response = make_response( {
