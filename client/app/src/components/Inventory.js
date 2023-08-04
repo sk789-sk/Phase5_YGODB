@@ -56,11 +56,15 @@ function Inventory(){
             fetch(`/inventory/${user_id}/${card.card.id}`, {
                 method: "PATCH",
                 headers: {
-                    'Accept:' : 'application/json',
+                    'Accept' : 'application/json',
                     'Content-Type' : 'application/json'
                 },
-                body: JSON.stringify({quantity : 4})
+                body: JSON.stringify({quantity : 4, isFirstEd : false})
             })
+            .then(console.log('done'))
+            .then(console.log(card.card.id))
+            .then((resp) => resp.json())
+            .then((json) => console.log(json))
          }>
         Edit Quantity</button>}
 

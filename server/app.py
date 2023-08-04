@@ -458,7 +458,7 @@ def user_invent_card(id,card_id):
                     setattr(card,key,data[key])
 
                     db.session.add(card)
-                    db.session.commit
+                    db.session.commit()
                 
                 response = make_response(card.to_dict(),200)
             except ValueError: 
