@@ -5,45 +5,21 @@ import TableRow from "./Tablerow";
 function Inventory(){
 
     const [cards,setCards] = useState([])
-
+    const [newQuantity,setNewQuantity] = useState(0)
     //this is a set code and then a numeric code, better to store as a dictoinary of set code with a list of numeric codes wouldnt have to go through everything. Refactor after 
+    //useState seems like a bad way to do this. I would rather give each one its own 
 
-
-    const user_id = 2
+    const user_id = 2 //need to pass in a user id
     useEffect( () => {
         fetch(`/inventory/${user_id}`) 
         .then((resp) => resp.json())
         .then ((data) =>setCards(data))
-
-        // fetch('/cards')
-        // .then
     },[])
-
-    console.log(cards)
    
     //We need to make sure that the user has cards to render. If not we will get an error
 
     function handleClick(card){
         console.log(card)
-
-        //When someone clicks I want to have a new popup where someone edits the card
-        //When the button is associated with the card id given. 
-
-
-        
-
-
-        // fetch(`inventory/${user_id}` , {
-        //     method: "PATCH",
-        //     headers: {
-        //         "Accept": "application/json",
-        //         "Content-Type": "application/json"
-        //     },
-        //     body:JSON.stringify({'quantity' : new_quantity})
-        //    })
-        //    .then(resp => resp.json())
-
-
     }
 
     const renderRows = cards.map( (card) => {
@@ -59,7 +35,7 @@ function Inventory(){
                     'Accept' : 'application/json',
                     'Content-Type' : 'application/json'
                 },
-                body: JSON.stringify({quantity : 4, isFirstEd : false})
+                body: JSON.stringify({quantity : newQuantity})
             })
             .then(console.log('done'))
             .then(console.log(card.card.id))
@@ -157,10 +133,14 @@ function Inventory(){
                 </label>
                 <button type="submit">Submit</button>
             </form>
-        <input onChange={(e)=>console.log(e.target.value)} type="integer" name="new-quantity" />
+        <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" />
         </div>
     )
 
 }
+
+//All the crud features on the inventory are available
+//Need to add it so the user-id is passed in and not hard encoded
+//Make it so the option to edit isnt on the click of edit but only to confirm. 
 
 export default Inventory

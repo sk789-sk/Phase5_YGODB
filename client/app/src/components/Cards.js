@@ -4,13 +4,9 @@ import TableRow from "./Tablerow";
 
 
 function Cards(){ //will need a way to set the filter always
-   //When we submit the search bar we set set the filter value to what is in the submission field. I think this is better than searching continously 
    
-    function handleChange(){}
-    function handleSubmit(){}
-
     const [cards,setCards] = useState([])
-
+    const [filtertext,setFilterText] = useState('')
 
     useEffect( () => {
         fetch('/cards')
@@ -20,16 +16,25 @@ function Cards(){ //will need a way to set the filter always
 
     console.log(cards)
 
-    const renderRows = cards.map((card) => {
+    const filteredcards = cards.filter(card => {
+        return (card.name.toLowerCase().includes(filtertext.toLowerCase()))}
+        )
+
+    const renderRows = filteredcards.map((card) => {
         return <TableRow data={[card.name,card.card_type,card.card_race,card.LegalDate,card.card_image]} />
     })
 
+
+    function handleSubmit(e){
+        e.preventDefault()
+        setFilterText((filtertext) => e.target[0].value)
+    }
 
     return(
         <div>
             <NavBar/>    
             <form onSubmit={handleSubmit} className="search-bar">
-                <input onChange ={handleChange} type="text" placeholder="Search..." />
+                <input type="text" placeholder="Search..." />
                 <button type="submit">Search</button>
             </form>
 
@@ -52,5 +57,10 @@ function Cards(){ //will need a way to set the filter always
 
         </div>
     )}
+
+//we fetch all the card information first and then filter in the front end for what to render. 
+//We currently get all prints of the card as individual cards which we dont really want. what we want is 1 copy of a specific card. 
+//Add the search option
+
 
 export default Cards

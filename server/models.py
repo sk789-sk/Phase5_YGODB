@@ -59,6 +59,11 @@ class Inventory(db.Model, SerializerMixin):
     
     #relationships
     #validations
+    @validates('quantity')
+    def validate_quantity(self,key,quantity):
+        if quantity >0:
+            return quantity
+        return ValueError
 
     #Serializer Rules
     serialize_rules = ('-user.card_in_inventory','-card.card_in_inventory','-card.releaseSet','-card.card_in_deck','-user.user_decks')  

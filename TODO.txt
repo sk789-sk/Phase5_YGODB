@@ -2,7 +2,7 @@ TODO-
 
 - Add front end forms/buttons for non get methods 
 - Check if routes work for non-get methods
-
+- Find out why patch is broken when adding a validation. the return value was strange?
 
 
 
