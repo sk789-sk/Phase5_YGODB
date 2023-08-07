@@ -9,6 +9,7 @@ function NavBar(){
             <Link to = "/Inventory">Inventory</Link>
             <Link to = "/Login"> Login</Link>
             <Link to = "/Decks">Decks</Link>
+            <Link to = "/Sets">Sets</Link>
         </nav>
     )
     }       

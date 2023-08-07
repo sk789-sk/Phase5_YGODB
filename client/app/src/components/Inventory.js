@@ -15,7 +15,7 @@ function Inventory(){
         .then((resp) => resp.json())
         .then ((data) =>setCards(data))
     },[])
-   
+
     //We need to make sure that the user has cards to render. If not we will get an error
 
     function handleClick(card){
@@ -68,7 +68,7 @@ function Inventory(){
        
        //We will have to check if the key (card-id exists in our file to get the actual card_id. Lets assume that we have that and complete the post req)
 
-       // Add validation that the fields are here
+       // Add client-side validation here
 
        const newCard = {
         'quantity' : card_quantity,

@@ -198,13 +198,29 @@ def sets_by_name(name):
 
 @app.route('/Decks')
 def Decks():
+
     decks = db.session.query(Deck).all()
     deckList = []
     for deck in decks:
         deckList.append(deck.to_dict())
     response = make_response(
-        jsonify(deckList,200)
+        jsonify(deckList),200
     )
+    return response
+
+@app.route('/Deck/<int:id>')
+def singleDeck(id): 
+    #A single deck by id 
+
+    deck = Deck.query.filter(Deck.id == id).first()
+
+    if deck: 
+        response = make_response(
+            deck.to_dict(),200)
+    else:
+        response = make_response(
+            {'Error': 'Deck does not exist'},404
+        )
     return response
 
 @app.route('/Decks/<int:id>', methods = (['GET']))
