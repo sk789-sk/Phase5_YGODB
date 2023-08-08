@@ -1,62 +1,60 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
+import Decks from "./Decks";
 
-function SingleDeck (id) {
-    //View the deck information that is in the deck
-    // Save the deck to a users inventory set it to private as default 
+function SingleDeck ({id}) {
 
-    //Really I just need to pull the card information of the deck here
-    //Relevant Info in a table for now. Card Name Card Quantity Card Type (MST) Side Deck Extra deck
+    const deckid = 2
 
-    const [deck,setDeck] = useState([]) //array of relavant deck info.
+    const [cardsInDeck,setCardsInDeck] = useState([])
+    const [deckName,setDeckName] = useState('')
+    const [deckCreater,setDeckCreater] = useState('')
 
     useEffect( () => {
-        fetch(`/Deck/${deckid}`)
+        fetch(`Deck/${deckid}`)
         .then((resp) => resp.json())
-        .then((data) => setDeck(data))
+        .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name),setDeckCreater(data.user.username)))
     },[])
+        
+    const renderCards = cardsInDeck.map((card) => {
+        return <TableRow key = {card.card_id}
+        data = { [card.card.name, card.quantity ]} />
+    })
 
-    const deckid = 2 
+    console.log(deckName)
+    console.log(deckCreater)
 
-    //Logic works but runtime error where we are trying to render the cards before loading the deck information. Strange since this less data than the others for the fetch so why?
-    
+    // useEffect( () => {
+    //     fetch(`Deck/${deckid}`)
+    //     .then((resp) => resp.json())
+    //     .then((data) => setCardsInDeck(data))
+    // },[])
 
-    // const renderCards = deck.card_in_deck.map((card) => {
-    //     return <TableRow key={card.id} 
-    //     data = { [ card.card.name, card.card.card_type, card.quantity ] } />
-    // } 
-    // )
+    // console.log(cardsInDeck.card_in_deck)
 
-    //It looked liek when it assigned to a variable it would run even if its not returned. This causes an issue. Check if it exists even creating the function then i guess we can render anytime?
-
-    function renderCards(deck){
-        deck.card_in_deck.map((card) => {
-            return <TableRow key={card.id} 
-            data = { [card.card.name, card.card.card_type,card.quantity ] } />
-        })
-    }
-
-    console.log(deck)
-    //Okay we only run the function if deck has a length. Ok Deck is not an array it is an object. 
+    // // const renderCards = cardsInDeck.card_in_deck.map((card) => {
+    // //     return <TableRow key={card.id} 
+    // //     data = {[ card.card.name, card.card.quantity ]} />
+    // // })
 
     return (
         <div>
             <NavBar />
-            <h1>SingleDeckTest</h1>
-            <h3>Relevant User/Deck information</h3>
+            <h3>{deckName} created by {deckCreater}</h3>
             <table>
                 <tbody>
                     <tr>
-                        <th>Card</th>
-                        <th>Type</th>
+                        <th>Card Name</th>
                         <th>Quantity</th>
                     </tr>
-                    {deck.length ? renderCards(deck):'loading'}
+                    {renderCards}
                 </tbody>
             </table>
         </div>
     )
+
 }
+
 
 export default SingleDeck

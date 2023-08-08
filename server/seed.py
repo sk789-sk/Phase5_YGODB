@@ -63,7 +63,7 @@ def create_Monster_Cards():
                 releasedSet = randint(1,10),
                 set_id = set_code_card
             )
-        outlist.append(a)
+            outlist.append(a)
     return outlist
 
 

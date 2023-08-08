@@ -3,7 +3,7 @@ import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 
 
-function Cards(){ //will need a way to set the filter always
+function Cards(){ 
    
     const [cards,setCards] = useState([])
     const [filtertext,setFilterText] = useState('')
@@ -59,7 +59,7 @@ function Cards(){ //will need a way to set the filter always
     )}
 
 //we fetch all the card information first and then filter in the front end for what to render. 
-//We currently get all prints of the card as individual cards which we dont really want. what we want is 1 copy of a specific card. 
+//We currently get all prints of the card as individual cards which we dont really want. what we want is 1 copy of a specific card. Filter so that we the render array does not have duplicate names
 //Add the search option
 
 

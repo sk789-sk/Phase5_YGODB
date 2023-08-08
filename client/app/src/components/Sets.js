@@ -15,7 +15,8 @@ function Sets() {
     },[])
 
     const filteredSets = releasedSets.filter( (singleSet) => {
-        return (singleSet.name.toLowerCase().includes(filtertext.toLowerCase()) )
+        return (singleSet.name.toLowerCase().includes(filtertext.toLowerCase()) 
+                )
     }) 
 
 
@@ -33,7 +34,7 @@ function Sets() {
         <div>
             <NavBar />
             <form onSubmit={handleSubmit} className="Deck-search-bar">
-                <input type="text" placeholder="Search by deck name or username" />
+                <input type="text" placeholder="Search by Card Name or Rarity" />
                 <button type="submit">Search</button>
             </form>
             <h1 >DeckTest</h1>

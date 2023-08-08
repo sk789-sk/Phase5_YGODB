@@ -12,7 +12,7 @@ class User(db.Model, SerializerMixin):
     #table columns
         #usesrname, password, email, profile picture, created at
     id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String)
+    username = db.Column(db.String, unique = True)
     password = db.Column(db.String) #hash after
     email = db.Column(db.String) #encrypt?
     
@@ -59,11 +59,14 @@ class Inventory(db.Model, SerializerMixin):
     
     #relationships
     #validations
-    # @validates('quantity')
-    # def validate_quantity(self,key,quantity):
-    #     if quantity >0:
-    #         return quantity
-    #     return ValueError
+
+    #adding validations returns html? why
+    
+    @validates('quantity')
+    def validate_quantity(self,key,quantity):
+        if int(quantity) >0:
+            return quantity
+        raise ValueError
 
     #Serializer Rules
     serialize_rules = ('-user.card_in_inventory','-card.card_in_inventory','-card.releaseSet','-card.card_in_deck','-user.user_decks')  

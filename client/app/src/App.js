@@ -7,8 +7,9 @@ import Login from "./components/Login"
 import Decks from "./components/Decks";
 import SingleDeck from "./components/SingleDeckView";
 import UserDecks from "./components/UserDecks";
-import SingleUsersDeck from "./components/SingleDeckOwner";
+import SingleUsersDeck from "./components/SingleUsersDeck";
 import Sets from "./components/Sets";
+import SingleSet from "./components/SingleSet";
 
 //No index over the app? might just have to make not included in template?
 
@@ -16,7 +17,10 @@ import Sets from "./components/Sets";
 function App() {
   // Code goes here!
 
+    const [user, setUser] = useState(null) 
+ 
 
+  
   //Route setup
 
   return (
@@ -34,6 +38,8 @@ function App() {
           <Route path = '/TestSingleDeck' element = { <SingleDeck />} />
           <Route path = '/TestUserDeck' element = { <UserDecks />} />
           <Route path = '/TestUserSingleDeck' element = {<SingleUsersDeck />} />
+          <Route path = '/TestSingleSet' element = {<SingleSet />} />
+          <Route path= "/TestSingleCardAll" />
         </Routes>
       </BrowserRouter>
     </div>

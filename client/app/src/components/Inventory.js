@@ -53,7 +53,9 @@ function Inventory(){
                 'Content-Type': 'application/json'
             }
         })
-        .then(console.log(card.card.id)) }>
+        .then(console.log(card.card.id))
+        .then((resp) => resp.json())
+        .then((json) => console.log(json)) }>
         Delete</button>} 
         />
 
@@ -85,7 +87,10 @@ function Inventory(){
         },
         body:JSON.stringify(newCard)
        })
-       .then(resp => resp.json())
+       .then(resp => console.log(resp.json()))
+       
+       //some kind of response that it was added sucessfully or not.
+
 
        //need a mapping of set id to card id
 
@@ -121,7 +126,7 @@ function Inventory(){
                 </label>
                 <label> 
                     Card-id:
-                    <input type="text" name="set-id" />
+                    <input type="text" name="set-id" placeholder="Ex: MRD-127" />
                 </label>
                 <label>
                     Quantity

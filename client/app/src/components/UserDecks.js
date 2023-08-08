@@ -15,6 +15,8 @@ function UserDecks () {
         .then ((data) => setUserDecks(data))
     }, [])
 
+    console.log(userDecks)
+
     const filteredDecks = userDecks.filter((deck) => {
         return (deck.name.toLowerCase().includes(filtertext.toLowerCase()))
     })
@@ -26,7 +28,6 @@ function UserDecks () {
 
     function handleSubmit(e){
         e.preventDefault()
-        console.log('hi')
         setFilterText((filtertext) => e.target[0].value)
     }
 
@@ -37,7 +38,7 @@ function UserDecks () {
                 <input type="text" placeholder="Search by deck name " />
                 <button type="submit">Search</button>
             </form>
-            <h1>All users decks</h1>
+            <h1>All the decks a single users has</h1>
             <table>
                 <tbody>
                     <tr>

@@ -7,10 +7,17 @@ function SingleUsersDeck(id) {
     //This is basically a single user deck but the user has edit options
     //The runtime error in the singleDeck extend here
 
+
+
     return(
         <div>
             <NavBar/>
-            <SingleDeck id = {id} />
+            <SingleDeck />
+
+            <form>
+                <input type="text" placeholder="Edit Name" />
+                <button type="submit">Confirm</button>
+            </form>
         </div>
     )
 }

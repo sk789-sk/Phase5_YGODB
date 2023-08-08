@@ -6,7 +6,7 @@
 from models import *
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, make_response, jsonify, request, session
 import os
 
 # Local imports
@@ -429,7 +429,7 @@ def invent_by_id(id):
 
                 response = make_response(new_card_invent.to_dict(),200)
             except ValueError:
-                response = make_response( { "errors": ["validation errors"] },400)
+                response = make_response( { "errors": "validation errors" },400)
         
         if request.method == 'DELETE':
             #user deletes the entire inventory
@@ -479,7 +479,7 @@ def user_invent_card(id,card_id):
                 response = make_response(card.to_dict(),200)
             except ValueError: 
                     response = make_response(
-                    { "errors": ["validation errors,attribute errors"] },
+                    { "errors": ["validation errors"] },
                     400
                     )
 
@@ -497,13 +497,39 @@ def user_invent_card(id,card_id):
 
     return response
 
+@app.route('/Login', methods = ['POST'])
+def Login():
 
+    #Get username and pass form client, 
+    #Check if the data matches
+    #If so we set the session user id to the user and then return a sucess or failure
+    
+    user_info = request.get_json() 
+    
+    user = User.query.filter(User.username == user_info['username']).first()
+    
+    if user:
 
+        pass_match = (user_info['password'] == user.password)
+        
+        if pass_match: 
+            #if password matches
 
+            session['user_id'] = user.id
 
+            response = make_response( 
+                jsonify(user.to_dict()), 201
+            )
+        else:
+           response = make_response({},401)
+    else:
+        response = make_response({},404)
+    
+    return response
 
-
-
+@app.route('/Logout', methods = ['DELETE'])
+def Logout():
+    return make_response( {},200)
 
 
 
@@ -544,4 +570,5 @@ def Banlists():
     return response
 
 if __name__ == '__main__':
+
     app.run(port=5555, debug=True)
