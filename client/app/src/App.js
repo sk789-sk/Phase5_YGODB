@@ -10,6 +10,7 @@ import UserDecks from "./components/UserDecks";
 import SingleUsersDeck from "./components/SingleUsersDeck";
 import Sets from "./components/Sets";
 import SingleSet from "./components/SingleSet";
+import UserProfile from "./components/UserProfile";
 
 //No index over the app? might just have to make not included in template?
 
@@ -17,8 +18,12 @@ import SingleSet from "./components/SingleSet";
 function App() {
   // Code goes here!
 
-    const [user, setUser] = useState(null) 
- 
+  {}
+
+
+    const [user, setUser] = useState({ 'username': 'DEFAULT', 'id': 1}) 
+    //initially nobody is logged in. 
+    //Turn this into a use context would be the best so we dont pass user to each page.
 
   
   //Route setup
@@ -32,14 +37,15 @@ function App() {
           <Route path = '/' element = {<Home />}/>
           <Route path = '/Cards' element = {<Cards/>} />
           <Route path = '/Decks' element = {<Decks />} />
-          <Route path = '/Inventory' element = {<Inventory/>}/>
+          <Route path = '/Inventory' element = {<Inventory user = {user}/>}/>
           <Route path = '/Sets' element = {<Sets/>}/>
-          <Route path = '/Login' element = {<Login />} />
+          <Route path = '/Login' element = {<Login user = {user} setUser={setUser} />} />
           <Route path = '/TestSingleDeck' element = { <SingleDeck />} />
-          <Route path = '/TestUserDeck' element = { <UserDecks />} />
+          <Route path = '/UsersDecks' element = { <UserDecks user = {user} />} />
           <Route path = '/TestUserSingleDeck' element = {<SingleUsersDeck />} />
           <Route path = '/TestSingleSet' element = {<SingleSet />} />
           <Route path= "/TestSingleCardAll" />
+          <Route path= "/UserProfile" element = {<UserProfile user = {user} />} />
         </Routes>
       </BrowserRouter>
     </div>

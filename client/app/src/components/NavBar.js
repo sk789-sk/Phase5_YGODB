@@ -10,6 +10,8 @@ function NavBar(){
             <Link to = "/Login"> Login</Link>
             <Link to = "/Decks">Decks</Link>
             <Link to = "/Sets">Sets</Link>
+            <Link to = "/UsersDecks">Your Decks</Link>
+            <Link to = '/UserProfile'>Your Profile</Link>
         </nav>
     )
     }       

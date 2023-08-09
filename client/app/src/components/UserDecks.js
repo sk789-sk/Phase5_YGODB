@@ -2,15 +2,17 @@ import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 
-function UserDecks () {
+function UserDecks ({user}) {
     //Load all the decks that a user has. Pass in the users id
+
+    console.log(user)
 
     const userid = 2
     const [userDecks,setUserDecks] = useState([])
     const [filtertext,setFilterText] = useState('')
 
     useEffect( () => {
-        fetch(`/Decks/${userid}`)
+        fetch(`/Decks/${user.id}`)
         .then((resp) => resp.json())
         .then ((data) => setUserDecks(data))
     }, [])

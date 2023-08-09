@@ -2,34 +2,43 @@ import React, { useState, useEffect } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 
-function Inventory(){
+function Inventory({user}){
 
     const [cards,setCards] = useState([])
     const [newQuantity,setNewQuantity] = useState(0)
+    const [filtertext,setFilterText] = useState('')
     //this is a set code and then a numeric code, better to store as a dictoinary of set code with a list of numeric codes wouldnt have to go through everything. Refactor after 
     //useState seems like a bad way to do this. I would rather give each one its own 
 
-    const user_id = 2 //need to pass in a user id
     useEffect( () => {
-        fetch(`/inventory/${user_id}`) 
+        fetch(`/inventory/${user.id}`) 
         .then((resp) => resp.json())
         .then ((data) =>setCards(data))
     },[])
+    
 
     //We need to make sure that the user has cards to render. If not we will get an error
+    // what does setCards equal if there is nothing in the fetch?
 
-    function handleClick(card){
-        console.log(card)
+    function handleSearch(e){
+        e.preventDefault()
+        setFilterText((filtertext) =>e.target[0].value)
+        console.log(filtertext)
     }
 
-    const renderRows = cards.map( (card) => {
+    console.log(cards)
+    const filteredCards = cards.filter((card) => {
+        return (card.card.name.toLowerCase().includes(filtertext.toLowerCase()))
+    })
+
+    const renderRows = filteredCards.map( (card) => {
         
         return <TableRow key={card.card.card_id} 
         
         data={[ card.card.name, card.card.card_type, card.card.rarity, card.card.card_image ,card.card.set_id,card.quantity]} 
         
         button ={<button onClick={ () => 
-            fetch(`/inventory/${user_id}/${card.card.id}`, {
+            fetch(`/inventory/${user.id}/${card.card.id}`, {
                 method: "PATCH",
                 headers: {
                     'Accept' : 'application/json',
@@ -46,16 +55,13 @@ function Inventory(){
 
         deletebutton = {<button onClick={ () =>
     
-            fetch(`/inventory/${user_id}/${card.card.id}`, {
+            fetch(`/inventory/${user.id}/${card.card.id}`, {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        })
-        .then(console.log(card.card.id))
-        .then((resp) => resp.json())
-        .then((json) => console.log(json)) }>
+        })}>
         Delete</button>} 
         />
 
@@ -75,11 +81,11 @@ function Inventory(){
        const newCard = {
         'quantity' : card_quantity,
         'isFirstEd' : isFirst,
-        'user_id' : user_id,
+        'user_id' : user.id,
         'card_id' : card_id
        }
        
-       fetch(`inventory/${user_id}` , {
+       fetch(`inventory/${user.id}` , {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -101,6 +107,10 @@ function Inventory(){
     return(
         <div>
             <NavBar />
+            <form onSubmit={handleSearch} className="search-bar">
+                <input type="text" placeholder="Search..." />
+                <button type="submit">Search</button>
+            </form>
             <h1>Search Bar and Filter</h1>
             <table>
                 <tbody>

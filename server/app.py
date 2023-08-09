@@ -142,7 +142,7 @@ def cards():
     cardinfo = db.session.query(Card).all()
     card_list = []
     for card in cardinfo:
-        card_list.append(card.to_dict())
+        card_list.append(card.to_dict(rules=('-card_in_deck','-card_in_inventory','-card_on_banlist','-releaseSet')))
     response = make_response(
         jsonify(card_list),200)
     return response
@@ -184,7 +184,7 @@ def sets():
     setinfo = db.session.query(ReleaseSet).all()
     set_list = []
     for pack in setinfo:
-        set_list.append(pack.to_dict())
+        set_list.append(pack.to_dict(only=('name','id','card_count','releaseDate','set_code')))
     response = make_response(
         jsonify(set_list),200
     )

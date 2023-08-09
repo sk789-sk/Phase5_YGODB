@@ -27,6 +27,7 @@ INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,28
 INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,44);
 INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,16);
 
+INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES(1,TrUE,1,1);
 
 DELETE FROM Cards;
 DELETE FROM Users;
