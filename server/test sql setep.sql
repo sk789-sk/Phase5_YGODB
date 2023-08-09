@@ -1,7 +1,9 @@
 INSERT INTO Users (username) VALUES ('sk789')
 INSERT INTO Users (username, password) VALUES ('sk2','t1')
 
+INSert INTO Users (username,password,email,profile) VALUES ('DEFAULT','NONE', NULL, NULL)
 INSERT INTO Users (username,password,email,profile) VALUES ('sk789','test','skm478@gmail.com','path')
+
 
 INSERT INTO Decks (name,user_id) VALUES ('darkmagician',2);
 INSERT INTO Decks (name,user_id) VALUES ('BlueEyes',2);
@@ -27,6 +29,7 @@ INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,16
 
 
 DELETE FROM Cards;
+DELETE FROM Users;
 DELETE FROM Inventories;
 DELETe FRom CardsinDecks;
 DELETE FROM Decks;

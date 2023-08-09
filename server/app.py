@@ -37,6 +37,26 @@ def home():
 
 #User
 
+@app.route('/Register', methods=['POST'])
+def register():
+    data = request.get_json()
+
+    try:
+        new_user = User(
+            username = data['username'],
+            password = data['password']
+        )
+
+        db.session.add(new_user)
+        db.session.commit() 
+
+        response = make_response(new_user.to_dict(),200)
+   
+    except ValueError:
+        response = make_response(
+            { "errors": ["validation errors,attribute errors"] }, 400)
+
+    return response
 
 @app.route('/users')
 def users():
@@ -240,9 +260,17 @@ def all_user_deck(id): #'all decks a user has'. 'Can create a deck id and then g
             )
 
     else:
-        response = make_response(
-            {"error":"User has no decks"},404
-        )
+
+        init_deck_invent = []
+        init_deck = Deck.query.filter(Deck.user_id == 1).first()
+
+        init_deck_invent.append(init_deck.to_dict())
+
+        response = make_response(jsonify(init_deck_invent),200)
+
+        # response = make_response(
+        #     {"error":"User has no decks"},404
+        # )
 
     return response
 
@@ -399,6 +427,7 @@ def invent():
         jsonify(inventList,200)
     )
     return response
+   
 
 @app.route('/inventory/<int:id>', methods = ['GET', 'POST','DELETE'])
 def invent_by_id(id):
@@ -442,9 +471,39 @@ def invent_by_id(id):
 
             response = make_response({}, 204)
     else:
-        response = make_response(
-            {"error":"User has no Cards"},404
-        )
+        #user does not have an inventory so this loads a placeholder.
+        #an initializes an inventory
+
+        if request.method == 'POST':
+            data = request.get_json()
+            try:
+                #If getting card from out end we should be able to get back the id instead of the name
+                new_card_invent = Inventory(
+                    quantity = data['quantity'],
+                    isFirstEd = data['isFirstEd'],
+                    user_id = data['user_id'],
+                    card_id = data['card_id']
+                )
+                db.session.add(new_card_invent)
+                db.session.commit()
+
+                response = make_response(new_card_invent.to_dict(),200)
+            except ValueError:
+                response = make_response( { "errors": "validation errors" },400)
+
+        else:
+            init_invent = []
+            init_card = Inventory.query.filter(Inventory.user_id == 1).first()
+
+            init_invent.append(init_card.to_dict())
+
+            response = make_response(jsonify(init_invent),200)
+
+        # response = make_response(
+        #     {"error":"User has no Cards"},404
+
+        #make the response 
+    
     return response
 
 @app.route('/inventory/<int:id>/<int:card_id>', methods = ['GET', 'PATCH','DELETE']) #a users card in inventory. We can add delete/ adjust quantity etc here, get detailed info and picture that are uploaded. Since i am more likely to own duplicates of a card i think it makes more sense to go by card name instead of card id. card_id means i cant filter by 
@@ -515,7 +574,8 @@ def Login():
         if pass_match: 
             #if password matches
 
-            session['user_id'] = user.id
+            # session['user_id'] = user.id
+            #No secret_key. I can still return a user and then use that to create a state of the user and pass that. I guess I can make the delete just change the user. The delete orute does nothing then
 
             response = make_response( 
                 jsonify(user.to_dict()), 201

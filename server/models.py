@@ -28,7 +28,17 @@ class User(db.Model, SerializerMixin):
     user_decks = db.relationship("Deck",backref = "user")
 
     #validations
+    @validates('username')
+    def validate_quantity(self,key,username):
+        if len(username) >0:
+            return username
+        raise ValueError
     
+    @validates('password')
+    def validate_password(self,key,password):
+        if len(password) >0:
+            return password
+        raise ValueError
 
     #email validation,username length
     
@@ -78,17 +88,31 @@ class Card(db.Model, SerializerMixin):
     #table columns
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String)
+    description = db.Column(db.String)
     attack = db.Column(db.Integer)
     defense = db.Column(db.Integer)
     level = db.Column(db.Integer)
-    card_type = db.Column(db.String) #normal monster, spell , trap, effect monster 
+    isEffect = db.Column(db.Boolean)
+    isTuner = db.Column(db.Boolean)
+    isFlip = db.Column(db.Boolean)
+    isSpirit = db.Column(db.Boolean)
+    isUnion = db.Column(db.Boolean)
+    isGemini = db.Column(db.Boolean)
+    isPendulum = db.Column(db.Boolean)
+    isRitual = db.Column(db.Boolean)
+    isToon = db.Column(db.Boolean)
+    isFusion = db.Column(db.Boolean)
+    isSynchro = db.Column(db.Boolean)
+    isXYZ = db.Column(db.Boolean)
+    isLink = db.Column(db.Boolean)
+    card_type = db.Column(db.String) # monster, spell , trap, monster 
     card_race = db.Column(db.String) #this is card type spellcaster/gemini/winged beast for monsters. For spells it is quickplay, spell, etc, for traps cont counter etc
-    card_attribute = db.Column(db.String) 
+    card_attribute = db.Column(db.String) #Null for spells/traps
     LegalDate = db.Column(db.String) #first printing or when the card became legal
     card_image = db.Column(db.String) #Reference to location on disk
     rarity = db.Column(db.String) #Should there be a table list of rarities, will there be a use for that table not sure yet
     set_id = db.Column(db.String)
-    ygopro_id = db.Column(db.Integer)
+   
     #ForeignKeys
 
     releasedSet = db.Column(db.Integer, db.ForeignKey('ReleaseSets.id')) 
