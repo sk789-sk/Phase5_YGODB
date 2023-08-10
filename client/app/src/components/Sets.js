@@ -31,15 +31,15 @@ function Sets() {
     }
     
     return(
-        <div>
+        <div className="componentdiv">
             <NavBar />
+            <br></br>
             <form onSubmit={handleSubmit} className="search">
-                <input type="text" placeholder="Search by Card Name or Rarity" />
+                <input type="text" placeholder="Search by Set Name" />
                 <button className="searchbutton" type="submit">Search</button>
             </form>
-            <h1 >DeckTest</h1>
-            <h1>Search Bar and Filter</h1>
-            <table>
+            <h1 className="header">All Sets Released in the TCG</h1>
+            <table className="tables">
                 <tbody>
                 <tr>
                     <th>Set Name</th>

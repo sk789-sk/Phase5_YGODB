@@ -45,16 +45,15 @@ function Decks () {
     }
 
     return(
-        <div>
+        <div className="componentdiv">
             <NavBar />
+            <br></br>
             <form onSubmit={handleSubmit} className="search">
                 <input type="text" placeholder="Search by deck name or username" />
                 <button className="searchbutton" type="submit">Search</button>
             </form>
-            <h1 >DeckTest</h1>
-            <h1>Search Bar and Filter</h1>
-            <h3>Create a New Deck Link</h3>
-            <table>
+            <h1 className="header">Publicly Available Decks</h1>
+            <table className="tables">
                 <tbody>
                 <tr>
                     <th>Deck Name</th>

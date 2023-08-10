@@ -75,20 +75,17 @@ function UserDecks ({user}) {
     }
 
     return ( 
-        <div>
+        <div className="componentdiv">
             <NavBar />
+            <br></br>
             <form onSubmit={handleSubmit} className="search">
                 <input type="text" placeholder="Search by deck name " />
                 <button className="searchbutton" type="submit">Search</button>
             </form>
 
-            <form onSubmit={createDeck} className="CreateForm">
-                    <input type="text" placeholder= "Enter Deck Name" />
-                    <button className="confirm" type="submit">Create New Deck</button>   
-                </form>
-            <h1>All the decks a single users has</h1>
+            <h1 className="header">Your Decks</h1>
             
-            <table>
+            <table className="tables">
                 <tbody>
                     <tr>
                         <th>Deck Name</th>
@@ -98,6 +95,13 @@ function UserDecks ({user}) {
                     {renderDecks}
                 </tbody>
             </table>
+            <br></br>
+
+            <h3 className="header">Create a New Deck</h3>
+            <form onSubmit={createDeck} className="CreateForm">
+                    <input type="text" placeholder= "Enter Deck Name" />
+                    <button className="confirm" type="submit">Create New Deck</button>   
+                </form>
         </div>
         )
 }

@@ -2,7 +2,7 @@ INSERT INTO Users (username) VALUES ('sk789')
 INSERT INTO Users (username, password) VALUES ('sk2','t1')
 
 INSert INTO Users (username,password,email,profile) VALUES ('DEFAULT','NONE', NULL, NULL)
-INSERT INTO Users (username,password,email,profile) VALUES ('sk789','test','skm478@gmail.com','path')
+INSERT INTO Users (username,password,email,profile) VALUES ('sk789','test','skm478@gmail.com','https://images.ygoprodeck.com/images/cards/60482781.jpg')
 
 
 INSERT INTO Decks (name,user_id) VALUES ('darkmagician',2);
@@ -40,4 +40,6 @@ DELETE FROM Users;
 DELETE FROM Inventories;
 DELETe FRom CardsinDecks;
 DELETE FROM Decks;
+
+DELETE FROM Users WHERE id>1;
 

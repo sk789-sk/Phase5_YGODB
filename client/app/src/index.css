@@ -13,7 +13,8 @@ code {
 }
 
 .search {
-  max-width: 190px;
+  display: inline-block;
+  max-width: 200px;
   background-color: #f5f5f5;
   color: #242424;
   padding: .15rem .5rem;
@@ -23,6 +24,16 @@ code {
   border: none;
   line-height: 1.15;
   box-shadow: 0px 10px 20px -18px;
+}
+
+li {
+  display: inline;
+  margin-right: 20px;
+  font-size: larger;
+  }
+
+.main-nav {
+  padding: 40px;
 }
 
 .search:focus {
@@ -40,3 +51,198 @@ td {
   vertical-align: middle;
 }
 
+.card {
+  width: auto ;
+  height: max-content;
+  background: rgb(39, 39, 39);
+  border-radius: 12px;
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.123);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transition-duration: .5s;
+}
+
+.profileImage {
+  background: linear-gradient(to right,rgb(54, 54, 54),rgb(32, 32, 32));
+  margin-top: 20px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.329);
+}
+
+.textContainer {
+  width: 100%;
+  height: auto;
+  text-align: left;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile {
+  object-fit: contain;
+  width: fit-content;
+  height: fit-content;
+}
+
+.name {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.profile {
+  font-size: 1.5em;
+  color: rgb(194, 194, 194);
+  letter-spacing: 0.2px;
+}
+
+.proftext {
+  font-size: 1.5em;
+  color:rgb(194, 194, 194);
+  letter-spacing: 0.2px;
+}
+
+.card:hover {
+  background-color: rgb(43, 43, 43);
+  transition-duration: .5s;
+}
+
+.DeleteAcc {
+  position: absolute;
+  top: 50px;
+  right: 15px;
+}
+
+.group {
+  position: relative;
+}
+
+.loginform {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border: 1px solid white;
+  padding: 120px 40px;
+  padding-top: 60px;
+  padding-bottom: 90px;
+  padding-right: 40px;
+  padding-left: 40px;
+  background-color: black;
+  border-radius: 20px;
+  position: relative;
+  width: auto;
+}
+
+.componentdiv {
+  text-align: center;
+}
+
+.header {
+  text-align: center;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tables {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form p {
+  padding-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: .5px;
+  color: white;
+}
+
+.container-1 {
+  padding-top: 30px;
+}
+
+.main-input {
+  font-size: 16px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 185px;
+  border: none;
+  border-bottom: 1px solid #6c6c6c;
+  background: transparent;
+  color: #ffffff;
+}
+
+.main-input:focus {
+  outline: none;
+  border-bottom-color: #42ff1c;
+}
+
+.label-username {
+  color: #999999;
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.main-input:focus ~ .lebal-email,
+.main-input:valid ~ .lebal-email {
+  top: -20px;
+  font-size: 14px;
+  color: #42ff1c;
+}
+
+.highlight-span {
+  position: absolute;
+  height: 60%;
+  width: 0px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.main-input:focus ~ .highlight-span {
+  -webkit-animation: input-focus 0.3s ease;
+  animation: input-focus 0.3s ease;
+}
+
+@keyframes input-focus {
+  from {
+    background: #42ff1c;
+  }
+
+  to {
+    width: 185px;
+  }
+}
+
+.submit {
+  margin-top: 1.2rem;
+  padding: 10px 20px;
+  border-radius: 10px;
+}

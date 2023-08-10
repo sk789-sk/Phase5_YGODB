@@ -57,26 +57,80 @@ function Login( {user, setUser}){
         .then((data) => setUser(data))
     }
 
+<form onSubmit={handleLogIn} class="loginform">
+  <p>Login</p>
+  <div class="group">
+    <input required="true" class="main-input" type="text" />
+    <span class="highlight-span"></span>
+    <label class="label-username">Username</label>
+  </div>
+  <div class="container-1">
+    <div class="group">
+      <input htmlFor="password" required="true" class="main-input" type="text" />
+      <span class="highlight-span"></span>
+      <label class="label-username">password</label>
+    </div>
+  </div>
+  <button class="submit">Login</button>
+</form>
+
     return(
-        <div>
+        <div className="componentdiv">
             <NavBar />
-            <h1>LoginPage</h1>
-            <form onSubmit={handleLogIn}>
+            <h1>Login Page</h1>
+
+            <form onSubmit={handleLogIn} class="loginform">
+                <p>Login</p>
+                <div class="group">
+                    <input required="true" class="main-input" type="text" />
+                    <span class="highlight-span"></span>
+                    <label class="label-username">Username</label>
+                </div>
+                <div class="container-1">
+                    <div class="group">
+                    <input htmlFor="password" required="true" class="main-input" type="text" />
+                    <span class="highlight-span"></span>
+                    <label class="label-username">password</label>
+                    </div>
+                </div>
+                <button class="submit">Login</button>
+            </form>
+
+            {/* <form className="loginform" onSubmit={handleLogIn}>
                 <label htmlFor="username">Username</label>
                 <input type="username" placeholder="Username" />
                 <label htmlFor="password" >Password</label>
                 <input type="password" placeholder="*****" />
                 <button>Log In</button>
-            </form>
-            <button onClick={togglePage}>Register Here</button>
-            <button onClick={handleLogOut}>LogOut</button>
+            </form> */}
+            
+            
+            {/* <button onClick={togglePage}>Register Here</button> */}
+            <button className="submit" onClick={handleLogOut}>LogOut</button>
 
-            <form onSubmit={handleRegister}>
+            {/* <form onSubmit={handleRegister}>
             <label htmlFor="username">Username</label>
                 <input type="username" placeholder="Username" />
                 <label htmlFor="password" >Password</label>
                 <input type="password" placeholder="*****" />
                 <button>Confirm Registration</button>
+            </form> */}
+
+            <form onSubmit={handleRegister} class="loginform">
+                <p>Register</p>
+                <div class="group">
+                    <input required="true" class="main-input" type="text" />
+                    <span class="highlight-span"></span>
+                    <label class="label-username">Username</label>
+                </div>
+                <div class="container-1">
+                    <div class="group">
+                    <input htmlFor="password" required="true" class="main-input" type="text" />
+                    <span class="highlight-span"></span>
+                    <label class="label-username">password</label>
+                    </div>
+                </div>
+                <button class="submit">Sign Up</button>
             </form>
         </div>
     )
@@ -84,3 +138,4 @@ function Login( {user, setUser}){
 }
 
 export default Login
+

@@ -62,6 +62,24 @@ function SingleUsersDeck() {
         />
     })
 
+    function editName(e){
+        e.preventDefault()
+        let new_name = e.target[0].value
+        
+        fetch(`/Deck/${params.id}`, {
+            method:"PATCH",
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type':'application/json'
+            },
+               body: JSON.stringify({'name' : new_name})
+            })
+            .then((resp) => resp.json())
+            .then((data) => console.log(json))
+
+        } 
+
+
     function handleSubmit(e){
         e.preventDefault()
         let deck_id = params.id
@@ -85,19 +103,19 @@ function SingleUsersDeck() {
             },
             body:JSON.stringify(newCardinDeck)
         })
-        .then(resp => console.log(resp.json()))
+        .then(resp => (resp.json()))
+        .then(data => setCardsInDeck(cardsInDeck => ([...cardsInDeck,data])))
     }
 
     return(
-        <div>
+        <div className="componentdiv">
             <NavBar/>
 
-            <form>
-                <input type="text" placeholder="Edit Name" />
-                <button type="submit">Confirm</button>
-            </form>
+            <br></br>
 
-            <table>
+            <h1 className="header">{deckName}</h1>            
+
+            <table className="tables">
                 <tbody>
                     <tr>
                         <th>Card Name</th>
@@ -123,8 +141,15 @@ function SingleUsersDeck() {
             </label>
             <button type="submit">Submit</button>
         </form>
+        <br></br>
+        <h3>Enter New Quantity Below and Press Edit Quantity Button</h3>
         <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
-
+        
+        <h3 className="header"> Edit Deck Name</h3>
+            <form onSubmit={editName}>
+                <input type="text" placeholder="Edit Name" />
+                <button type="submit">Confirm</button>
+            </form>
         </div>
     )
 }

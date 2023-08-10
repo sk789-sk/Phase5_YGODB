@@ -99,15 +99,20 @@ def user_id(id):
         elif request.method == 'DELETE':
             #Want to delete user so delete all decks and inventory that they own as well.
             user_decks = Deck.query.filter(Deck.user_id==id).all()
-            user_invent = Inventory.query.filter(Inventory.user_id==id).all
-            user_card_in_deck = CardinDeck.query.filter(CardinDeck.user_id==id).all 
+            user_invent = Inventory.query.filter(Inventory.user_id==id).all()
+            
+            #For each deck that we delete need to delete all cards in the deck
+            #TODO
 
-            for deck in user_decks:
-                db.session.delete(deck)
-            for card in user_invent:
-                db.session.delete(card)
-            for card in user_card_in_deck:
-                db.session.delete(card)
+            print(user_decks)
+            print(user_invent)
+
+            if user_decks:
+                for deck in user_decks:
+                    db.session.delete(deck)
+            if user_invent:
+                for card in user_invent:
+                    db.session.delete(card)
 
             db.session.delete(user)
             db.session.commit()
@@ -231,15 +236,36 @@ def Decks():
     )
     return response
 
-@app.route('/Deck/<int:id>')
+@app.route('/Deck/<int:id>', methods = (['GET','PATCH']))
 def singleDeck(id): 
     #A single deck by id 
 
     deck = Deck.query.filter(Deck.id == id).first()
 
     if deck: 
-        response = make_response(
-            deck.to_dict(),200)
+        if request.method == 'GET':
+
+            response = make_response(
+                deck.to_dict(),200)
+            
+        elif request.method == 'PATCH':
+            data = request.get_json()
+            print(data)
+
+            try:
+                for key in data:
+                    setattr(deck,key,data[key])
+                    db.session.add(deck)
+                    db.session.commit()  
+
+                response = make_response(deck.to_dict(),202)
+                print('setattr succ')
+            except ValueError:
+                 print('setattr failed')
+                 response = make_response(
+                    { "errors": ["validation errors"] },
+                    400
+                    )
     else:
         response = make_response(
             {},404
@@ -421,8 +447,6 @@ def cardindeck(id):
             try:
                 for key in data:
                     setattr(card,key,data[key])
-
-
                     db.session.add(card)
                     db.session.commit()  
 

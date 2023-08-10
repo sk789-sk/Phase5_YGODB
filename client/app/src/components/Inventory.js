@@ -106,15 +106,16 @@ function Inventory({user}){
     }
 
     return(
-        <div>
+        <div className="componentdiv">
             <NavBar />
+            <br></br>
             <form onSubmit={handleSearch} className="search">
                 <input type="text" placeholder="Search..." />
                 <button className="searchbutton" type="submit">Search</button>
             </form>
-            <h1>Search Bar and Filter</h1>
+            <h1 className="header">Your Inventory</h1>
 
-            <table>
+            <table className="tables">
                 <tbody>
                 <tr>
                     <th>Card Name</th>
@@ -130,8 +131,8 @@ function Inventory({user}){
 
             </table>
 
-            <h3>Add Card to Inventory</h3>
-            <form id = "New-CardinInventory-form" onSubmit={handleSubmit}>
+            <h3 className="header">Add Card to Inventory</h3>
+            <form  id = "New-CardinInventory-form" onSubmit={handleSubmit}>
                 <label>
                     Card Name: 
                     <input type="text" name="card-name"/>
@@ -150,6 +151,10 @@ function Inventory({user}){
                 </label>
                 <button type="submit">Submit</button>
             </form>
+
+            <br></br>
+            <br></br>
+            <h3>Enter New Quantity Below and Press Edit Quantity Button</h3>
         <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
         </div>
     )
