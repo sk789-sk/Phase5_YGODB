@@ -7,7 +7,7 @@ function SingleDeck () {
 
     const params = useParams();
 
-    const [cardsInDeck,setCardsInDeck] = useState([])
+    const [cardsInDeck,setCardsInDeck] = useState([{card:{name:'loading'},quantity:0,card_id:1}])
     const [deckName,setDeckName] = useState('')
     const [deckCreater,setDeckCreater] = useState('')
 
@@ -28,10 +28,10 @@ function SingleDeck () {
     console.log(deckCreater)
 
     return (
-        <div>
+        <div className="componentdiv">
             <NavBar />
             <h3>{deckName} created by {deckCreater}</h3>
-            <table>
+            <table className="tables">
                 <tbody>
                     <tr>
                         <th>Card Name</th>

@@ -94,7 +94,8 @@ function Inventory({user}){
         },
         body:JSON.stringify(newCard)
        })
-       .then(resp => console.log(resp.json()))
+       .then(resp => (resp.json()))
+       .then(data => setCards([...cards,data]))
        
        //some kind of response that it was added sucessfully or not.
 

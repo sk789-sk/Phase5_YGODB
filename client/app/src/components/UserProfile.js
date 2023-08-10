@@ -27,7 +27,7 @@ function UserProfile ({user}) {
     }
 
     return( 
-        <div>
+        <div className="componentdiv">
             <NavBar/>
         <p>{userInfo ? null : 'loading '}</p>
         <div>

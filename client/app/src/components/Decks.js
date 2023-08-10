@@ -64,9 +64,6 @@ function Decks () {
                 {renderRows}
 
                 </tbody>
-            <Routes>
-            <Route path="/:id" element = {<SingleDeck />} />
-            </Routes>
             </table>
         </div>
     )
