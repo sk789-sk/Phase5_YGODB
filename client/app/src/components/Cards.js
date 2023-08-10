@@ -16,12 +16,13 @@ function Cards(){
 
     console.log(cards)
 
+
     const filteredcards = cards.filter(card => {
         return (card.name.toLowerCase().includes(filtertext.toLowerCase()))}
         )
 
     const renderRows = filteredcards.map((card) => {
-        return <TableRow data={[card.name,card.card_type,card.card_race,card.LegalDate,card.card_image]} />
+        return <TableRow data={[card.name,card.card_type,card.rarity,card.card_race,card.set_id,card.description]} />
     })
 
 
@@ -33,9 +34,9 @@ function Cards(){
     return(
         <div>
             <NavBar/>    
-            <form onSubmit={handleSubmit} className="search-bar">
+            <form onSubmit={handleSubmit} className="search">
                 <input type="text" placeholder="Search..." />
-                <button type="submit">Search</button>
+                <button className="searchbutton" type="submit">Search</button>
             </form>
 
             <h1>Search Bar and Filter</h1>
@@ -45,9 +46,9 @@ function Cards(){
                     <th>Card Name</th>
                     <th>Card Type</th>
                     <th>Rarity</th>
-                    <th>Image</th>
+                    <th>Attribute</th>
                     <th>Set-ID</th>
-                    <th>Number of Prints</th>
+                    <th>Description/Effect</th>
                 </tr>
                 {renderRows}
                 </tbody>

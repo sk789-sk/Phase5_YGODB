@@ -11,6 +11,7 @@ import SingleUsersDeck from "./components/SingleUsersDeck";
 import Sets from "./components/Sets";
 import SingleSet from "./components/SingleSet";
 import UserProfile from "./components/UserProfile";
+import NavBar from "./components/NavBar";
 
 //No index over the app? might just have to make not included in template?
 
@@ -30,22 +31,34 @@ function App() {
 
   return (
     <div className='App'>
-      <h1>Welcome_Test page</h1>
       {/* <Home_Page /> */}
       <BrowserRouter>
         <Routes>
-          <Route path = '/' element = {<Home />}/>
-          <Route path = '/Cards' element = {<Cards/>} />
-          <Route path = '/Decks' element = {<Decks />} />
-          <Route path = '/Inventory' element = {<Inventory user = {user}/>}/>
-          <Route path = '/Sets' element = {<Sets/>}/>
-          <Route path = '/Login' element = {<Login user = {user} setUser={setUser} />} />
-          <Route path = '/TestSingleDeck' element = { <SingleDeck />} />
-          <Route path = '/UsersDecks' element = { <UserDecks user = {user} />} />
-          <Route path = '/TestUserSingleDeck' element = {<SingleUsersDeck />} />
-          <Route path = '/TestSingleSet' element = {<SingleSet />} />
-          <Route path= "/TestSingleCardAll" />
-          <Route path= "/UserProfile" element = {<UserProfile user = {user} />} />
+        <Route path = '/' element = {<Home />}/>
+
+        <Route path = 'Cards' element = {<Cards/>} />
+          
+        <Route path = 'Decks' element = {<Decks />} />
+        <Route path = "Decks/:id" element = {<SingleDeck />} /> 
+
+        <Route path = '/Inventory' element = {<Inventory user = {user}/>}/>
+          
+        <Route path = '/Sets' element = {<Sets/>} />
+
+
+        <Route path= "/Sets/:id" element = {<SingleSet/>} />
+        
+        <Route path = '/UsersDecks' element = { <UserDecks user = {user} />} />
+        <Route path = '/UsersDecks/:id'  element = {<SingleUsersDeck />}/>
+
+        <Route path = '/Login' element = {<Login user = {user} setUser={setUser} />} />
+        <Route path= "/UserProfile" element = {<UserProfile user = {user} />} />
+
+        <Route path = '/TestSingleDeck' element = { <SingleDeck />} />
+        <Route path = '/TestUserSingleDeck' element = {<SingleUsersDeck />} />
+        <Route path = '/TestSingleSet' element = {<SingleSet />} />
+        <Route path= "/TestSingleCardAll" />
+        
         </Routes>
       </BrowserRouter>
     </div>

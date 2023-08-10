@@ -33,9 +33,9 @@ function Sets() {
     return(
         <div>
             <NavBar />
-            <form onSubmit={handleSubmit} className="Deck-search-bar">
+            <form onSubmit={handleSubmit} className="search">
                 <input type="text" placeholder="Search by Card Name or Rarity" />
-                <button type="submit">Search</button>
+                <button className="searchbutton" type="submit">Search</button>
             </form>
             <h1 >DeckTest</h1>
             <h1>Search Bar and Filter</h1>

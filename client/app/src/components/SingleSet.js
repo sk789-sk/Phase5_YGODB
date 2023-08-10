@@ -1,19 +1,24 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
+import { useParams } from "react-router-dom";
 
 function SingleSet() {
 
     const [setData,setSetData] = useState([])
     const [filtertext,setFilterText] = useState('')
 
-    const id = 3
+    const params = useParams();
+    console.log(params.id)
+    console.log('hello')
 
     useEffect( () => {
-        fetch(`/Sets/${id}`)
+        fetch(`/Sets/${params.id}`)
         .then((resp) => resp.json())
         .then((data) => setSetData(data))
     }, [])
+
+    console.log(setData)
 
     const filteredcards = setData.filter( (card) => {
         return(card.name.toLowerCase().includes(filtertext.toLowerCase())

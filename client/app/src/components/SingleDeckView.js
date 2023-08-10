@@ -1,21 +1,23 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
-import Decks from "./Decks";
+import { resolvePath, useParams } from "react-router-dom";
 
-function SingleDeck ({id}) {
+function SingleDeck () {
 
-    const deckid = 2
+    const params = useParams();
 
     const [cardsInDeck,setCardsInDeck] = useState([])
     const [deckName,setDeckName] = useState('')
     const [deckCreater,setDeckCreater] = useState('')
 
     useEffect( () => {
-        fetch(`Deck/${deckid}`)
+        fetch(`/Deck/${params.id}`)
         .then((resp) => resp.json())
         .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name),setDeckCreater(data.user.username)))
     },[])
+
+    console.log(cardsInDeck)
         
     const renderCards = cardsInDeck.map((card) => {
         return <TableRow key = {card.card_id}
@@ -24,19 +26,6 @@ function SingleDeck ({id}) {
 
     console.log(deckName)
     console.log(deckCreater)
-
-    // useEffect( () => {
-    //     fetch(`Deck/${deckid}`)
-    //     .then((resp) => resp.json())
-    //     .then((data) => setCardsInDeck(data))
-    // },[])
-
-    // console.log(cardsInDeck.card_in_deck)
-
-    // // const renderCards = cardsInDeck.card_in_deck.map((card) => {
-    // //     return <TableRow key={card.id} 
-    // //     data = {[ card.card.name, card.card.quantity ]} />
-    // // })
 
     return (
         <div>

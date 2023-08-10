@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
+import { Link } from "react-router-dom";
 
 function Inventory({user}){
 
@@ -107,11 +108,12 @@ function Inventory({user}){
     return(
         <div>
             <NavBar />
-            <form onSubmit={handleSearch} className="search-bar">
+            <form onSubmit={handleSearch} className="search">
                 <input type="text" placeholder="Search..." />
-                <button type="submit">Search</button>
+                <button className="searchbutton" type="submit">Search</button>
             </form>
             <h1>Search Bar and Filter</h1>
+
             <table>
                 <tbody>
                 <tr>
@@ -148,7 +150,7 @@ function Inventory({user}){
                 </label>
                 <button type="submit">Submit</button>
             </form>
-        <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" />
+        <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
         </div>
     )
 

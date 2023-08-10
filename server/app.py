@@ -140,7 +140,10 @@ def logIn():
 @app.route('/cards') #Load all card info. Ideally we only need the info of 1 card and not reprints/etc so just the first instance of the name. Only 1 name instead of loading 5682 copies of DMG
 def cards():
     cardinfo = db.session.query(Card).all()
+    
+    
     card_list = []
+    
     for card in cardinfo:
         card_list.append(card.to_dict(rules=('-card_in_deck','-card_in_inventory','-card_on_banlist','-releaseSet')))
     response = make_response(
@@ -239,16 +242,34 @@ def singleDeck(id):
             deck.to_dict(),200)
     else:
         response = make_response(
-            {'Error': 'Deck does not exist'},404
+            {},404
         )
     return response
 
-@app.route('/Decks/<int:id>', methods = (['GET']))
+@app.route('/Decks/<int:id>', methods = (['GET','POST']))
 def all_user_deck(id): #'all decks a user has'. 'Can create a deck id and then go to that deck'
 
 
     decks_all = Deck.query.filter(Deck.user_id == id).all()
     
+    if request.method == 'POST': 
+            
+            data = request.get_json()
+
+            try:
+                new_deck = Deck(
+                    name = data['name'],
+                    isPublic = data['isPublic'],
+                    user_id = data['user_id']
+                )
+
+                db.session.add(new_deck)
+                db.session.commit()
+                response = make_response(new_deck.to_dict(),200)
+            
+            except ValueError:
+                response = make_response({"errors":"validation error"},400)
+
     if decks_all:
 
         if request.method == 'GET':   
@@ -298,9 +319,9 @@ def one_user_deck_id(id,deck_name): #Singular Deck for an owner by name is this 
 
 @app.route('/Decks/<int:id>/<int:deckid>', methods = ['GET','PATCH','POST','DELETE'])
 def one_user_deck_name(id,deckid): #Singular Deck for an owner
-    deck = Deck.query.filter((Deck.user_id==id),(Deck.name==deckid)).first()
-    response = make_response(deck.to_dict(),200)
-    
+
+    deck = Deck.query.filter((Deck.user_id==id),(Deck.id==deckid)).first()
+
     if deck:
 
         if request.method == 'GET':
@@ -313,7 +334,7 @@ def one_user_deck_name(id,deckid): #Singular Deck for an owner
                 new_deck = Deck(
                     name = data['name'],
                     isPublic = data['isPublic'],
-                    user_id = id #Self id
+                    user_id = data['user_id']
                 )
 
                 db.session.add(new_deck)
@@ -341,6 +362,7 @@ def one_user_deck_name(id,deckid): #Singular Deck for an owner
                     )
 
         elif request.method == 'DELETE':
+
             #Delete the cards associated with the deck
             cards = CardinDeck.query.filter(CardinDeck.deck_id==deckid).all()
             
@@ -348,70 +370,78 @@ def one_user_deck_name(id,deckid): #Singular Deck for an owner
                 db.session.delete(card)
 
             db.session.delete(deck)
-            db.session.commit
+            db.session.commit()
 
-            make_response = response({},204)
+            response = make_response({},204)
     else:
         response = make_response({'error':'deck doesnt exist'},404)
     return response
+@app.route('/cardindeck', methods = ['POST'])
+def cardindeckpost():
 
+    if request.method == 'POST':
+            
+        data = request.get_json()
+            
+        try:
+            new_card_in_deck = CardinDeck(
+                deck_id = data['deck_id'],
+                card_id = data['card_id'],
+                quantity = data['quantity']
+            )
 
-@app.route('/cardindeck/<int:deck_id>/<int:card_id>',methods = ['GET','PATCH,POST','DELETE'])
+            db.session.add(new_card_in_deck)
+            db.session.commit()
+            response = make_response(new_card_in_deck.to_dict(),200)
+            
+        except ValueError:
+           response = make_response(
+           { "errors": ["validation errors"] },
+            400
+        )
+    else:
+        response = make_response({},404)
+    return response
 
-
+@app.route('/cardindeck/<int:id>',methods = ['GET','PATCH','POST','DELETE'])
 #Adjust the cards in a deck. User should only be able to edit cards in their own deck need to add auth for that. a few things need auth so need to look into that now. Visually If i remove something from the deck I would want to see that reflected right away Only when saving do we commit all the changes to the DB. What is changing on the DB is deck_id and associated card_id
+def cardindeck(id):
 
-def cardindeck(deck_id,card_id, methods = ['GET','PATCH','POST','DELETE']):
-
-    card = CardinDeck.query.filter(CardinDeck.deck_id==deck_id,CardinDeck.card_id==card_id).first()
+    card = CardinDeck.query.filter(CardinDeck.id==id).first()
     print(card)
-    
+
     if card: 
         if request.method == 'GET':
             response = make_response(card.to_dict(),200)
 
         elif request.method == 'PATCH':
             data = request.get_json()
+            print(data)
 
             try:
                 for key in data:
                     setattr(card,key,data[key])
-                db.sesssion.add(card)
-                db.session.commit()
+
+
+                    db.session.add(card)
+                    db.session.commit()  
 
                 response = make_response(card.to_dict(),202)
-
-            except:
+                print('setattr succ')
+            except ValueError:
+                 print('setattr failed')
                  response = make_response(
                     { "errors": ["validation errors"] },
                     400
                     )
-        
-        elif request.method == 'POST':
-            data = request.get_json()
-            
-            try:
-                new_card_in_deck = CardinDeck(
-                    deck_id = data['deck_id'],
-                    card_id = data['card_id'],
-                    quantity = data['quantity']
-                )
-                db.session.add(new_card_in_deck)
-                db.session.commit
-                response = make_response(new_card_in_deck.to_dict(),200)
-            except ValueError:
-                response = make_response(
-                { "errors": ["validation errors"] },
-                400
-            )
 
         elif request.method == 'DELETE': #I dont know if this is what I would really want.
             db.session.delete(card)
-            db.session.commit
+            db.session.commit()
             response = make_response ( {},204)
             
     else:
-        response = 'haha'
+        response = make_response({},404)
     return response
 
 #Inventory.
