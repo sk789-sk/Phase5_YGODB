@@ -114,8 +114,6 @@ class Card(db.Model, SerializerMixin):
     set_id = db.Column(db.String)
    
     #ForeignKeys
-
-    releasedSet = db.Column(db.Integer, db.ForeignKey('ReleaseSets.id')) 
     
     #relationships
     
@@ -124,13 +122,17 @@ class Card(db.Model, SerializerMixin):
     card_in_deck = db.relationship("CardinDeck",backref = "card") 
     
     card_on_banlist = db.relationship('BanlistCard',backref='card')
+
+    card_in_set = db.relationship('CardinSet', backref = 'card')
     
     #validations
+    #Cards should have a name, and a set 
+
     #Serializer Rules
     serialize_rules = ('-card_in_inventory.card','-card_in_deck.card','-card_in_inventory.user','-card_on_banlist.card','-releaseSet.cards_in_set')
 
     def __repr__(self):
-        return f'detailed information can be found at endpoint {self.ygopro_id}'
+        return f'detailed information can be found at endpoint {self.name}'
 
 class Deck(db.Model, SerializerMixin):
     __tablename__ = 'Decks'
@@ -143,10 +145,7 @@ class Deck(db.Model, SerializerMixin):
     #ForeignKeys
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
 
-
     #relationships
-
-    #need relationship between deck and cards in deck then
 
     card_in_deck = db.relationship('CardinDeck', backref = 'deck')
 
@@ -167,6 +166,16 @@ class CardinDeck(db.Model, SerializerMixin):
     deck_id = db.Column(db.Integer, db.ForeignKey('Decks.id'))
     card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
 
+    #Validation
+    #At its core can not have more than 3 of a card. If we reference accross a banlist that should be done at a higher level since banlist change and etc.
+
+
+    @validates('quantity')
+    def validate_quantity(self,key,quantity):
+        if  0 < int(quantity) <=3:
+            return quantity
+        raise ValueError
+
     #SeralizerRules
 
     serialize_rules = ('-deck.card_in_deck','-card.card_in_deck','-card.card_in_inventory','-card.releaseSet')
@@ -183,7 +192,9 @@ class ReleaseSet(db.Model, SerializerMixin):
     #ForeignKeys
 
     #relationships
-    cards_in_set = db.relationship('Card',backref='releaseSet')
+
+    card_in_set = db.relationship('CardinSet', backref = 'releaseSet')
+
 
     #validations
     #Serializer Rules
@@ -192,8 +203,28 @@ class ReleaseSet(db.Model, SerializerMixin):
 
     #repr
     def __reper__(self):
-        return f'f{self.name} was released on {self.releaseDate}'
+        return f'{self.name} was released on {self.releaseDate}'
     
+
+class CardinSet(db.Model,SerializerMixin):
+    __tablename__ = 'CardsinSets'
+    #table_columns
+    id = db.Column(db.Integer, primary_key = True)
+    card_code = db.Column(db.String)
+    rarity = db.Column(db.String)
+
+    #ForeignKeys
+    set_id = db.Column(db.Integer, db.ForeignKey('ReleaseSetss.id'))
+    card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
+
+    #Validations
+    #Serializer Rules
+
+    def __repr__(self):
+        return f'{self.card_id} released in {self.set_id} with a rarity of {self.rarity}'
+
+
+
 #TODOLater if Time permits
 
 

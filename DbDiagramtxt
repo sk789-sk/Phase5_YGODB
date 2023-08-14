@@ -15,6 +15,7 @@ Table Inventory {
   user_id UserFK
   card_id CardFK
   quantity integer
+  condition varchar
   created_at timestamp
 }
 
@@ -24,14 +25,23 @@ Table Card {
   atk integer
   def integer
   level integer
-  type varchar
+  isEffect boolean
+  isTuner boolean
+  isFlip boolean
+  isSpirit boolean
+  isUnion boolean
+  isGemini boolean
+  isPendulum boolean
+  isRitual boolean
+  isToon boolean
+  isFusion boolean
+  isSynchro boolean
+  isXYZ boolean
+  card_type varchar
+  card_race varchar
   attribute varchar
-  playableDate datetime
-  release_set varchar
-  Legal_set varchar
-  isFirstEd boolean
-  card_image varcharpcloc
-  rarity varchar
+  Legal_date varchar
+  card_image varchar
 }
 
 Table Decks {
@@ -55,16 +65,21 @@ Table Banlist {
   end_date datetime
 }
 
-Table Rarity {
-  id integer pk
-  name varchar
-}
 
 Table ReleaseSets {
   id integer pk
   name varchar
   releaseDate datetime
   card_count integer
+  set_code varchar
+}
+
+Table CardinSet {
+  id integer pk
+  card_id CardFK
+  set_id SetFK
+  set_code varchar
+  Rarity varchar
 }
 
 Table CardsinDeck {
@@ -84,7 +99,6 @@ Ref: "Decks"."user_id" < "User"."id"
 
 
 
-Ref: "ReleaseSets"."name" < "Card"."release_set"
 
 Ref: "Banlist"."id" < "BanlistCard"."banlist_id"
 
@@ -93,3 +107,9 @@ Ref: "Decks"."id" < "CardsinDeck"."Deck_id"
 Ref: "CardsinDeck"."Card_id" < "Card"."id"
 
 Ref: "BanlistCard"."card_ID" < "Card"."id"
+
+Ref: "ReleaseSets"."id" < "CardinSet"."set_id"
+
+
+
+Ref: "Card"."id" < "CardinSet"."card_id"
