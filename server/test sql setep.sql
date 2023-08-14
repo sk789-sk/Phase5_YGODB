@@ -42,4 +42,5 @@ DELETe FRom CardsinDecks;
 DELETE FROM Decks;
 
 DELETE FROM Users WHERE id>1;
+DELETE FROM CardsinDecks Where card_id>2100;
 

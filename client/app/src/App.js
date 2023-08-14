@@ -12,6 +12,7 @@ import Sets from "./components/Sets";
 import SingleSet from "./components/SingleSet";
 import UserProfile from "./components/UserProfile";
 import NavBar from "./components/NavBar";
+export const Context = React.createContext()
 
 //No index over the app? might just have to make not included in template?
 
@@ -19,7 +20,7 @@ import NavBar from "./components/NavBar";
 function App() {
   // Code goes here!
 
-  {}
+  const [signedIn,setSignedIn] = useState(false)
 
 
     const [user, setUser] = useState({ 'username': 'DEFAULT', 'id': 1}) 

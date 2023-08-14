@@ -22,7 +22,7 @@ function Decks () {
     },[])
 
     const publicDecks = decks.filter((deck) => {
-      return (deck.isPublic == true)  
+      return (deck.isPublic === true)  
     })
 
     const renderDecks = publicDecks.filter((deck) => {

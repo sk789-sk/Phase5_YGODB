@@ -82,15 +82,13 @@ function Login( {user, setUser}){
             <form onSubmit={handleLogIn} class="loginform">
                 <p>Login</p>
                 <div class="group">
-                    <input required="true" class="main-input" type="text" />
+                    <input placeholder="Username" required="true" class="main-input" type="text" />
                     <span class="highlight-span"></span>
-                    <label class="label-username">Username</label>
                 </div>
                 <div class="container-1">
                     <div class="group">
-                    <input htmlFor="password" required="true" class="main-input" type="text" />
+                    <input placeholder="password" htmlFor="password" required="true" class="main-input" type="text" />
                     <span class="highlight-span"></span>
-                    <label class="label-username">password</label>
                     </div>
                 </div>
                 <button class="submit">Login</button>
@@ -119,15 +117,13 @@ function Login( {user, setUser}){
             <form onSubmit={handleRegister} class="loginform">
                 <p>Register</p>
                 <div class="group">
-                    <input required="true" class="main-input" type="text" />
+                    <input placeholder="Username" required="true" class="main-input" type="text" />
                     <span class="highlight-span"></span>
-                    <label class="label-username">Username</label>
                 </div>
                 <div class="container-1">
                     <div class="group">
-                    <input htmlFor="password" required="true" class="main-input" type="text" />
+                    <input placeholder="password" htmlFor="password" required="true" class="main-input" type="text" />
                     <span class="highlight-span"></span>
-                    <label class="label-username">password</label>
                     </div>
                 </div>
                 <button class="submit">Sign Up</button>
