@@ -192,7 +192,7 @@ def sets():
     setinfo = db.session.query(ReleaseSet).all()
     set_list = []
     for pack in setinfo:
-        set_list.append(pack.to_dict(only=('name','id','card_count','releaseDate','set_code')))
+        set_list.append(pack.to_dict())   #only=('name','id','card_count','releaseDate','set_code'
     response = make_response(
         jsonify(set_list),200
     )
@@ -201,14 +201,18 @@ def sets():
 @app.route('/Sets/<int:id>')
 def sets_by_id(id):
     #need to get the card info for a set
-    card_list = Card.query.filter(Card.releasedSet == id).all()
-    output_cards = []
-    for card in card_list:
-        output_cards.append(card.to_dict(only=('name','set_id','rarity','releaseSet.name','releaseSet.releaseDate')))
-    response = make_response(
-        jsonify(output_cards),200
-    )
-    return response
+    #Get all the card info out of a set
+
+
+    # card_list = Card.query.filter(Card.releasedSet == id).all()
+    # output_cards = []
+    # for card in card_list:
+    #     output_cards.append(card.to_dict(only=('name','set_id','rarity','releaseSet.name','releaseSet.releaseDate')))
+    # response = make_response(
+    #     jsonify(output_cards),200
+    # )
+    # return response
+    return 'haha'
 
 @app.route('/Sets/<string:name>') 
 def sets_by_name(name):
@@ -218,8 +222,23 @@ def sets_by_name(name):
 
     response = make_response(jsonify(card_list.to_dict()),200)
     # only=('cards_in_set[only select terms]','name','card_count','releaseDate','setCode)
+    return response
+
+@app.route('/CardinSet')
+def card_in_sets():
+    cards = db.session.query(CardinSet).all()
+
+    card_list = []
+    for card in cards:
+        card_list.append(card.to_dict())
+    response = make_response(
+        jsonify(card_list),200
+    )
 
     return response
+
+
+
 
 #Decks.
 #Global Deck, User all decks, user 1 deck

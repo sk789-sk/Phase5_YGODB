@@ -110,8 +110,7 @@ class Card(db.Model, SerializerMixin):
     card_attribute = db.Column(db.String) #Null for spells/traps
     LegalDate = db.Column(db.String) #first printing or when the card became legal
     card_image = db.Column(db.String) #Reference to location on disk
-    rarity = db.Column(db.String) #Should there be a table list of rarities, will there be a use for that table not sure yet
-    set_id = db.Column(db.String)
+
    
     #ForeignKeys
     
@@ -129,7 +128,7 @@ class Card(db.Model, SerializerMixin):
     #Cards should have a name, and a set 
 
     #Serializer Rules
-    serialize_rules = ('-card_in_inventory.card','-card_in_deck.card','-card_in_inventory.user','-card_on_banlist.card','-releaseSet.cards_in_set')
+    serialize_rules = ('-card_in_inventory.card','-card_in_deck.card','-card_in_inventory.user','-card_on_banlist.card','-card_in_set.card')
 
     def __repr__(self):
         return f'detailed information can be found at endpoint {self.name}'
@@ -214,11 +213,13 @@ class CardinSet(db.Model,SerializerMixin):
     rarity = db.Column(db.String)
 
     #ForeignKeys
-    set_id = db.Column(db.Integer, db.ForeignKey('ReleaseSetss.id'))
+    set_id = db.Column(db.Integer, db.ForeignKey('ReleaseSets.id'))
     card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
 
     #Validations
     #Serializer Rules
+
+    serialize_rules = ('-card.card_in_set','-releaseSet.card_in_set')
 
     def __repr__(self):
         return f'{self.card_id} released in {self.set_id} with a rarity of {self.rarity}'

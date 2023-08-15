@@ -52,7 +52,8 @@ def get_release_sets():
     print(error_list)
     return outlist
 
-
+def create_Card():
+    pass
 
 def create_Normal_Monster_Cards():
     
@@ -62,7 +63,7 @@ def create_Normal_Monster_Cards():
     card_info = response.json()
     outlist = []
 
-    i = 0
+    i = 1
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
 
