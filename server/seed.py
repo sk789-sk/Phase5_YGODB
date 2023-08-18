@@ -61,27 +61,24 @@ def create_Normal_Monster_Cards():
     
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 1
+    i = 0
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
+            
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -92,9 +89,6 @@ def create_Normal_Monster_Cards():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = False,
                     isTuner = False,
                     isFlip = False,
@@ -109,10 +103,25 @@ def create_Normal_Monster_Cards():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 
 def create_normal_Tuner_Monster():
@@ -1901,7 +1910,12 @@ if __name__ == '__main__':
 
         # User.query.delete()
         ReleaseSet.query.delete()
+
+
         Card.query.delete()
+        # CardinDeck.query.delete()
+        CardinSet.query.delete()
+        # Inventory.query.delete()
 
         print("Seeding activities...")
         # usertest = User(
@@ -1918,41 +1932,42 @@ if __name__ == '__main__':
         
         releaseSets = get_release_sets()
         normal_monster_cards = create_Normal_Monster_Cards()
-        normal_tuner_monster_cards = create_normal_Tuner_Monster()
-        effect_monster_cards = create_effect_Monster()
-        tuner_monster_cards = create_tuner_Monster()
-        flip_effect_monster = create_Flip_Effect_Monster()
-        spirit_monster = create_Spirit_Monster()
-        union_effect_monster = create_UnionEffectMonster()
-        gemini_monsters = create_Gemini_Monster()
-        pendulum_effect_monster = create_Pendulum_Effect_Monster()
-        pendulum_normal_monster = create_Pendulum_Normal_Monster()
-        pendulum_tuner_effect_monster = create_Pendulum_Tuner_Effect_Monster()
-        ritual_monster = create_Ritual_Monster()
-        ritual_effect_monster = create_Ritual_Effect_Monster()
-        toon_monster = create_Toom_Monster()
-        fusion_monsters = create_Fusion_Monster()
-        synchro_monster = create_Synchro_Monster()
-        synchro_tuner_monster = create_Synchro_Tuner_Monster()
-        synchro_pendulum_effect_monster = create_Synchro_Pendulum_Effect_Monster()
-        XYZ_monster = create_XYZ_Monster()
-        XYZ_pendulum = create_XYZ_Pendulum_Monster()
-        Link_Monster = create_Link_Monster()
-        pendulum_flip_effect = create_Pendulum_Flip_Monster()
-        pendulum_Effect_Fusion_Monster = create_Pendulum_Effect_Fusion_Monster()
-        normal_spell = create_normal_Spell()
-        field_spell = create_field_Spell()
-        equip_spell = create_equip_Spell()
-        continous_spell = create_Continuous_Spell()
-        quickplay_spell = create_Quick_Spell()
-        ritual_spell = create_Ritual_Spell()
-        normal_trap = create_normal_Trap()
-        continous_trap = create_continuous_Trap()
-        counter_trap = create_counter_Trap()
+        # normal_tuner_monster_cards = create_normal_Tuner_Monster()
+        # effect_monster_cards = create_effect_Monster()
+        # tuner_monster_cards = create_tuner_Monster()
+        # flip_effect_monster = create_Flip_Effect_Monster()
+        # spirit_monster = create_Spirit_Monster()
+        # union_effect_monster = create_UnionEffectMonster()
+        # gemini_monsters = create_Gemini_Monster()
+        # pendulum_effect_monster = create_Pendulum_Effect_Monster()
+        # pendulum_normal_monster = create_Pendulum_Normal_Monster()
+        # pendulum_tuner_effect_monster = create_Pendulum_Tuner_Effect_Monster()
+        # ritual_monster = create_Ritual_Monster()
+        # ritual_effect_monster = create_Ritual_Effect_Monster()
+        # toon_monster = create_Toom_Monster()
+        # fusion_monsters = create_Fusion_Monster()
+        # synchro_monster = create_Synchro_Monster()
+        # synchro_tuner_monster = create_Synchro_Tuner_Monster()
+        # synchro_pendulum_effect_monster = create_Synchro_Pendulum_Effect_Monster()
+        # XYZ_monster = create_XYZ_Monster()
+        # XYZ_pendulum = create_XYZ_Pendulum_Monster()
+        # Link_Monster = create_Link_Monster()
+        # pendulum_flip_effect = create_Pendulum_Flip_Monster()
+        # pendulum_Effect_Fusion_Monster = create_Pendulum_Effect_Fusion_Monster()
+        # normal_spell = create_normal_Spell()
+        # field_spell = create_field_Spell()
+        # equip_spell = create_equip_Spell()
+        # continous_spell = create_Continuous_Spell()
+        # quickplay_spell = create_Quick_Spell()
+        # ritual_spell = create_Ritual_Spell()
+        # normal_trap = create_normal_Trap()
+        # continous_trap = create_continuous_Trap()
+        # counter_trap = create_counter_Trap()
 
 
         db.session.add_all(releaseSets)
-        db.session.add_all(normal_monster_cards)
+        db.session.add_all(normal_monster_cards[0]) #Card info
+        db.session.add_all(normal_monster_cards[1]) #releaseCards info
         # db.session.add_all(normal_tuner_monster_cards)
         # db.session.add_all(effect_monster_cards)
         # db.session.add_all(tuner_monster_cards)
