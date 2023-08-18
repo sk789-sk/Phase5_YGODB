@@ -52,8 +52,8 @@ def get_release_sets():
     print(error_list)
     return outlist
 
-def create_Card():
-    pass
+
+i = 0
 
 def create_Normal_Monster_Cards():
     
@@ -64,7 +64,6 @@ def create_Normal_Monster_Cards():
     card_outlist = []
     releaseCard_outlist = []
 
-    i = 0
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
 
@@ -77,6 +76,77 @@ def create_Normal_Monster_Cards():
         card_attribute_card = card['attribute']
         card_image_card = card['card_images'][0]["image_url"]
             
+        if "card_sets" in card:
+            try:
+                a = Card(
+                    name = name_card,
+                    description = description_card,
+                    attack = attack_card,
+                    defense = defense_card,
+                    level = level_card,
+                    card_type = 'Monster',
+                    card_race = card_race_card,
+                    card_attribute = card_attribute_card,
+                    card_image = card_image_card,
+                    isEffect = False,
+                    isTuner = False,
+                    isFlip = False,
+                    isSpirit = False,
+                    isUnion = False,
+                    isGemini = False,
+                    isPendulum = False,
+                    isRitual = False,
+                    isToon = False,
+                    isFusion = False,
+                    isSynchro = False,
+                    isXYZ = False,
+                    isLink = False
+                )
+                global i 
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
+def create_normal_Tuner_Monster():
+
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Normal%20Tuner%20Monster'
+
+    response = requests.get(url)
+    card_info = response.json()
+    card_outlist = []
+    releaseCard_outlist = []
+
+    global i
+
+    for card in card_info['data']: #now each card is a dict i think
+        #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
+
         if "card_sets" in card:
             try:
                 a = Card(
@@ -123,65 +193,8 @@ def create_Normal_Monster_Cards():
                     continue
     return card_outlist,releaseCard_outlist
 
-
-def create_normal_Tuner_Monster():
-
-    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Normal%20Tuner%20Monster'
-
-    response = requests.get(url)
-    card_info = response.json()
-    outlist = []
-
-    i = 0
-    for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
-
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
-                a = Card(
-                    name = name_card,
-                    description = description_card,
-                    attack = attack_card,
-                    defense = defense_card,
-                    level = level_card,
-                    card_type = 'Monster',
-                    card_race = card_race_card,
-                    card_attribute = card_attribute_card,
-                    card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
-                    isEffect = False,
-                    isFlip = False,
-                    isTuner = True,
-                    isSpirit = False,
-                    isUnion = False,
-                    isGemini = False,
-                    isPendulum = False,
-                    isRitual = False,
-                    isToon = False,
-                    isFusion = False,
-                    isSynchro = False,
-                    isXYZ = False,
-                    isLink = False
-                )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+            
+            
 
 def create_effect_Monster():
 
@@ -1932,7 +1945,7 @@ if __name__ == '__main__':
         
         releaseSets = get_release_sets()
         normal_monster_cards = create_Normal_Monster_Cards()
-        # normal_tuner_monster_cards = create_normal_Tuner_Monster()
+        normal_tuner_monster_cards = create_normal_Tuner_Monster()
         # effect_monster_cards = create_effect_Monster()
         # tuner_monster_cards = create_tuner_Monster()
         # flip_effect_monster = create_Flip_Effect_Monster()
@@ -1968,7 +1981,10 @@ if __name__ == '__main__':
         db.session.add_all(releaseSets)
         db.session.add_all(normal_monster_cards[0]) #Card info
         db.session.add_all(normal_monster_cards[1]) #releaseCards info
-        # db.session.add_all(normal_tuner_monster_cards)
+        
+        db.session.add_all(normal_tuner_monster_cards[0])
+        db.session.add_all(normal_tuner_monster_cards[1])
+        
         # db.session.add_all(effect_monster_cards)
         # db.session.add_all(tuner_monster_cards)
         # db.session.add_all(flip_effect_monster)
