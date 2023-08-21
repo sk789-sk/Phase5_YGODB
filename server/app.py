@@ -11,7 +11,7 @@ import os
 
 # Local imports
 from config import app, db, api
-from models import User, Card, Deck, Banlist, BanlistCard 
+from models import User, Card, Deck, CardinSet, Banlist, BanlistCard
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.environ.get(
@@ -29,6 +29,12 @@ db.init_app(app)
 api = Api(app)
 
 #Home Page
+
+#Convert for loops into list comprehensions 
+
+
+
+
 
 @app.route('/')
 def home():
@@ -140,19 +146,57 @@ def logIn():
 # 1) view All cards/card search bar Need all card info at once here 
 # 2) View a specific card. This will have detailed information such as description all sets and rarities it has been released in.
 
+def paginate(query,page, per_page):
+    return query.paginate(page=page,per_page=per_page) #these all have to be deinfed with keyword only?
 
 
 @app.route('/cards') #Load all card info. Ideally we only need the info of 1 card and not reprints/etc so just the first instance of the name. Only 1 name instead of loading 5682 copies of DMG
 def cards():
-    cardinfo = db.session.query(Card).all()
+    cardinfo = db.session.query(Card)   #this returns a query object now insteal of a list of all elements yes?
+
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page',default=20,type=int)
     
-    
+    paginated_cards = paginate(cardinfo,page,per_page) 
+
+    cards = paginated_cards.items   #this is an instance of each card basically 1 row in table or 1 object
+
     card_list = []
-    
-    for card in cardinfo:
+
+    for card in paginated_cards.items:
         card_list.append(card.to_dict(rules=('-card_in_deck','-card_in_inventory','-card_on_banlist','-releaseSet')))
+
+    response_data = {
+        'cards' : card_list,
+        'page' : page,
+        'per_page': per_page,
+        'total_pages':paginated_cards.pages
+    }
+
+
+    print(paginated_cards.items) #printing out the repr for each item 
+    print(paginated_cards.pages)
+
+
+
+    # # print(cardinfo)
+    # # print(page)
+    # # print(per_page) 
+    
+    # card_list = []
+    
+    # for card in cardinfo:
+    #     card_list.append(card.to_dict(rules=('-card_in_deck','-card_in_inventory','-card_on_banlist','-releaseSet')))
+    
+
+    
+    #Need to add additional info here the page, per page and total pages information so c
+
+    print(card_list)
+
     response = make_response(
-        jsonify(card_list),200)
+        jsonify(response_data),200)
+    
     return response
 
 
@@ -200,19 +244,14 @@ def sets():
 
 @app.route('/Sets/<int:id>')
 def sets_by_id(id):
-    #need to get the card info for a set
-    #Get all the card info out of a set
+    #For this we need to get the set information and all the card information
+    cards = CardinSet.query.filter(CardinSet.set_id==id).all() 
+    outlist = []
+    for card in cards:
+        outlist.append(card.to_dict())
+    response = make_response(jsonify(outlist),200)
 
-
-    # card_list = Card.query.filter(Card.releasedSet == id).all()
-    # output_cards = []
-    # for card in card_list:
-    #     output_cards.append(card.to_dict(only=('name','set_id','rarity','releaseSet.name','releaseSet.releaseDate')))
-    # response = make_response(
-    #     jsonify(output_cards),200
-    # )
-    # return response
-    return 'haha'
+    return response
 
 @app.route('/Sets/<string:name>') 
 def sets_by_name(name):

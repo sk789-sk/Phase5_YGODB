@@ -11,7 +11,7 @@ function Cards(){
     useEffect( () => {
         fetch('/cards')
         .then (resp => resp.json())
-        .then ((data) =>setCards(data))
+        .then ((data) =>setCards(data.cards))
     },[])
 
     console.log(cards)
