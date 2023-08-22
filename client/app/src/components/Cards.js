@@ -1,20 +1,28 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
+import PaginationBar from "./PaginationBar";
 
 
 function Cards(){ 
    
     const [cards,setCards] = useState([])
     const [filtertext,setFilterText] = useState('')
+    const [currentPage,setCurrentPage] = useState(1)
+    const [totalPage,setTotalPages] = useState(1)
+    const [cardsPerPage,setCardsPerPage] = useState(20)
 
     useEffect( () => {
         fetch('/cards')
         .then (resp => resp.json())
-        .then ((data) =>setCards(data.cards))
+        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages,setCardsPerPage(data.per_page)))) //data needs to be changed to just the cards in the response now and disregard the page totals
     },[])
 
+
+
     console.log(cards)
+    console.log(totalPage)
+    console.log(currentPage)
 
 
     const filteredcards = cards.filter(card => {
@@ -41,6 +49,7 @@ function Cards(){
             </form>
 
             <h1 className="header">Card Database</h1>
+            <PaginationBar />
             <table className="tables">
                 <tbody>
                 <tr>
