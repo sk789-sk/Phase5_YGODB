@@ -11,19 +11,13 @@ function Cards(){
     const [currentPage,setCurrentPage] = useState(1)
     const [totalPage,setTotalPages] = useState(1)
     const [cardsPerPage,setCardsPerPage] = useState(20)
+    const [totalCards,setTotalCards] = useState(0)
 
     useEffect( () => {
         fetch('/cards')
         .then (resp => resp.json())
-        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages,setCardsPerPage(data.per_page)))) //data needs to be changed to just the cards in the response now and disregard the page totals
+        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page,setTotalCards(data.total_items)))) //data needs to be changed to just the cards in the response now and disregard the page totals
     },[])
-
-
-
-    console.log(cards)
-    console.log(totalPage)
-    console.log(currentPage)
-
 
     const filteredcards = cards.filter(card => {
         return (card.name.toLowerCase().includes(filtertext.toLowerCase()))}
@@ -49,7 +43,7 @@ function Cards(){
             </form>
 
             <h1 className="header">Card Database</h1>
-            <PaginationBar />
+            <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPage} cardsPerPage={cardsPerPage} totalCards={totalCards} setCards={setCards} path={'/cards'}/>
             <table className="tables">
                 <tbody>
                 <tr>

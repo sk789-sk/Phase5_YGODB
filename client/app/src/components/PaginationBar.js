@@ -5,27 +5,19 @@ import { Link } from "react-router-dom";
 import TableRowLink from "./Tablerow_and_Link";
 import TableRowEdit from "./TableRowLinkEdit";
 
-function PaginationBar (){
-
-    //The bar would need to know what the current page is  
-    const [currentPage,setCurrentPage] = useState(1)
-    const lastPage = 100
-    const totalCards = 100
-    const cardsPerPage = 20
-
+function PaginationBar ({currentPage,setCurrentPage,lastPage,cardsPerPage,totalCards,setCards, path}){
     //7 buttons 2 past page 2 forward page 1 previous page 1 next page 1 first page 1 last page
     //1 "button" for the current page
 
     function handleClick(e){
-        console.log(e.target.value)
 
         const offset = parseInt(e.target.value)
-
-        let newPage = currentPage + offset
-        console.log(currentPage)
-        console.log(offset)
-        console.log(newPage)
-
+        let newPage = currentPage + offset      
+        if (newPage !== currentPage){
+            fetch(`${path}?page=${newPage}`)
+            .then(resp => resp.json())
+            .then((data) => (setCards(data.cards)))
+        }
         setCurrentPage(newPage)
         //When we click on the button, we get the page value listed on the button
         //We then reset the rendered cards with the apppropriate data from the api call
@@ -34,7 +26,7 @@ function PaginationBar (){
 
     return(
         <div className="pagination-bar">
-            <p>pagination part</p>
+            <p>Pag Nav Bar</p>
 
             <button disabled={currentPage===1} onClick={handleClick} value={1-currentPage}>First </button>
 

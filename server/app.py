@@ -159,7 +159,7 @@ def cards():
     
     paginated_cards = paginate(cardinfo,page,per_page) 
 
-    cards = paginated_cards.items   #this is an instance of each card basically 1 row in table or 1 object
+    #cards = paginated_cards.items   #this is an instance of each card basically 1 row in table or 1 object
 
     card_list = []
 
@@ -170,29 +170,9 @@ def cards():
         'cards' : card_list,
         'page' : page,
         'per_page': per_page,
-        'total_pages':paginated_cards.pages
+        'total_pages':paginated_cards.pages,
+        'total_items':paginated_cards.total
     }
-
-
-    print(paginated_cards.items) #printing out the repr for each item 
-    print(paginated_cards.pages)
-
-
-
-    # # print(cardinfo)
-    # # print(page)
-    # # print(per_page) 
-    
-    # card_list = []
-    
-    # for card in cardinfo:
-    #     card_list.append(card.to_dict(rules=('-card_in_deck','-card_in_inventory','-card_on_banlist','-releaseSet')))
-    
-
-    
-    #Need to add additional info here the page, per page and total pages information so c
-
-    print(card_list)
 
     response = make_response(
         jsonify(response_data),200)
