@@ -152,12 +152,29 @@ def paginate(query,page, per_page):
 
 @app.route('/cards') #Load all card info. Ideally we only need the info of 1 card and not reprints/etc so just the first instance of the name. Only 1 name instead of loading 5682 copies of DMG
 def cards():
-    cardinfo = db.session.query(Card)   #this returns a query object now insteal of a list of all elements yes?
-
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page',default=20,type=int)
+
+    #basic filter terms
+    card_name = request.args.get('search', type=str)
+    card_type = request.args.get('type', type=str)
     
-    paginated_cards = paginate(cardinfo,page,per_page) 
+    if card_type and card_name:
+        cardinfo = Card.query.filter(Card.card_type.ilike(card_type),Card.name.contains(card_name))
+        paginated_cards = paginate(cardinfo,page,per_page)
+    elif card_name:
+        print(card_name)
+        cardinfo = Card.query.filter(Card.name.contains(card_name))
+        paginated_cards = paginate(cardinfo,page,per_page)
+    elif card_type:
+        #if we get either value we have a filter 
+        cardinfo = Card.query.filter(Card.card_type.ilike(card_type))
+        paginated_cards = paginate(cardinfo,page,per_page)
+    else:
+        cardinfo = db.session.query(Card)
+        paginated_cards = paginate(cardinfo,page,per_page) 
+
+
 
     #cards = paginated_cards.items   #this is an instance of each card basically 1 row in table or 1 object
 

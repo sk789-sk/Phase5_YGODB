@@ -1,7 +1,7 @@
 TODO-
 
 - [x] Implement Pagination for Card Database Page
-- [] Add Rest of Cards to Database
+- [x] Add Rest of Cards to Database
 - [] Move Basic Filtering to the Backend
 - [] Create Advanced Filtering Backend
 - [] Create Advanced Filtering UI 
