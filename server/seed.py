@@ -202,27 +202,24 @@ def create_effect_Monster():
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -233,12 +230,9 @@ def create_effect_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
-                    isFlip = False,
                     isTuner = False,
+                    isFlip = False,
                     isSpirit = False,
                     isUnion = False,
                     isGemini = False,
@@ -250,10 +244,26 @@ def create_effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                global i 
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_tuner_Monster():
     
@@ -261,14 +271,14 @@ def create_tuner_Monster():
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
             name_card = card['name']
             description_card = card['desc']
             attack_card = card["atk"]
@@ -278,68 +288,78 @@ def create_tuner_Monster():
             card_race_card = card['race']
             card_attribute_card = card['attribute']
             card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
-                a = Card(
-                    name = name_card,
-                    description = description_card,
-                    attack = attack_card,
-                    defense = defense_card,
-                    level = level_card,
-                    card_type = 'Monster',
-                    card_race = card_race_card,
-                    card_attribute = card_attribute_card,
-                    card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
-                    isEffect = True,
-                    isFlip = False,
-                    isTuner = True,
-                    isSpirit = False,
-                    isUnion = False,
-                    isGemini = False,
-                    isPendulum = False,
-                    isRitual = False,
-                    isToon = False,
-                    isFusion = False,
-                    isSynchro = False,
-                    isXYZ = False,
-                    isLink = False
-                )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+            
+            if "card_sets" in card:
+
+                try:
+                    a = Card(
+                        name = name_card,
+                        description = description_card,
+                        attack = attack_card,
+                        defense = defense_card,
+                        level = level_card,
+                        card_type = 'Monster',
+                        card_race = card_race_card,
+                        card_attribute = card_attribute_card,
+                        card_image = card_image_card,
+                        isEffect = True,
+                        isFlip = False,
+                        isTuner = True,
+                        isSpirit = False,
+                        isUnion = False,
+                        isGemini = False,
+                        isPendulum = False,
+                        isRitual = False,
+                        isToon = False,
+                        isFusion = False,
+                        isSynchro = False,
+                        isXYZ = False,
+                        isLink = False
+                    )
+                    i+=1
+                    card_outlist.append(a)
+                except:
+                    continue
+                
+                for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                    try:
+                        release = CardinSet(
+                            rarity = setname['set_rarity'],
+                            card_code = setname['set_code'],
+                            set_id = set_to_id_map[setname['set_name']],
+                            card_id = i
+                        )
+                        releaseCard_outlist.append(release)
+                    except:  #unreleased info in api also
+                        continue
+    return card_outlist,releaseCard_outlist
 
 def create_Flip_Effect_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Flip%20Effect%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
-    for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
+    global i 
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+    for card in card_info['data']: 
+
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
+            
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -350,9 +370,6 @@ def create_Flip_Effect_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = True,
                     isTuner = False,
@@ -367,24 +384,40 @@ def create_Flip_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+            #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+
+    return card_outlist,releaseCard_outlist
 
 def create_Spirit_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Spirit%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
-
-        i+=1
-        try:
+            #for the released set we will need a dictionary map for name to ID
             name_card = card['name']
             description_card = card['desc']
             attack_card = card["atk"]
@@ -394,68 +427,78 @@ def create_Spirit_Monster():
             card_race_card = card['race']
             card_attribute_card = card['attribute']
             card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
-                a = Card(
-                    name = name_card,
-                    description = description_card,
-                    attack = attack_card,
-                    defense = defense_card,
-                    level = level_card,
-                    card_type = 'Monster',
-                    card_race = card_race_card,
-                    card_attribute = card_attribute_card,
-                    card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
-                    isEffect = True,
-                    isFlip = False,
-                    isTuner = False,
-                    isSpirit = True,
-                    isUnion = False,
-                    isGemini = False,
-                    isPendulum = False,
-                    isRitual = False,
-                    isToon = False,
-                    isFusion = False,
-                    isSynchro = False,
-                    isXYZ = False,
-                    isLink = False
-                )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+
+            if "card_sets" in card:
+                try:
+                    a = Card(
+                        name = name_card,
+                        description = description_card,
+                        attack = attack_card,
+                        defense = defense_card,
+                        level = level_card,
+                        card_type = 'Monster',
+                        card_race = card_race_card,
+                        card_attribute = card_attribute_card,
+                        card_image = card_image_card,
+                        isEffect = True,
+                        isFlip = False,
+                        isTuner = False,
+                        isSpirit = True,
+                        isUnion = False,
+                        isGemini = False,
+                        isPendulum = False,
+                        isRitual = False,
+                        isToon = False,
+                        isFusion = False,
+                        isSynchro = False,
+                        isXYZ = False,
+                        isLink = False
+                    )
+                    i+=1
+                    card_outlist.append(a)
+                except:
+                    continue
+
+                for setname in card['card_sets']:
+                    #Here we put all the releases for them 
+
+                    try:
+                        release = CardinSet(
+                            rarity = setname['set_rarity'],
+                            card_code = setname['set_code'],
+                            set_id = set_to_id_map[setname['set_name']],
+                            card_id = i
+                        )
+                        releaseCard_outlist.append(release)
+                    except:  #unreleased info in api also
+                        continue
+    return card_outlist,releaseCard_outlist
+
 
 def create_UnionEffectMonster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Union%20Effect%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -466,9 +509,6 @@ def create_UnionEffectMonster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -483,37 +523,51 @@ def create_UnionEffectMonster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_Gemini_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Gemini%20Monster'
 
+
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -524,9 +578,6 @@ def create_Gemini_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -541,37 +592,51 @@ def create_Gemini_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
 
 def create_Pendulum_Effect_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Pendulum%20Effect%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -582,9 +647,6 @@ def create_Pendulum_Effect_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -599,37 +661,50 @@ def create_Pendulum_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_Pendulum_Normal_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Pendulum%20Normal%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -640,9 +715,6 @@ def create_Pendulum_Normal_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = False,
                     isFlip = False,
                     isTuner = False,
@@ -657,37 +729,52 @@ def create_Pendulum_Normal_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 def create_Pendulum_Tuner_Effect_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Pendulum%20Tuner%20Effect%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -698,9 +785,6 @@ def create_Pendulum_Tuner_Effect_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = True,
@@ -715,37 +799,52 @@ def create_Pendulum_Tuner_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 def create_Ritual_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Ritual%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -756,9 +855,6 @@ def create_Ritual_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = False,
                     isFlip = False,
                     isTuner = False,
@@ -773,37 +869,52 @@ def create_Ritual_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 def create_Ritual_Effect_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Ritual%20Effect%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -814,9 +925,6 @@ def create_Ritual_Effect_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -831,37 +939,52 @@ def create_Ritual_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 def create_Toom_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Toon%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -872,9 +995,6 @@ def create_Toom_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -889,10 +1009,25 @@ def create_Toom_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_Fusion_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Fusion%20Monster'
@@ -900,27 +1035,25 @@ def create_Fusion_Monster():
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -931,9 +1064,6 @@ def create_Fusion_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -948,38 +1078,51 @@ def create_Fusion_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
 
 def create_Synchro_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Synchro%20Monster'
- 
-
+    
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -990,9 +1133,6 @@ def create_Synchro_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -1007,38 +1147,50 @@ def create_Synchro_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_Synchro_Tuner_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Synchro%20Tuner%20Monster'
  
-
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1049,9 +1201,6 @@ def create_Synchro_Tuner_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = True,
@@ -1066,38 +1215,52 @@ def create_Synchro_Tuner_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 def create_Synchro_Pendulum_Effect_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Synchro%20Pendulum%20Effect%20Monster'
  
-
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1108,9 +1271,6 @@ def create_Synchro_Pendulum_Effect_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -1125,38 +1285,51 @@ def create_Synchro_Pendulum_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
 
 def create_XYZ_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=XYZ%20Monster'
  
-
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1167,9 +1340,6 @@ def create_XYZ_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -1184,38 +1354,52 @@ def create_XYZ_Monster():
                     isXYZ = True,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 def create_XYZ_Pendulum_Monster():
-    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=XYZ%20Pendulum%20Effect%20Monster]'
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=XYZ%20Pendulum%20Effect%20Monster'
  
-
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1226,16 +1410,85 @@ def create_XYZ_Pendulum_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
+                    isEffect = False,
+                    isTuner = False,
+                    isFlip = False,
+                    isSpirit = False,
+                    isUnion = False,
+                    isGemini = False,
+                    isPendulum = False,
+                    isRitual = False,
+                    isToon = False,
+                    isFusion = False,
+                    isSynchro = False,
+                    isXYZ = False,
+                    isLink = False
+                )
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
+
+def create_Link_Monster():
+
+    #Link Levels are stored as level of the card for searching purposes and to not add a new column to db that will be empty for most of the values
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Link%20Monster'
+
+    response = requests.get(url)
+    card_info = response.json()
+    card_outlist = []
+    releaseCard_outlist = []
+
+    global i
+
+    for card in card_info['data']: #now each card is a dict i think
+        #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = None
+        level_card = card['linkval']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+            try:
+                a = Card(
+                    name = name_card,
+                    description = description_card,
+                    attack = attack_card,
+                    defense = defense_card,
+                    level = level_card,
+                    card_type = 'Monster',
+                    card_race = card_race_card,
+                    card_attribute = card_attribute_card,
+                    card_image = card_image_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
                     isSpirit = False,
                     isUnion = False,
                     isGemini = False,
-                    isPendulum = True,
+                    isPendulum = False,
                     isRitual = False,
                     isToon = False,
                     isFusion = False,
@@ -1243,97 +1496,51 @@ def create_XYZ_Pendulum_Monster():
                     isXYZ = False,
                     isLink = True
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
 
-def create_Link_Monster():
-    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Link%20Monster'
- 
-
-    response = requests.get(url)
-    card_info = response.json()
-    outlist = []
-
-    i = 0
-    for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
-
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
             for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
-                a = Card(
-                    name = name_card,
-                    description = description_card,
-                    attack = attack_card,
-                    defense = defense_card,
-                    level = level_card,
-                    card_type = 'Monster',
-                    card_race = card_race_card,
-                    card_attribute = card_attribute_card,
-                    card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
-                    isEffect = True,
-                    isFlip = False,
-                    isTuner = False,
-                    isSpirit = False,
-                    isUnion = False,
-                    isGemini = False,
-                    isPendulum = False,
-                    isRitual = False,
-                    isToon = False,
-                    isFusion = False,
-                    isSynchro = False,
-                    isXYZ = True,
-                    isLink = False
-                )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
 
 def create_Pendulum_Flip_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Pendulum%20Flip%20Effect%20Monster'
  
-
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1344,9 +1551,6 @@ def create_Pendulum_Flip_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = True,
                     isTuner = False,
@@ -1361,37 +1565,52 @@ def create_Pendulum_Flip_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 def create_Pendulum_Effect_Fusion_Monster():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=Pendulum%20Effect%20Fusion%20Monster'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i
+
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
+        name_card = card['name']
+        description_card = card['desc']
+        attack_card = card["atk"]
+        defense_card = card ['def']
+        level_card = card ['level']
+        # card_type_card = card ['type']
+        card_race_card = card['race']
+        card_attribute_card = card['attribute']
+        card_image_card = card['card_images'][0]["image_url"]
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            attack_card = card["atk"]
-            defense_card = card ['def']
-            level_card = card ['level']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_attribute_card = card['attribute']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        if "card_sets" in card:
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1402,9 +1621,6 @@ def create_Pendulum_Effect_Fusion_Monster():
                     card_race = card_race_card,
                     card_attribute = card_attribute_card,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = True,
                     isFlip = False,
                     isTuner = False,
@@ -1419,10 +1635,27 @@ def create_Pendulum_Effect_Fusion_Monster():
                     isXYZ = False,
                     isLink = False
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
+
 
 
 #SPELL CARDS NOW 
@@ -1432,23 +1665,20 @@ def create_normal_Spell():
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1459,9 +1689,6 @@ def create_normal_Spell():
                     card_race = 'Normal',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1476,10 +1703,26 @@ def create_normal_Spell():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
 
 
 def create_field_Spell():
@@ -1487,23 +1730,20 @@ def create_field_Spell():
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1514,9 +1754,6 @@ def create_field_Spell():
                     card_race = 'Field',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1531,33 +1768,44 @@ def create_field_Spell():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_equip_Spell():
-    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=spell%20card&race=normal'
-
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=spell%20card&race=equip'
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1568,9 +1816,6 @@ def create_equip_Spell():
                     card_race = 'Equip',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1585,33 +1830,45 @@ def create_equip_Spell():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_Continuous_Spell():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=spell%20card&race=Continuous'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1622,9 +1879,6 @@ def create_Continuous_Spell():
                     card_race = 'Continous',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1639,33 +1893,45 @@ def create_Continuous_Spell():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_Quick_Spell():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=spell%20card&race=Quick-Play'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1673,12 +1939,9 @@ def create_Quick_Spell():
                     defense = None,
                     level = None,
                     card_type = 'Spell',
-                    card_race = 'Quick-Play',
+                    card_race = 'Quick',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1693,33 +1956,45 @@ def create_Quick_Spell():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_Ritual_Spell():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=spell%20card&race=Ritual'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1730,9 +2005,6 @@ def create_Ritual_Spell():
                     card_race = 'Ritual',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1747,10 +2019,25 @@ def create_Ritual_Spell():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 #TRAP CARDS
 def create_normal_Trap():
@@ -1758,23 +2045,20 @@ def create_normal_Trap():
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1785,9 +2069,6 @@ def create_normal_Trap():
                     card_race = 'Normal',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1802,33 +2083,46 @@ def create_normal_Trap():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
+
 
 def create_continuous_Trap():
     url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=trap%20card&race=Continuous'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1836,12 +2130,9 @@ def create_continuous_Trap():
                     defense = None,
                     level = None,
                     card_type = 'Trap',
-                    card_race = 'Continuous',
+                    card_race = 'Continous',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1856,33 +2147,45 @@ def create_continuous_Trap():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 def create_counter_Trap():
-    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=trap%20card&race=Continuous'
+    url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php?type=trap%20card&race=Counter'
 
     response = requests.get(url)
     card_info = response.json()
-    outlist = []
+    card_outlist = []
+    releaseCard_outlist = []
 
-    i = 0
+    global i 
+
     for card in card_info['data']: #now each card is a dict i think
-        #for the released set we will need a dictionary map for name to ID
 
-        i+=1
-        try:
-            name_card = card['name']
-            description_card = card['desc']
-            # card_type_card = card ['type']
-            card_race_card = card['race']
-            card_image_card = card['card_images'][0]["image_url"]
-            for setname in card['card_sets']:
-                rarity_card = setname['set_rarity']
-                set_code_card = setname['set_code']
-                set_name = setname['set_name']
+        name_card = card['name']
+        description_card = card['desc']
+        card_image_card = card['card_images'][0]["image_url"]
+
+        if "card_sets" in card:
+                
+            try:
                 a = Card(
                     name = name_card,
                     description = description_card,
@@ -1893,9 +2196,6 @@ def create_counter_Trap():
                     card_race = 'Counter',
                     card_attribute = None,
                     card_image = card_image_card,
-                    rarity = rarity_card,
-                    releasedSet = set_to_id_map[set_name],
-                    set_id = set_code_card,
                     isEffect = None,
                     isFlip = None,
                     isTuner = None,
@@ -1910,10 +2210,25 @@ def create_counter_Trap():
                     isXYZ = None,
                     isLink = None
                 )
-                outlist.append(a)
-        except:
-            continue
-    return outlist
+                i+=1
+                card_outlist.append(a)
+            except:
+                continue
+
+            for setname in card['card_sets']:
+                #Here we put all the releases for them 
+
+                try:
+                    release = CardinSet(
+                        rarity = setname['set_rarity'],
+                        card_code = setname['set_code'],
+                        set_id = set_to_id_map[setname['set_name']],
+                        card_id = i
+                    )
+                    releaseCard_outlist.append(release)
+                except:  #unreleased info in api also
+                    continue
+    return card_outlist,releaseCard_outlist
 
 if __name__ == '__main__':
 
@@ -1944,38 +2259,71 @@ if __name__ == '__main__':
         # db.session.add_all(cards)
         
         releaseSets = get_release_sets()
+
         normal_monster_cards = create_Normal_Monster_Cards()
+        print(i)
         normal_tuner_monster_cards = create_normal_Tuner_Monster()
-        # effect_monster_cards = create_effect_Monster()
-        # tuner_monster_cards = create_tuner_Monster()
-        # flip_effect_monster = create_Flip_Effect_Monster()
-        # spirit_monster = create_Spirit_Monster()
-        # union_effect_monster = create_UnionEffectMonster()
-        # gemini_monsters = create_Gemini_Monster()
-        # pendulum_effect_monster = create_Pendulum_Effect_Monster()
-        # pendulum_normal_monster = create_Pendulum_Normal_Monster()
-        # pendulum_tuner_effect_monster = create_Pendulum_Tuner_Effect_Monster()
-        # ritual_monster = create_Ritual_Monster()
-        # ritual_effect_monster = create_Ritual_Effect_Monster()
-        # toon_monster = create_Toom_Monster()
-        # fusion_monsters = create_Fusion_Monster()
-        # synchro_monster = create_Synchro_Monster()
-        # synchro_tuner_monster = create_Synchro_Tuner_Monster()
-        # synchro_pendulum_effect_monster = create_Synchro_Pendulum_Effect_Monster()
-        # XYZ_monster = create_XYZ_Monster()
-        # XYZ_pendulum = create_XYZ_Pendulum_Monster()
-        # Link_Monster = create_Link_Monster()
-        # pendulum_flip_effect = create_Pendulum_Flip_Monster()
-        # pendulum_Effect_Fusion_Monster = create_Pendulum_Effect_Fusion_Monster()
-        # normal_spell = create_normal_Spell()
-        # field_spell = create_field_Spell()
-        # equip_spell = create_equip_Spell()
-        # continous_spell = create_Continuous_Spell()
-        # quickplay_spell = create_Quick_Spell()
-        # ritual_spell = create_Ritual_Spell()
-        # normal_trap = create_normal_Trap()
-        # continous_trap = create_continuous_Trap()
-        # counter_trap = create_counter_Trap()
+        print(i)
+        effect_monster_cards = create_effect_Monster()
+        print(i)
+        tuner_monster_cards = create_tuner_Monster()
+        print(i)
+        flip_effect_monster = create_Flip_Effect_Monster()
+        print(i)
+        spirit_monster = create_Spirit_Monster()
+        print(i)
+        union_effect_monster = create_UnionEffectMonster()
+        print(i)
+        gemini_monsters = create_Gemini_Monster()
+        print(i)
+        pendulum_effect_monster = create_Pendulum_Effect_Monster()
+        print(i)
+        pendulum_normal_monster = create_Pendulum_Normal_Monster()
+        print(i)
+        pendulum_tuner_effect_monster = create_Pendulum_Tuner_Effect_Monster()
+        print(i)
+        ritual_monster = create_Ritual_Monster()
+        print(i)
+        ritual_effect_monster = create_Ritual_Effect_Monster()
+        print(i)
+        toon_monster = create_Toom_Monster()
+        print(i)
+        fusion_monsters = create_Fusion_Monster()
+        print(i)
+        synchro_monster = create_Synchro_Monster()
+        print(i)
+        synchro_tuner_monster = create_Synchro_Tuner_Monster()
+        print(i)
+        synchro_pendulum_effect_monster = create_Synchro_Pendulum_Effect_Monster()
+        print(i)
+        XYZ_monster = create_XYZ_Monster()
+        print(i)
+        XYZ_pendulum = create_XYZ_Pendulum_Monster()
+        print(i)
+        Link_Monster = create_Link_Monster()
+        print(i)
+        pendulum_flip_effect = create_Pendulum_Flip_Monster()
+        print(i)
+        pendulum_Effect_Fusion_Monster = create_Pendulum_Effect_Fusion_Monster()
+        print(i)
+        normal_spell = create_normal_Spell()
+        print(i)
+        field_spell = create_field_Spell()
+        print(i)
+        equip_spell = create_equip_Spell()
+        print(i)
+        continous_spell = create_Continuous_Spell()
+        print(i)
+        quickplay_spell = create_Quick_Spell()
+        print(i)
+        ritual_spell = create_Ritual_Spell()
+        print(i)
+        normal_trap = create_normal_Trap()
+        print(i)
+        continous_trap = create_continuous_Trap()
+        print(i)
+        counter_trap = create_counter_Trap()
+        print(i)
 
 
         db.session.add_all(releaseSets)
@@ -1985,34 +2333,72 @@ if __name__ == '__main__':
         db.session.add_all(normal_tuner_monster_cards[0])
         db.session.add_all(normal_tuner_monster_cards[1])
         
-        # db.session.add_all(effect_monster_cards)
-        # db.session.add_all(tuner_monster_cards)
-        # db.session.add_all(flip_effect_monster)
-        # db.session.add_all(spirit_monster)
-        # db.session.add_all(union_effect_monster)
-        # db.session.add_all(gemini_monsters)
-        # db.session.add_all(pendulum_effect_monster)
-        # db.session.add_all(pendulum_normal_monster)
-        # db.session.add_all(pendulum_tuner_effect_monster)
-        # db.session.add_all(ritual_monster)
-        # db.session.add_all(toon_monster)
-        # db.session.add_all(fusion_monsters)
-        # db.session.add_all(synchro_tuner_monster)
-        # db.session.add_all(synchro_pendulum_effect_monster)
-        # db.session.add_all(XYZ_monster)
-        # db.session.add_all(XYZ_pendulum)
-        # db.session.add_all(Link_Monster)
-        # db.session.add_all(pendulum_flip_effect)
-        # db.session.add_all(pendulum_Effect_Fusion_Monster)
-        # db.session.add_all(normal_spell)
-        # db.session.add_all(field_spell)
-        # db.session.add_all(equip_spell)
-        # db.session.add_all(quickplay_spell)
-        # db.session.add_all(ritual_spell)
-        # db.session.add_all(normal_trap)
-        # db.session.add_all(continous_trap)
-        # db.session.add_all(counter_trap)
+        db.session.add_all(effect_monster_cards[0])
+        db.session.add_all(effect_monster_cards[1])
 
+        db.session.add_all(tuner_monster_cards[0])
+        db.session.add_all(tuner_monster_cards[1])
+
+        db.session.add_all(flip_effect_monster[0])
+        db.session.add_all(spirit_monster[0])
+        db.session.add_all(union_effect_monster[0])
+        db.session.add_all(gemini_monsters[0])
+        db.session.add_all(pendulum_effect_monster[0])
+        db.session.add_all(pendulum_normal_monster[0])
+        db.session.add_all(pendulum_tuner_effect_monster[0])
+        db.session.add_all(ritual_monster[0])
+        db.session.add_all(toon_monster[0])
+        db.session.add_all(fusion_monsters[0])
+        db.session.add_all(synchro_tuner_monster[0])
+        db.session.add_all(synchro_pendulum_effect_monster[0])
+        db.session.add_all(XYZ_monster[0])
+        db.session.add_all(XYZ_pendulum[0])
+        db.session.add_all(Link_Monster[0])
+        db.session.add_all(pendulum_flip_effect[0])
+        db.session.add_all(pendulum_Effect_Fusion_Monster[0])
+        db.session.add_all(normal_spell[0])
+        db.session.add_all(field_spell[0])
+        db.session.add_all(equip_spell[0])
+        db.session.add_all(quickplay_spell[0])
+        db.session.add_all(ritual_spell[0])
+        db.session.add_all(normal_trap[0])
+        db.session.add_all(continous_trap[0])
+        db.session.add_all(counter_trap[0])
+
+        db.session.add_all(flip_effect_monster[1])
+        db.session.add_all(spirit_monster[1])
+        db.session.add_all(union_effect_monster[1])
+        db.session.add_all(gemini_monsters[1])
+        db.session.add_all(pendulum_effect_monster[1])
+        db.session.add_all(pendulum_normal_monster[1])
+        db.session.add_all(pendulum_tuner_effect_monster[1])
+        db.session.add_all(ritual_monster[1])
+        db.session.add_all(toon_monster[1])
+        db.session.add_all(fusion_monsters[1])
+        db.session.add_all(synchro_tuner_monster[1])
+        db.session.add_all(synchro_pendulum_effect_monster[1])
+        db.session.add_all(XYZ_monster[1])
+        db.session.add_all(XYZ_pendulum[1])
+        db.session.add_all(Link_Monster[1])
+        db.session.add_all(pendulum_flip_effect[1])
+        db.session.add_all(pendulum_Effect_Fusion_Monster[1])
+        db.session.add_all(normal_spell[1])
+        db.session.add_all(field_spell[1])
+        db.session.add_all(equip_spell[1])
+        db.session.add_all(quickplay_spell[1])
+        db.session.add_all(ritual_spell[1])
+        db.session.add_all(normal_trap[1])
+        db.session.add_all(continous_trap[1])
+        db.session.add_all(counter_trap[1])
+
+        db.session.add_all(ritual_effect_monster[0])
+        db.session.add_all(ritual_effect_monster[1])
+
+        db.session.add_all(synchro_monster[0])
+        db.session.add_all(synchro_monster[1])
+
+        db.session.add_all(continous_spell[0])
+        db.session.add_all(continous_spell[1])
 
         db.session.commit()
 

@@ -24,7 +24,7 @@ function Cards(){
         )
 
     const renderRows = filteredcards.map((card) => {
-        return <TableRow data={[card.name,card.card_type,card.rarity,card.card_race,card.set_id,card.description]} />
+        return <TableRow data={[card.name,card.card_type,card.card_race,card.description]} />
     })
 
 
@@ -49,9 +49,7 @@ function Cards(){
                 <tr>
                     <th>Card Name</th>
                     <th>Card Type</th>
-                    <th>Rarity</th>
                     <th>Attribute</th>
-                    <th>Set-ID</th>
                     <th>Description/Effect</th>
                 </tr>
                 {renderRows}
