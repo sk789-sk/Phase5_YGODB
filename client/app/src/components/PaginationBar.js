@@ -1,20 +1,15 @@
 import React, { useEffect,useState } from "react";
-import NavBar from "./NavBar";
-import TableRow from "./Tablerow";
-import { Link } from "react-router-dom";
-import TableRowLink from "./Tablerow_and_Link";
-import TableRowEdit from "./TableRowLinkEdit";
 
 function PaginationBar ({currentPage,setCurrentPage,lastPage,cardsPerPage,totalCards,setCards, path}){
     //7 buttons 2 past page 2 forward page 1 previous page 1 next page 1 first page 1 last page
     //1 "button" for the current page
 
     function handleClick(e){
-
+        console.log(path)
         const offset = parseInt(e.target.value)
         let newPage = currentPage + offset      
         if (newPage !== currentPage){
-            fetch(`${path}?page=${newPage}`)
+            fetch(`${path}&page=${newPage}`) //find better solution for this, this would break if there are no url parameters in query. could have all the urls end in ? not sure if ?& is valid syntax. checked and it is, this is fine then have all the paths end in ?. ??$ is also valid. ?searchterm?$ is invalid. We will follow that all paths end in ?  
             .then(resp => resp.json())
             .then((data) => (setCards(data.cards)))
         }
@@ -45,7 +40,7 @@ function PaginationBar ({currentPage,setCurrentPage,lastPage,cardsPerPage,totalC
             <button disabled={currentPage===lastPage} onClick={handleClick} value={lastPage-currentPage}>Last </button>
 
             <p>Page {currentPage} of {lastPage}</p>
-            <p>Results: {(currentPage*cardsPerPage)-20}-{ totalCards >=currentPage*cardsPerPage? (currentPage*cardsPerPage):totalCards} of {totalCards}</p>
+            <p>Results: {(currentPage*cardsPerPage)-19}-{ totalCards >=currentPage*cardsPerPage? (currentPage*cardsPerPage):totalCards} of {totalCards}</p>
 
         </div>
     )

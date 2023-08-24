@@ -5,9 +5,9 @@ INSert INTO Users (username,password,email,profile) VALUES ('DEFAULT','NONE', NU
 INSERT INTO Users (username,password,email,profile) VALUES ('sk789','test','skm478@gmail.com','https://images.ygoprodeck.com/images/cards/60482781.jpg');
 
 
-INSERT INTO Decks (name,user_id) VALUES ('darkmagician',2);
-INSERT INTO Decks (name,user_id) VALUES ('BlueEyes',2);
-INSERT INTO Decks (name,user_id) VALUES ('RedEyes',1);
+INSERT INTO Decks (name,user_id) VALUES ('Dark Magician',2);
+INSERT INTO Decks (name,user_id) VALUES ('Blue Eyes',2);
+INSERT INTO Decks (name,user_id) VALUES ('Red Eyes',1);
 
 INSERT INTO Cards (name,description,attack,defense,level, isEffect, isTuner, isFlip, isSpirit, isUnion, isGemini, isPendulum,isRitual, isToon, isFusion, isSynchro, isXYZ, isLink, card_type, card_race,card_attribute) VALUES ('Dark Magician','The ultimate wizard in attack and defense',2500,2100,7,False, False,False,False,False,False,False,False,False,False,False,False,False, 'Monster','Spellcaster','Dark');
 
@@ -28,22 +28,18 @@ INSERT INTO ReleaseSets (name,releaseDate,card_count,set_code) VALUES('Legen of 
 
 
 INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (3,2,1);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (3,4,2);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (3,6,3);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (3,8,1);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (3,10,2);
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (3,1,2);
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (3,3,3);
 
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (4,11,1);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (4,13,3);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (4,15,3);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (4,17,2);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (4,19,1);
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (1,3,1);
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (1,1,3);
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (1,2,3);
 
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (5,1352,1);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (5,235,3);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (5,64,3);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (5,34,2);
-INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (5,31,1);
+
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (2,3,1);
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (2,2,3);
+INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (2,1,3);
+
 
 INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,1);
 INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,2);
@@ -60,8 +56,4 @@ DELETe FRom CardsinDecks;
 DELETE FROM Decks;
 DELETE FROM CardsinSets;
 
-
-
-
-        ReleaseSet.query.delete()
 

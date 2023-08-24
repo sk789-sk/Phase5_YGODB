@@ -34,7 +34,7 @@ function Decks () {
         return <TableRowLink key={deck.id} 
         
         data={ [deck.name, deck.user.username , deck.card_in_deck.length, deck.created_at]  }
-        id={deck.id}
+        id={deck.id} path={`/Decks/`}
         />
     })
 

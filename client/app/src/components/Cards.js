@@ -2,48 +2,80 @@ import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import PaginationBar from "./PaginationBar";
+import TableRowLink from "./Tablerow_and_Link";
 
 
 function Cards(){ 
    
     const [cards,setCards] = useState([])
     const [filtertext,setFilterText] = useState('')
+    const [cardtype,setCardType] = useState('')
     const [currentPage,setCurrentPage] = useState(1)
     const [totalPage,setTotalPages] = useState(1)
     const [cardsPerPage,setCardsPerPage] = useState(20)
     const [totalCards,setTotalCards] = useState(0)
+    // const [path,setPath] = useState(`/cards?search=${filtertext}&type=${cardtype}`)
+    
+    let path = `/cards?search=${filtertext}&type=${cardtype}`
 
     useEffect( () => {
         fetch('/cards')
         .then (resp => resp.json())
-        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page,setTotalCards(data.total_items)))) //data needs to be changed to just the cards in the response now and disregard the page totals
+        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items))) //data needs to be changed to just the cards in the response now and disregard the page totals
     },[])
 
-    const filteredcards = cards.filter(card => {
-        return (card.name.toLowerCase().includes(filtertext.toLowerCase()))}
-        )
+    // const filteredcards = cards.filter(card => {
+    //     return (card.name.toLowerCase().includes(filtertext.toLowerCase()))}
+    //     )
 
-    const renderRows = filteredcards.map((card) => {
-        return <TableRow data={[card.name,card.card_type,card.card_race,card.description]} />
+    const renderRows = cards.map((card) => {
+        return <TableRowLink data={[card.name,card.card_type,card.card_race,card.description]} id={card.id} path={`/Cards/`} />
     })
 
 
     function handleSubmit(e){
         e.preventDefault()
+        console.log(e)
+
         setFilterText((filtertext) => e.target[0].value)
+        
+
+        fetch(`/cards?search=${filtertext}&type=${cardtype}`)
+        .then(resp =>resp.json())
+        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items)))
     }
+
+    function handleSelect(e){
+        setCardType((cardtype) => e.target.value)
+    }
+
+    //Issue now is that the first time search is clicked there is a lag for between the state being updated and the data bieng fetched, 
+
+    function handleTextChange(){}
 
     return(
         <div className="componentdiv">
             <NavBar/>    
             <br></br>
-            <form onSubmit={handleSubmit} className="search">
-                <input type="text" placeholder="Search..." />
-                <button className="searchbutton" type="submit">Search</button>
-            </form>
+            <div>
+                <form onChange={handleTextChange} onSubmit={handleSubmit} className="search">
+                    <input type="text" placeholder="Search..." />
+                    <button className="searchbutton" type="submit">Search</button>
+                </form>
 
+                <select onChange={handleSelect} name="card-type">
+                    <option value = "">All Cards</option>
+                    <option value = "Monster">Monsters</option>
+                    <option value = "Spell">Spell</option>
+                    <option value = "Trap">Traps</option>
+                    
+                </select>
+            </div>
             <h1 className="header">Card Database</h1>
-            <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPage} cardsPerPage={cardsPerPage} totalCards={totalCards} setCards={setCards} path={'/cards'}/>
+            <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPage} cardsPerPage={cardsPerPage} totalCards={totalCards} setCards={setCards} 
+            path={path}/>
+
+{/* path={`/cards?search=${filtertext}`} */}
             <table className="tables">
                 <tbody>
                 <tr>
