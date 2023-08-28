@@ -23,7 +23,7 @@ function SingleCard () {
         .then((data) => (setCardInfo(data),setReleaseInfo(data.card_in_set)))
     }, [])
 
-    console.log(cardInfo)
+    console.log(cardInfo.name)
     console.log(releaseInfo)
 
     const renderRows = releaseInfo.map( (singleRelease) => {
@@ -40,6 +40,7 @@ function SingleCard () {
         <div>
             <NavBar />
             <h1>Render Card Info</h1>
+            <h2>{cardInfo.name}</h2>
 
             <table className="tables" id="SingleCard" >
                 <tbody>

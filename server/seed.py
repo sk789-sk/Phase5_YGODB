@@ -26,7 +26,7 @@ def get_release_sets():
     sets_info = response.json()
     outlist = []
     error_list = []
-    i=0
+    j=0
     for card_set in sets_info:        
         try:
             pack = ReleaseSet(
@@ -35,8 +35,8 @@ def get_release_sets():
                 card_count = card_set['num_of_cards'],    
                 set_code = card_set['set_code']       
             )
-            i+=1
-            set_to_id_map[card_set['set_name']] = i
+            j+=1
+            set_to_id_map[card_set['set_name']] = j
             q.write(str(pack)+'\n') 
         except:
             error_list.append((i,card_set))
@@ -133,8 +133,6 @@ def create_normal_Tuner_Monster():
     card_outlist = []
     releaseCard_outlist = []
 
-    global i
-
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
         name_card = card['name']
@@ -173,6 +171,7 @@ def create_normal_Tuner_Monster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -274,8 +273,6 @@ def create_tuner_Monster():
     card_outlist = []
     releaseCard_outlist = []
 
-    global i 
-
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
 
@@ -316,6 +313,7 @@ def create_tuner_Monster():
                         isXYZ = False,
                         isLink = False
                     )
+                    global i 
                     i+=1
                     card_outlist.append(a)
                 except:
@@ -344,7 +342,6 @@ def create_Flip_Effect_Monster():
     card_outlist = []
     releaseCard_outlist = []
 
-    global i 
 
     for card in card_info['data']: 
 
@@ -384,6 +381,7 @@ def create_Flip_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -412,9 +410,6 @@ def create_Spirit_Monster():
     card_info = response.json()
     card_outlist = []
     releaseCard_outlist = []
-
-    global i
-
 
     for card in card_info['data']: #now each card is a dict i think
             #for the released set we will need a dictionary map for name to ID
@@ -454,6 +449,7 @@ def create_Spirit_Monster():
                         isXYZ = False,
                         isLink = False
                     )
+                    global i 
                     i+=1
                     card_outlist.append(a)
                 except:
@@ -482,8 +478,6 @@ def create_UnionEffectMonster():
     card_info = response.json()
     card_outlist = []
     releaseCard_outlist = []
-
-    global i
 
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
@@ -523,6 +517,7 @@ def create_UnionEffectMonster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -551,8 +546,6 @@ def create_Gemini_Monster():
     card_info = response.json()
     card_outlist = []
     releaseCard_outlist = []
-
-    global i
 
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
@@ -592,6 +585,7 @@ def create_Gemini_Monster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -620,8 +614,6 @@ def create_Pendulum_Effect_Monster():
     card_info = response.json()
     card_outlist = []
     releaseCard_outlist = []
-
-    global i
 
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
@@ -661,6 +653,7 @@ def create_Pendulum_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -688,8 +681,6 @@ def create_Pendulum_Normal_Monster():
     card_info = response.json()
     card_outlist = []
     releaseCard_outlist = []
-
-    global i
 
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
@@ -729,6 +720,7 @@ def create_Pendulum_Normal_Monster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -758,8 +750,6 @@ def create_Pendulum_Tuner_Effect_Monster():
     card_info = response.json()
     card_outlist = []
     releaseCard_outlist = []
-
-    global i
 
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
@@ -799,6 +789,7 @@ def create_Pendulum_Tuner_Effect_Monster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -829,7 +820,6 @@ def create_Ritual_Monster():
     card_outlist = []
     releaseCard_outlist = []
 
-    global i
 
     for card in card_info['data']: #now each card is a dict i think
         #for the released set we will need a dictionary map for name to ID
@@ -869,6 +859,7 @@ def create_Ritual_Monster():
                     isXYZ = False,
                     isLink = False
                 )
+                global i 
                 i+=1
                 card_outlist.append(a)
             except:
@@ -2260,6 +2251,10 @@ if __name__ == '__main__':
         
         releaseSets = get_release_sets()
 
+
+        ##CAUSE of ERROR
+        #Since card creation does not check the actual database but instead uses a counter to see where in the database it would exist when seeding. The order in which create the cards has to match the order in which they are added into the database. If we do not do this then the mapping of the individual cards to the releases in sets will be incorrect. Safer method would be to add all the cards into the database then for each card get the DB value and then match that with release set and seed both seperately. 
+
         normal_monster_cards = create_Normal_Monster_Cards()
         print(i)
         normal_tuner_monster_cards = create_normal_Tuner_Monster()
@@ -2332,7 +2327,7 @@ if __name__ == '__main__':
         
         db.session.add_all(normal_tuner_monster_cards[0])
         db.session.add_all(normal_tuner_monster_cards[1])
-        
+
         db.session.add_all(effect_monster_cards[0])
         db.session.add_all(effect_monster_cards[1])
 
@@ -2340,65 +2335,95 @@ if __name__ == '__main__':
         db.session.add_all(tuner_monster_cards[1])
 
         db.session.add_all(flip_effect_monster[0])
-        db.session.add_all(spirit_monster[0])
-        db.session.add_all(union_effect_monster[0])
-        db.session.add_all(gemini_monsters[0])
-        db.session.add_all(pendulum_effect_monster[0])
-        db.session.add_all(pendulum_normal_monster[0])
-        db.session.add_all(pendulum_tuner_effect_monster[0])
-        db.session.add_all(ritual_monster[0])
-        db.session.add_all(toon_monster[0])
-        db.session.add_all(fusion_monsters[0])
-        db.session.add_all(synchro_tuner_monster[0])
-        db.session.add_all(synchro_pendulum_effect_monster[0])
-        db.session.add_all(XYZ_monster[0])
-        db.session.add_all(XYZ_pendulum[0])
-        db.session.add_all(Link_Monster[0])
-        db.session.add_all(pendulum_flip_effect[0])
-        db.session.add_all(pendulum_Effect_Fusion_Monster[0])
-        db.session.add_all(normal_spell[0])
-        db.session.add_all(field_spell[0])
-        db.session.add_all(equip_spell[0])
-        db.session.add_all(quickplay_spell[0])
-        db.session.add_all(ritual_spell[0])
-        db.session.add_all(normal_trap[0])
-        db.session.add_all(continous_trap[0])
-        db.session.add_all(counter_trap[0])
-
         db.session.add_all(flip_effect_monster[1])
+
+        db.session.add_all(spirit_monster[0])
         db.session.add_all(spirit_monster[1])
+
+        db.session.add_all(union_effect_monster[0])
         db.session.add_all(union_effect_monster[1])
+
+        db.session.add_all(gemini_monsters[0])
         db.session.add_all(gemini_monsters[1])
+
+        db.session.add_all(pendulum_effect_monster[0])
         db.session.add_all(pendulum_effect_monster[1])
+
+        db.session.add_all(pendulum_normal_monster[0])
         db.session.add_all(pendulum_normal_monster[1])
+
+        db.session.add_all(pendulum_tuner_effect_monster[0])
         db.session.add_all(pendulum_tuner_effect_monster[1])
+
+        db.session.add_all(ritual_monster[0])
         db.session.add_all(ritual_monster[1])
-        db.session.add_all(toon_monster[1])
-        db.session.add_all(fusion_monsters[1])
-        db.session.add_all(synchro_tuner_monster[1])
-        db.session.add_all(synchro_pendulum_effect_monster[1])
-        db.session.add_all(XYZ_monster[1])
-        db.session.add_all(XYZ_pendulum[1])
-        db.session.add_all(Link_Monster[1])
-        db.session.add_all(pendulum_flip_effect[1])
-        db.session.add_all(pendulum_Effect_Fusion_Monster[1])
-        db.session.add_all(normal_spell[1])
-        db.session.add_all(field_spell[1])
-        db.session.add_all(equip_spell[1])
-        db.session.add_all(quickplay_spell[1])
-        db.session.add_all(ritual_spell[1])
-        db.session.add_all(normal_trap[1])
-        db.session.add_all(continous_trap[1])
-        db.session.add_all(counter_trap[1])
 
         db.session.add_all(ritual_effect_monster[0])
         db.session.add_all(ritual_effect_monster[1])
 
+        db.session.add_all(toon_monster[0])
+        db.session.add_all(toon_monster[1])
+
+        db.session.add_all(fusion_monsters[0])
+        db.session.add_all(fusion_monsters[1])
+
         db.session.add_all(synchro_monster[0])
         db.session.add_all(synchro_monster[1])
 
+        db.session.add_all(synchro_tuner_monster[0])
+        db.session.add_all(synchro_tuner_monster[1])
+
+        db.session.add_all(synchro_pendulum_effect_monster[0])
+        db.session.add_all(synchro_pendulum_effect_monster[1])
+
+        db.session.add_all(XYZ_monster[0])
+        db.session.add_all(XYZ_monster[1])
+
+        db.session.add_all(XYZ_pendulum[0])
+        db.session.add_all(XYZ_pendulum[1])
+
+        db.session.add_all(Link_Monster[0])
+        db.session.add_all(Link_Monster[1])
+
+        db.session.add_all(pendulum_flip_effect[0])
+        db.session.add_all(pendulum_flip_effect[1])
+
+        db.session.add_all(pendulum_Effect_Fusion_Monster[0])
+        db.session.add_all(pendulum_Effect_Fusion_Monster[1])
+
+        #Start of spells
+
+        db.session.add_all(normal_spell[0])
+        db.session.add_all(normal_spell[1])
+        #Working test
+
+
+        db.session.add_all(field_spell[0])
+        db.session.add_all(field_spell[1])
+
+        db.session.add_all(equip_spell[0])
+        db.session.add_all(equip_spell[1])
+
         db.session.add_all(continous_spell[0])
         db.session.add_all(continous_spell[1])
+
+        db.session.add_all(quickplay_spell[0])
+        db.session.add_all(quickplay_spell[1])
+
+        db.session.add_all(ritual_spell[0])
+        db.session.add_all(ritual_spell[1])
+
+        #Start of Traps
+
+        db.session.add_all(normal_trap[0])
+        db.session.add_all(normal_trap[1])
+
+        db.session.add_all(continous_trap[0])
+        db.session.add_all(continous_trap[1])
+
+        db.session.add_all(counter_trap[0])
+        db.session.add_all(counter_trap[1])
+
 
         db.session.commit()
 

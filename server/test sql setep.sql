@@ -56,4 +56,10 @@ DELETe FRom CardsinDecks;
 DELETE FROM Decks;
 DELETE FROM CardsinSets;
 
+SELECT * FROM Cards WHERE name='Brain Control'; 
+SELECT * FROM CardsinSets WHERE card_id=8232
 
+SELECT * FROM CardsinSets WHERE card_code='DR3-EN218'
+SELECT * FROM cARDS wHERE id=8738
+
+SELECT * from cARDS where name='Tri-Edge Levia'
