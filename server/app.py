@@ -233,7 +233,7 @@ def sets():
     setinfo = db.session.query(ReleaseSet).all()
     set_list = []
     for pack in setinfo:
-        set_list.append(pack.to_dict())   #only=('name','id','card_count','releaseDate','set_code'
+        set_list.append(pack.to_dict(only=('name','id','card_count','releaseDate','set_code')))   #only=('name','id','card_count','releaseDate','set_code'
     response = make_response(
         jsonify(set_list),200
     )

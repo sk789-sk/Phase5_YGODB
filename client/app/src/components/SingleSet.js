@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 function SingleSet() {
 
@@ -21,13 +21,16 @@ function SingleSet() {
     console.log(setData)
 
     const filteredcards = setData.filter( (card) => {
-        return(card.name.toLowerCase().includes(filtertext.toLowerCase())
+        return(card.card.name.toLowerCase().includes(filtertext.toLowerCase())
         || card.rarity.toLowerCase().includes(filtertext.toLowerCase()))
     })
 
     const renderCards = filteredcards.map ((card) => {
         return <TableRow key={card.set_id} 
-        data = {[card.name, card.rarity, card.set_id]} />
+        data = {[<Link to={`/Cards/${card.card_id}`}> {card.card.name} </Link>,
+             card.rarity, 
+             card.card_code,
+            <img className="tableImage" src={card.card.card_image} width="100%" height="100%"/>]} />
     })
 
     function handleSubmit(e){
@@ -43,7 +46,7 @@ function SingleSet() {
                 <input type="text" placeholder="Search by card name or rarity" />
                 <button type="submit">Search</button>
             </form>
-            <table>
+            <table className="tables">
                 <tbody>
                     <tr>
                         <th>Card Name</th>

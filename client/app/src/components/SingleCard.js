@@ -29,7 +29,7 @@ function SingleCard () {
     const renderRows = releaseInfo.map( (singleRelease) => {
 
         return <TableRow data={[singleRelease.rarity, 
-            <Link to={`/ReleaseSet/${singleRelease.releaseSet.id}`}>{singleRelease.releaseSet.name}</Link>,
+            <Link to={`/Sets/${singleRelease.releaseSet.id}`}>{singleRelease.releaseSet.name}</Link>,
             singleRelease.card_code,
             singleRelease.releaseSet.releaseDate]} />
     })

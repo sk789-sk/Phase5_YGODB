@@ -28,6 +28,8 @@ function Cards(){
     //     return (card.name.toLowerCase().includes(filtertext.toLowerCase()))}
     //     )
 
+   
+
     const renderRows = cards.map((card) => {
         return <TableRowLink data={[card.name,card.card_type,card.card_race,card.description]} id={card.id} path={`/Cards/`} />
     })

@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
+import { Link } from "react-router-dom";
 
 
 function Sets() {
@@ -14,16 +15,24 @@ function Sets() {
         .then((data) => setReleasedSets(data))
     },[])
 
+    // console.log(releasedSets)
+
     const filteredSets = releasedSets.filter( (singleSet) => {
         return (singleSet.name.toLowerCase().includes(filtertext.toLowerCase()) 
                 )
     }) 
 
 
+
     const renderSets = filteredSets.map( (singleSet) => {
         return <TableRow key={singleSet.includes} 
-        data = { [singleSet.name, singleSet.set_code, singleSet.card_count, singleSet.releaseDate]} />
+        data = { [<Link to={`/Sets/${singleSet.id}`}> {singleSet.name} </Link>, 
+            singleSet.set_code, 
+            singleSet.card_count, 
+            singleSet.releaseDate]} />
     })
+
+
 
     function handleSubmit(e){
         e.preventDefault()
