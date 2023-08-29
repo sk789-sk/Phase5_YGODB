@@ -65,7 +65,7 @@ class Inventory(db.Model, SerializerMixin):
 
     #ForeignKeys
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
-    card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
+    cardinSet_id = db.Column(db.Integer, db.ForeignKey('CardsinSets.id'))
     
     #relationships
     #validations
@@ -79,7 +79,7 @@ class Inventory(db.Model, SerializerMixin):
         raise ValueError
 
     #Serializer Rules
-    serialize_rules = ('-user.card_in_inventory','-card.card_in_inventory','-card.releaseSet','-card.card_in_deck','-user.user_decks')  
+    serialize_rules = ('-user.card_in_inventory','-cardinSet.card_in_inventory','-card.releaseSet','-card.card_in_deck','-user.user_decks')  
     
     #repr
 
@@ -116,8 +116,6 @@ class Card(db.Model, SerializerMixin):
     
     #relationships
     
-    card_in_inventory = db.relationship("Inventory" , backref = "card") 
-
     card_in_deck = db.relationship("CardinDeck",backref = "card") 
     
     card_on_banlist = db.relationship('BanlistCard',backref='card')
@@ -216,6 +214,10 @@ class CardinSet(db.Model,SerializerMixin):
     set_id = db.Column(db.Integer, db.ForeignKey('ReleaseSets.id'))
     card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
 
+    #relationships
+    card_in_inventory = db.relationship("Inventory" , backref = "cardinSet") 
+
+
     #Validations
     #Serializer Rules
 
@@ -253,7 +255,7 @@ class Banlist(db.Model, SerializerMixin):
     card_on_banlist = db.relationship('BanlistCard',backref='banlist') 
 
     #seralizer rules
-    serialize_rules = ('-card_on_list.banlist')
+    serialize_rules = ('-card_on_list.banlist',)
         
 
     def __repr__(self):

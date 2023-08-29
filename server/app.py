@@ -541,57 +541,24 @@ def invent():
 @app.route('/inventory/<int:id>', methods = ['GET', 'POST','DELETE'])
 def invent_by_id(id):
 
-    inventory = Inventory.query.filter(Inventory.user_id == id).all()
+    #This whole section needs to be redone.
+    #First check what the method is, get and post need an inventory to exist but post does not 
 
-    if inventory: #if this user has an inventory
-    
-        if request.method == 'GET':
-            cards_in_invent = []
-            for card in inventory:
-                cards_in_invent.append(card.to_dict())
+    if request.method == "POST":
+        data = request.get_json()
 
-            response = make_response(jsonify(cards_in_invent),200)
+        #Need to see if the card is a valid card.
 
-        if request.method == 'POST':
-            data = request.get_json()
-            try:
-                #If getting card from out end we should be able to get back the id instead of the name
-                new_card_invent = Inventory(
-                    quantity = data['quantity'],
-                    isFirstEd = data['isFirstEd'],
-                    user_id = data['user_id'],
-                    card_id = data['card_id']
-                )
-                db.session.add(new_card_invent)
-                db.session.commit()
-
-                response = make_response(new_card_invent.to_dict(),200)
-            except ValueError:
-                response = make_response( { "errors": "validation errors" },400)
+        val = CardinSet.query.filter(CardinSet.card_code==data['card_id']).first() #returns record not just a bool for exist
         
-        if request.method == 'DELETE':
-            #user deletes the entire inventory
-            cards_in_invent = Inventory.query.filter(Inventory.user_id == id).all()
-
-            for card in cards_in_invent:
-                db.session.delete(card)
-            
-            db.session.commit()
-
-            response = make_response({}, 204)
-    else:
-        #user does not have an inventory so this loads a placeholder.
-        #an initializes an inventory
-
-        if request.method == 'POST':
-            data = request.get_json()
+        if val:
             try:
                 #If getting card from out end we should be able to get back the id instead of the name
                 new_card_invent = Inventory(
                     quantity = data['quantity'],
                     isFirstEd = data['isFirstEd'],
                     user_id = data['user_id'],
-                    card_id = data['card_id']
+                    cardinSet_id = val.id
                 )
                 db.session.add(new_card_invent)
                 db.session.commit()
@@ -599,19 +566,37 @@ def invent_by_id(id):
                 response = make_response(new_card_invent.to_dict(),200)
             except ValueError:
                 response = make_response( { "errors": "validation errors" },400)
-
         else:
-            init_invent = []
-            init_card = Inventory.query.filter(Inventory.user_id == 1).first()
+            response = make_response( {"errors":"Card does not exist"}, 400)
 
-            init_invent.append(init_card.to_dict())
+    else: #We have a get or a delete then 
 
-            response = make_response(jsonify(init_invent),200)
 
-        # response = make_response(
-        #     {"error":"User has no Cards"},404
+        inventory = Inventory.query.filter(Inventory.user_id == id).all()
 
-        #make the response 
+        if inventory: #if this user has an inventory
+        
+            if request.method == 'GET':
+                cards_in_invent = []
+                for card in inventory:
+                    cards_in_invent.append(card.to_dict())
+
+                response = make_response(jsonify(cards_in_invent),200)
+            
+            if request.method == 'DELETE':
+                #user deletes the entire inventory
+                cards_in_invent = Inventory.query.filter(Inventory.user_id == id).all()
+
+                for card in cards_in_invent:
+                    db.session.delete(card)
+                
+                db.session.commit()
+
+                response = make_response({}, 204)
+        else:
+            #user does not have an inventory so this loads a placeholder.
+            #an initializes an inventory
+            response = make_response( {"errors": "User has no Inventory"},204)
     
     return response
 

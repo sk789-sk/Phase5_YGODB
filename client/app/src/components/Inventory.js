@@ -8,6 +8,8 @@ function Inventory({user}){
     const [cards,setCards] = useState([])
     const [newQuantity,setNewQuantity] = useState(0)
     const [filtertext,setFilterText] = useState('')
+    const [errorMessage,setErrorMessage] = useState('')
+    const [isError,setIsError] = useState(false)
     //this is a set code and then a numeric code, better to store as a dictoinary of set code with a list of numeric codes wouldnt have to go through everything. Refactor after 
     //useState seems like a bad way to do this. I would rather give each one its own 
 
@@ -28,15 +30,16 @@ function Inventory({user}){
     }
 
     console.log(cards)
+
     const filteredCards = cards.filter((card) => {
-        return (card.card.name.toLowerCase().includes(filtertext.toLowerCase()))
+        return (card.cardinSet.card.name.toLowerCase().includes(filtertext.toLowerCase()))
     })
 
     const renderRows = filteredCards.map( (card) => {
         
-        return <TableRow key={card.card.card_id} 
+        return <TableRow  
         
-        data={[ card.card.name, card.card.card_type, card.card.rarity, card.card.card_image ,card.card.set_id,card.quantity]} 
+        data={[ card.cardinSet.card.name, card.cardinSet.card.card_type, card.cardinSet.rarity, card.cardinSet.card.card_image ,card.cardinSet.card_code,card.quantity]} 
         
         button ={<button onClick={ () => 
             fetch(`/inventory/${user.id}/${card.card.id}`, {
@@ -78,6 +81,7 @@ function Inventory({user}){
        //We will have to check if the key (card-id exists in our file to get the actual card_id. Lets assume that we have that and complete the post req)
 
        // Add client-side validation here
+       // to check if the card exists when the post request is submitted only sucessfull response if 
 
        const newCard = {
         'quantity' : card_quantity,
@@ -94,8 +98,20 @@ function Inventory({user}){
         },
         body:JSON.stringify(newCard)
        })
-       .then(resp => (resp.json()))
-       .then(data => setCards([...cards,data]))
+       .then(resp => {
+        if (resp.ok) {
+            resp.json()
+            .then((data => setCards([...cards,data])))
+        }
+
+        else{
+            resp.json()
+            .then(data => console.log(data))
+        }
+       }) 
+        
+    //     (resp.json()))
+    //    .then(data => setCards([...cards,data]))
        
        //some kind of response that it was added sucessfully or not.
 

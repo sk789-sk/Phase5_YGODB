@@ -41,13 +41,13 @@ INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (2,2,3);
 INSERT INTO CardsinDecks (deck_id,card_id,quantity) VALUES (2,1,3);
 
 
-INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,1);
-INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,2);
-INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,TRUE,2,3);
-INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,False,2,1);
-INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES (1,False,2,2);
+INSERT INTO Inventories (quantity,isFirstEd,user_id,cardinSet_id) VALUES (1,TRUE,2,1);
+INSERT INTO Inventories (quantity,isFirstEd,user_id,cardinSet_id) VALUES (1,TRUE,2,2);
+INSERT INTO Inventories (quantity,isFirstEd,user_id,cardinSet_id) VALUES (1,TRUE,2,3);
+INSERT INTO Inventories (quantity,isFirstEd,user_id,cardinSet_id) VALUES (1,False,2,1);
+INSERT INTO Inventories (quantity,isFirstEd,user_id,cardinSet_id) VALUES (1,False,2,2);
 
-INSERT INTO Inventories (quantity,isFirstEd,user_id,card_id) VALUES(1,TrUE,1,1);
+INSERT INTO Inventories (quantity,isFirstEd,user_id,cardinSet_id) VALUES(1,TrUE,1,1);
 
 DELETE FROM Cards;
 DELETE FROM Users;

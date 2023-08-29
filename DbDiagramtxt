@@ -91,7 +91,7 @@ Table CardsinDeck {
 
 Ref: "User"."id" < "Inventory"."user_id"
 
-Ref: "Card"."id" < "Inventory"."card_id"
+Ref: "CardinSet"."id" < "Inventory"."card_id"
 
 Ref: "Decks"."user_id" < "User"."id"
 
