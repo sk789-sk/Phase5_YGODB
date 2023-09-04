@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import { Link } from "react-router-dom";
+import { Button, Icon, IconButton } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 function Inventory({user}){
 
@@ -22,7 +28,7 @@ function Inventory({user}){
 
     //We need to make sure that the user has cards to render. If not we will get an error
     // what does setCards equal if there is nothing in the fetch?
-
+    
     function handleSearch(e){
         e.preventDefault()
         setFilterText((filtertext) =>e.target[0].value)
@@ -39,9 +45,10 @@ function Inventory({user}){
         
         return <TableRow  
         
-        data={[ card.cardinSet.card.name, card.cardinSet.card.card_type, card.cardinSet.rarity, card.cardinSet.card.card_image ,card.cardinSet.card_code,card.quantity]} 
+        data={[ card.cardinSet.card.name, card.cardinSet.card.card_type, card.cardinSet.rarity, card.cardinSet.card.card_image,card.cardinSet.card_code,card.quantity, card.isFirstEd ? <CheckIcon/>:<CloseIcon/> ]} 
         
-        button ={<button onClick={ () => 
+        button ={<Button 
+            onClick={ () => 
             fetch(`/inventory/${user.id}/${card.card.id}`, {
                 method: "PATCH",
                 headers: {
@@ -54,10 +61,13 @@ function Inventory({user}){
             .then(console.log(card.card.id))
             .then((resp) => resp.json())
             .then((json) => console.log(json))
-         }>
-        Edit Quantity</button>}
+         }
+         
+         variant="outlined"
+         size="small">
+        <EditIcon/></Button>}
 
-        deletebutton = {<button onClick={ () =>
+        deletebutton = {<Button  onClick={ () =>
     
             fetch(`/inventory/${user.id}/${card.card.id}`, {
             method: "DELETE",
@@ -65,8 +75,10 @@ function Inventory({user}){
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        })}>
-        Delete</button>} 
+        })}
+        variant="outlined"
+        size="small">
+        <DeleteIcon color="primary"/></Button>} 
         />
 
     })  //()=>console.log(card.card.id)
@@ -126,6 +138,7 @@ function Inventory({user}){
         <div className="componentdiv">
             <NavBar />
             <br></br>
+            <Button onClick={() => console.log('hi')}>Test</Button>
             <form onSubmit={handleSearch} className="search">
                 <input type="text" placeholder="Search..." />
                 <button className="searchbutton" type="submit">Search</button>
@@ -141,6 +154,7 @@ function Inventory({user}){
                     <th>Image</th>
                     <th>Set-ID</th>
                     <th>Quantity</th>
+                    <th>First Edition?</th>
                 </tr>
                 {renderRows}
 
