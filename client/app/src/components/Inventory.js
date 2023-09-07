@@ -10,16 +10,21 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 function Inventory({user}){
-
+    //render States
     const [cards,setCards] = useState([])
     const [newQuantity,setNewQuantity] = useState(0)
-    const [filtertext,setFilterText] = useState('')
     const [refresh,setRefresh] = useState(true)
     const [errorMessage,setErrorMessage] = useState('')
     const [isError,setIsError] = useState(false)
-    //this is a set code and then a numeric code, better to store as a dictoinary of set code with a list of numeric codes wouldnt have to go through everything. Refactor after 
-    //useState seems like a bad way to do this. I would rather give each one its own 
-
+    
+    //Filter States
+    const [filtertext,setFilterText] = useState('')
+    const [filterRarity,setFilterRarity] = useState('')    
+    const [filterSet,setFilterSet] = useState('')
+    const [filterType,setFilterType] = useState('')
+    
+    console.log(user)
+    
     useEffect( () => {
         fetch(`/inventory/${user.id}`) 
         .then((resp) => resp.json())
@@ -29,17 +34,61 @@ function Inventory({user}){
 
     //We need to make sure that the user has cards to render. If not we will get an error
     // what does setCards equal if there is nothing in the fetch?
-    
+      
+
     function handleSearch(e){
         e.preventDefault()
         setFilterText((filtertext) =>e.target[0].value)
-        console.log(filtertext)
     }
 
     const filteredCards = cards.filter((card) => {
         return (card.cardinSet.card.name.toLowerCase().includes(filtertext.toLowerCase()))
     })
 
+
+    function handleSubmit(e){
+       e.preventDefault()
+       let card_name = e.target['card-name'].value
+       let card_quantity = e.target['quantity'].value
+       let isFirst = e.target[3].checked
+       let card_id = e.target['set-id'].value
+       
+       //We will have to check if the key (card-id exists in our file to get the actual card_id. Lets assume that we have that and complete the post req)
+
+       // Add client-side validation here
+       // to check if the card exists when the post request is submitted only sucessfull response if 
+
+       const newCard = {
+        'quantity' : card_quantity,
+        'isFirstEd' : isFirst,
+        'user_id' : user.id,
+        'card_id' : card_id
+       }
+       
+       fetch(`inventory/${user.id}` , {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body:JSON.stringify(newCard)
+       })
+       .then(resp => {
+        if (resp.ok) {
+            resp.json()
+            .then((data => setCards([...cards,data])))
+        }
+
+        else{
+            resp.json()
+            .then(data => console.log(data))
+        }
+       }) 
+        
+    }
+
+
+    //Render Functions
     const renderRows = filteredCards.map( (card) => {
         
         return <TableRow  
@@ -85,68 +134,63 @@ function Inventory({user}){
 
     })  //()=>console.log(card.card.id)
 
-    function handleSubmit(e){
-       e.preventDefault()
-       let card_name = e.target['card-name'].value
-       let card_quantity = e.target['quantity'].value
-       let isFirst = e.target[3].checked
-       let card_id = e.target['set-id'].value
-       
-       //We will have to check if the key (card-id exists in our file to get the actual card_id. Lets assume that we have that and complete the post req)
+    const mst=['','Monster','Spell','Trap']
 
-       // Add client-side validation here
-       // to check if the card exists when the post request is submitted only sucessfull response if 
+    const renderMST = mst.map((val) => {
+        return <option value={val}>{val}</option>
+    })
 
-       const newCard = {
-        'quantity' : card_quantity,
-        'isFirstEd' : isFirst,
-        'user_id' : user.id,
-        'card_id' : card_id
-       }
-       
-       fetch(`inventory/${user.id}` , {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
-        body:JSON.stringify(newCard)
-       })
-       .then(resp => {
-        if (resp.ok) {
-            resp.json()
-            .then((data => setCards([...cards,data])))
-        }
+    const rarity=['','Common','Rare','Super Rare','Ultra Rare','Ultimate Rare','Secret Rare','Ghost Rare','Starlight Rare']
 
-        else{
-            resp.json()
-            .then(data => console.log(data))
-        }
-       }) 
-        
-    //     (resp.json()))
-    //    .then(data => setCards([...cards,data]))
-       
-       //some kind of response that it was added sucessfully or not.
+    const renderRarity = rarity.map((val) => {
+        return <option value={val}>{val}</option>
+    })
 
+    const setCode = ['','LOB','MRD','TLM']
 
-       //need a mapping of set id to card id
-
-        //Onsubmit we need to: 
-        //Validate that the card exists in database, validate the fields are all filled out, post request the card to db. 
-    }
+    const renderSetCode = setCode.map((val) => {
+        return <option value={val}>{val}</option>
+    })
 
     return(
         <div className="componentdiv">
             <NavBar />
             <br></br>
-            <Button onClick={() => console.log('hi')}>Test</Button>
+
+            <div className="Search-Filter">
+
             <form onSubmit={handleSearch} className="search">
-                <input type="text" placeholder="Search..." />
+                <input type="text" placeholder="Search by Name..." />
                 <button className="searchbutton" type="submit">Search</button>
             </form>
-            <h1 className="header">Your Inventory</h1>
 
+            {/* Datalist with search of just search */}
+            
+            <form>
+                <input type="search" placeholder="Search by Rarity" list="rarityList" />
+                <input type="search" placeholder="Search by Set" list="setList"/>
+                <input type="search" placeholder="Card Type"  list="typeList"/>
+            </form>
+            
+{/* 
+            Move these datalists into a render function */}
+            <datalist id="typeList">
+                {renderMST}
+            </datalist>
+
+            <datalist id="rarityList">
+                {renderRarity}
+            </datalist>
+            
+            <datalist id="setList">
+                {renderSetCode}
+            </datalist>
+
+            {/* first ed toggle */}
+            
+            </div>
+            
+            <h1 className="header">Your Inventory</h1>
             <table className="tables">
                 <tbody>
                 <tr>

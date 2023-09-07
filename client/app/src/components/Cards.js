@@ -43,20 +43,20 @@ function Cards(){
     })
 
     const mst = ['',"Monster","Spell","Trap"]
-    const renderMSt = mst.map((i) => {
-        return <MenuItem value={i}>{i}</MenuItem>
+    const renderMSt = mst.map((val) => {
+        return <option value={val}>{val}</option>
     })
 
     const attributes = ['','Water', 'Earth', 'Fire', 'Light', 'Dark', 'Wind', 'Divine']
     
     const renderAttributes = attributes.map((attribute) => {
-        return <MenuItem value={attribute}>{attribute}</MenuItem>
+        return <option value={attribute}>{attribute}</option>
     })
 
     const card_race = ['','Fish','Machine','Fairy']
 
     const renderRace = card_race.map((race) => {
-        return <MenuItem value={race}>{race}</MenuItem>
+        return <option value={race}>{race}</option>
     })
 
     const renderRowTest = cards.map((card) => {
@@ -107,23 +107,32 @@ function Cards(){
                     <Button className="searchbutton" type="submit"><SearchIcon size="small"/></Button>
                 </form>
 
-                <Select onChange={handleSelect} name="card-type" value={''} >
-                    {renderMSt}                 
-                </Select>
 
-                <Select name='monster-attribute' value = {''}>
-                    {renderAttributes}
-                </Select>
 
-                <Select name="card-race" valule = {''}>
-                    {renderRace}
-                </Select>
-                <Select name="card-alt-spec" value ={''}>
+                <input onChange={handleSelect} type="search" name="card-type" list="typeList" placeholder="Search by Card Type" /> 
 
-                </Select>
+                <input type="search" name='monster-attribute' list="attributeList" placeholder="Search by Card Attribute" />
+
+                <input type="search" name="card-race" list="raceList" placeholder="CardRace"/>
+
+                <input type="search" name="card-alt-spec" list="altList" />
             </div>
             </Stack>
 
+            <datalist id="typeList">
+                {renderMSt}
+            </datalist>
+            <datalist id="attributeList">
+                {renderAttributes}
+            </datalist>
+            <datalist id="raceList">
+                {renderRace}
+            </datalist>
+            <datalist id="altList">
+
+            </datalist>
+
+            <button>Show Advanced Filter</button>
             
             <div className="pagination-wrapper"> 
                 <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPage} cardsPerPage={cardsPerPage} totalCards={totalCards} setCards={setCards} 
