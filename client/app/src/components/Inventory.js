@@ -45,7 +45,7 @@ function Inventory({user}){
         
         return <TableRow  
         
-        data={[ card.cardinSet.card.name, card.cardinSet.card.card_type, card.cardinSet.rarity, card.cardinSet.card.card_image,card.cardinSet.card_code,card.quantity, card.isFirstEd ? <CheckIcon/>:<CloseIcon/> ]} 
+        data={[ card.cardinSet.card.name, card.cardinSet.card.card_type, card.cardinSet.rarity,card.cardinSet.card_code,card.quantity, card.isFirstEd ? <CheckIcon/>:<CloseIcon/> ]} 
         
         button ={<Button 
             onClick={ () => 
@@ -151,7 +151,6 @@ function Inventory({user}){
                     <th>Card Name</th>
                     <th>Card Type</th>
                     <th>Rarity</th>
-                    <th>Image</th>
                     <th>Set-ID</th>
                     <th>Quantity</th>
                     <th>First Edition?</th>

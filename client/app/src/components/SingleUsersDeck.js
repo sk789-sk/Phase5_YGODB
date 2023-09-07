@@ -1,21 +1,16 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
-import { json, useParams } from "react-router-dom";
+import { json, useParams, Link } from "react-router-dom";
 
 function SingleUsersDeck() {
     //Basically a single deck but we have edit options
 
     const params = useParams()
 
-    const [cardsInDeck,setCardsInDeck] = useState([])
+    const [cardsInDeck,setCardsInDeck] = useState([{card : {card_image:'loading', name:'loading' }, card_id:1,deck_id:1,quantity:1}]) //let load value be something? {cards : {card_image:'loading', name:'loading' }, card_id:1,deck_id:1,quantity:1}
     const [deckName,setDeckName] = useState('')
     const [newQuantity,setNewQuantity] = useState(0)
-
-
-
-    console.log(params.id)
-
 
     useEffect( () => {
         fetch(`/Deck/${params.id}`)
@@ -25,7 +20,30 @@ function SingleUsersDeck() {
 
     //Now we want to render rows with all card info but we want to have the edit buttons to edit quantity or delete from the deck. These will go to the cardinDeck endpoint since that is what we are edditing now .
 
-    console.log(cardsInDeck)
+    //render functions
+
+
+    //Need quantity of each card to render lets just put it into a new array to make life . This can def be done better
+
+    let cardstorender = []
+    for (let card of cardsInDeck){
+        console.log(card)
+        for (let i=0; i<card.quantity;i++){
+            let card_obj = {name:card.card.name, image:card.card.card_image,id:card.card_id}
+            cardstorender.push(card_obj)
+        }
+    }
+    
+    const renderDeckGridElements = cardstorender.map( (card) => {
+    return (
+        <div className="img-grid-item">
+            <Link to={`/Cards/${card.id}`}>
+                <img src={card.image} alt={card.name} />  
+            </Link> 
+        </div>
+            )
+        }
+     )
 
     const renderRows = cardsInDeck.map( (card) => {
         return <TableRow key={card.id} 
@@ -75,22 +93,25 @@ function SingleUsersDeck() {
                body: JSON.stringify({'name' : new_name})
             })
             .then((resp) => resp.json())
-            .then((data) => console.log(json))
+            .then((data) => setDeckName((deckName) =>data.name))
 
         } 
 
+
+
+
+    //logic elements
 
     function handleSubmit(e){
         e.preventDefault()
         let deck_id = params.id
         let card_name = e.target[0].value
-        let card_id = e.target[1].value
-        let card_quantity = e.target[2].value
+        let card_quantity = e.target[1].value
 
 
         const newCardinDeck = {
+            'name' : card_name,
             'deck_id' : deck_id,
-            'card_id' : card_id,
             'quantity' : card_quantity
         }
 
@@ -103,9 +124,26 @@ function SingleUsersDeck() {
             },
             body:JSON.stringify(newCardinDeck)
         })
-        .then(resp => (resp.json()))
-        .then(data => setCardsInDeck(cardsInDeck => ([...cardsInDeck,data])))
+        .then(resp => {
+            if (resp.ok) {
+                console.log('hi')
+                resp.json()
+                .then((data => setCardsInDeck([...cardsInDeck,data])))
+            }
+
+            else{ //in reality this is to toggle some error message
+                console.log('bye')
+                resp.json()
+                .then(data => console.log(data))
+            }
+        }
+        
+        )
+
     }
+
+    console.log(cardsInDeck)
+    console.log(cardsInDeck.length)
 
     return(
         <div className="componentdiv">
@@ -113,7 +151,11 @@ function SingleUsersDeck() {
 
             <br></br>
 
-            <h1 className="header">{deckName}</h1>            
+            <h1 className="header">{deckName}</h1>        
+
+            <div className="img-grid">
+                {renderDeckGridElements}
+            </div>    
 
             <table className="tables">
                 <tbody>
@@ -130,10 +172,6 @@ function SingleUsersDeck() {
             <label>
                 Card Name: 
                 <input type="text" name="card-name"/>
-            </label>
-            <label> 
-                Card-id:
-                <input type="text" name="set-id" placeholder="Ex: MRD-127" />
             </label>
             <label>
                 Quantity

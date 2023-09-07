@@ -1,7 +1,8 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
-import { resolvePath, useParams } from "react-router-dom";
+import { resolvePath, useParams, Link } from "react-router-dom";
+
 
 function SingleDeck () {
 
@@ -26,11 +27,36 @@ function SingleDeck () {
 
     console.log(deckName)
     console.log(deckCreater)
+    console.log('hello')
+
+    let cardstorender = []
+    for (let card of cardsInDeck){
+        for (let i=0; i<card.quantity;i++){
+            let card_obj = {name:card.card.name, image:card.card.card_image,id:card.card_id}
+            cardstorender.push(card_obj)
+        }
+    }
+    
+    const renderDeckGridElements = cardstorender.map( (card) => {
+    return (
+         <div className="img-grid-item">
+            <Link to={`/Cards/${card.id}`}>
+             <img src={card.image} alt={card.name} />  
+             </Link>
+        </div> 
+            )
+        }
+     )
 
     return (
         <div className="componentdiv">
             <NavBar />
             <h3>{deckName} created by {deckCreater}</h3>
+
+            <div className="img-grid">
+                {renderDeckGridElements}
+            </div> 
+
             <table className="tables">
                 <tbody>
                     <tr>

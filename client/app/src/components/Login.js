@@ -22,7 +22,8 @@ function Login( {user, setUser}){
         })
         .then((resp => {
             if (resp.ok) {
-                resp.json().then((user) => setUser(user))
+                resp.json()
+                .then((user) => setUser(user))
             }
         }))
 

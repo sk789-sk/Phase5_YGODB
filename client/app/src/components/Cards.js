@@ -2,9 +2,14 @@ import React, { useEffect,useState } from "react";
 import Button from '@mui/material/Button';
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
+import CardTableRow from "./CardTableRow";
 import PaginationBar from "./PaginationBar";
 import TableRowLink from "./Tablerow_and_Link";
 import Header from "./Header";
+import { Container, InputLabel, MenuItem, Select, Stack, Table, TextField } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
+
+
 
 
 function Cards(){ 
@@ -20,29 +25,55 @@ function Cards(){
     
     let path = `/cards?search=${filtertext}&type=${cardtype}`
 
+
     useEffect( () => {
         fetch('/cards')
         .then (resp => resp.json())
-        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items))) //data needs to be changed to just the cards in the response now and disregard the page totals
+        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items))) 
     },[])
-
-    // const filteredcards = cards.filter(card => {
-    //     return (card.name.toLowerCase().includes(filtertext.toLowerCase()))}
-    //     )
-
    
+    //Render Elements
+
+    for (let card in cards){
+        console.log(cards[card])
+    }
 
     const renderRows = cards.map((card) => {
         return <TableRowLink data={[card.name,card.card_type,card.card_race,card.description]} id={card.id} path={`/Cards/`} />
     })
 
+    const mst = ['',"Monster","Spell","Trap"]
+    const renderMSt = mst.map((i) => {
+        return <MenuItem value={i}>{i}</MenuItem>
+    })
+
+    const attributes = ['','Water', 'Earth', 'Fire', 'Light', 'Dark', 'Wind', 'Divine']
+    
+    const renderAttributes = attributes.map((attribute) => {
+        return <MenuItem value={attribute}>{attribute}</MenuItem>
+    })
+
+    const card_race = ['','Fish','Machine','Fairy']
+
+    const renderRace = card_race.map((race) => {
+        return <MenuItem value={race}>{race}</MenuItem>
+    })
+
+    const renderRowTest = cards.map((card) => {
+        return <CardTableRow data = {card} path={`/Cards/`} />
+    })
+
+
+    //Functional Elements
 
     function handleSubmit(e){
+
         e.preventDefault()
         console.log(e)
-
-        setFilterText((filtertext) => e.target[0].value)
         
+        console.log(e.target[0].value)
+        console.log(cardtype)
+        setFilterText((filtertext) => e.target[0].value)
 
         fetch(`/cards?search=${filtertext}&type=${cardtype}`)
         .then(resp =>resp.json())
@@ -50,6 +81,7 @@ function Cards(){
     }
 
     function handleSelect(e){
+        console.log(e.target.value)
         setCardType((cardtype) => e.target.value)
     }
 
@@ -61,28 +93,52 @@ function Cards(){
         <div className="componentdiv">
             <Header/>
             <NavBar/>    
+
             <br></br>
+            
+            <h1 className="header">Card Database</h1>
+            
+            
+            <Stack direction="row">
             <div className="Search-Filter">
                 <form onChange={handleTextChange} onSubmit={handleSubmit} className="search">
-                    <input type="text" placeholder="Search..." />
-                    <button className="searchbutton" type="submit">Search</button>
+                    <TextField type="text" name="search-txt" placeholder="Search..." variant="outlined" color="primary" size="small" fullWidth>
+                    </TextField>
+                    <Button className="searchbutton" type="submit"><SearchIcon size="small"/></Button>
                 </form>
 
-                <select onChange={handleSelect} name="card-type">
-                    <option value = "">All Cards</option>
-                    <option value = "Monster">Monsters</option>
-                    <option value = "Spell">Spell</option>
-                    <option value = "Trap">Traps</option>                    
-                </select>
-            </div>
+                <Select onChange={handleSelect} name="card-type" value={''} >
+                    {renderMSt}                 
+                </Select>
 
-            <h1 className="header">Card Database</h1>
+                <Select name='monster-attribute' value = {''}>
+                    {renderAttributes}
+                </Select>
+
+                <Select name="card-race" valule = {''}>
+                    {renderRace}
+                </Select>
+                <Select name="card-alt-spec" value ={''}>
+
+                </Select>
+            </div>
+            </Stack>
+
+            
             <div className="pagination-wrapper"> 
-            <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPage} cardsPerPage={cardsPerPage} totalCards={totalCards} setCards={setCards} 
-            path={path}/>
+                <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPage} cardsPerPage={cardsPerPage} totalCards={totalCards} setCards={setCards} 
+                path={path}/>
             </div>
             
-            <table className="tables" id="card-table">
+
+            <table className="tabletest">
+                <tbody>
+                    {renderRowTest}
+                </tbody>
+            </table>
+
+
+            {/* <table className="tables" id="card-table">
                 <tbody>
                 <tr>
                     <th>Card Name</th>
@@ -93,8 +149,7 @@ function Cards(){
                 {renderRows}
                 </tbody>
 
-            </table>
-            <Button variant="contained">Hello World</Button>
+            </table> */}
         </div>
     )}
 

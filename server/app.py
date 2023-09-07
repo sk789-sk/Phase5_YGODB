@@ -463,26 +463,34 @@ def cardindeckpost():
     if request.method == 'POST':
             
         data = request.get_json()
-            
-        try:
-            new_card_in_deck = CardinDeck(
-                deck_id = data['deck_id'],
-                card_id = data['card_id'],
-                quantity = data['quantity']
-            )
 
-            db.session.add(new_card_in_deck)
-            db.session.commit()
-            response = make_response(new_card_in_deck.to_dict(),200)
-            
-        except ValueError:
-           response = make_response(
-           { "errors": ["validation errors"] },
-            400
-        )
-    else:
-        response = make_response({},404)
-    return response
+        card = Card.query.filter((Card.name==data['name'])).first()
+        #Check if name is in DB if so get the associated ID 
+        print(card)
+        print(data['name'])       
+
+        if card:
+            print(card.id) 
+
+            try:
+                new_card_in_deck = CardinDeck(
+                    deck_id = data['deck_id'],
+                    card_id = card.id,
+                    quantity = data['quantity']
+                )
+
+                db.session.add(new_card_in_deck)
+                db.session.commit()
+                response = make_response(new_card_in_deck.to_dict(),200)
+                
+            except ValueError:
+                response = make_response(
+                { "errors": ["validation errors"] },
+                    400
+                )
+        else:
+            response = make_response({},404)
+        return response
 
 @app.route('/cardindeck/<int:id>',methods = ['GET','PATCH','POST','DELETE'])
 #Adjust the cards in a deck. User should only be able to edit cards in their own deck need to add auth for that. a few things need auth so need to look into that now. Visually If i remove something from the deck I would want to see that reflected right away Only when saving do we commit all the changes to the DB. What is changing on the DB is deck_id and associated card_id
