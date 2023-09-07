@@ -16,9 +16,10 @@ function PaginationBar ({currentPage,setCurrentPage,lastPage,cardsPerPage,totalC
         console.log(path)
         console.log(currentPage)
 
-        console.log(e)
+        console.log(e.currentTarget.value)
+        console.log(e.target.value)
         
-        const offset = parseInt(e.target.value)
+        const offset = parseInt(e.currentTarget.value)
                 
         let newPage = currentPage + offset      
         
@@ -39,7 +40,7 @@ function PaginationBar ({currentPage,setCurrentPage,lastPage,cardsPerPage,totalC
 
             <div className="pagination-controls">
                 <button disabled={currentPage===1} onClick={handleClick} value={1-currentPage}><FirstPageIcon/> </button>
-                <button disabled= {currentPage===1} onClick={handleClick} value={-1}>Next</button>
+                <button disabled= {currentPage===1} onClick={handleClick} value={-1}><NavigateBeforeIcon/></button>
                 <button disabled= {(currentPage-2) <1} onClick={handleClick} hidden={(currentPage-2) <1} value={-2}>{currentPage-2}</button>
                 <button disabled= {(currentPage-1) <1} onClick={handleClick} hidden={(currentPage-1) <1} value={-1}>{currentPage-1} </button>
                 <button>{currentPage}</button>

@@ -7,11 +7,6 @@ function CardTableRow({data, path}){
 
     //each one of these values should have a key 
     
-    console.log(data)
-    console.log(path)
-    
-    console.log(data.id)
-
     //Make the whole row return a link next
 
     return(

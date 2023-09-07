@@ -34,9 +34,9 @@ function Cards(){
    
     //Render Elements
 
-    for (let card in cards){
-        console.log(cards[card])
-    }
+    // for (let card in cards){
+    //     console.log(cards[card])
+    // }
 
     const renderRows = cards.map((card) => {
         return <TableRowLink data={[card.name,card.card_type,card.card_race,card.description]} id={card.id} path={`/Cards/`} />
