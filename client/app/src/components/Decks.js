@@ -26,14 +26,15 @@ function Decks () {
     })
 
     const renderDecks = publicDecks.filter((deck) => {
-        console.log(deck.name)
+        // console.log(deck.created_at.split(' ')[0])
         return (deck.name.toLowerCase().includes(filtertext.toLowerCase()) || deck.user.username.toLowerCase().includes(filtertext.toLowerCase()))
     })
 
     const renderRows = renderDecks.map((deck) => {
+        // console.log(deck.created_at.split(' ')[0])
         return <TableRowLink key={deck.id} 
         
-        data={ [deck.name, deck.user.username , deck.card_in_deck.length, deck.created_at]  }
+        data={ [deck.name, deck.user.username , deck.card_in_deck.length, deck.created_at.split(' ')[0]]  }
         id={deck.id} path={`/Decks/`}
         />
     })

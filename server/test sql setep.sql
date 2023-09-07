@@ -59,3 +59,6 @@ DELETE FROM CardsinSets;
 DELETE FROM Inventories WHERE id=8;
 
 UPDATE Decks SET isPublic = 1 Where id=3;
+
+
+UPDATE Decks Set created_at = '2023-09-05 23:43:24' where id <4;

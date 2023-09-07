@@ -11,6 +11,7 @@ function UserDecks ({user}) {
 
     const [userDecks,setUserDecks] = useState([])
     const [filtertext,setFilterText] = useState('')
+    const [refresh,setRefresh] = useState(true)
 
     useEffect( () => {
         fetch(`/Decks/${user.id}`)
@@ -26,7 +27,7 @@ function UserDecks ({user}) {
 
     const renderDecks = filteredDecks.map( (deck) => {
         return <TableRowEdit key={deck.id} 
-        data = { [deck.name, deck.card_in_deck.length,deck.created_at]}
+        data = { [deck.name, deck.card_in_deck.length,deck.created_at.split(' ')[0]]}
         id={deck.id} 
         
         deletebutton = {<button onClick={ () =>

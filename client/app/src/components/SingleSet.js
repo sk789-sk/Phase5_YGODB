@@ -26,7 +26,7 @@ function SingleSet() {
     })
 
     const renderCards = filteredcards.map ((card) => {
-        return <TableRow key={card.set_id} 
+        return <TableRow key={card.card_code} 
         data = {[<Link to={`/Cards/${card.card_id}`}> {card.card.name} </Link>,
              card.rarity, 
              card.card_code,

@@ -24,6 +24,12 @@ Functional
 - [ ] Inventory Search Options 
 - [ ] Inventory Should Have Pagination 
 - [ ] Proper User Auth with encryption and sessions or token
+- [ ] Remove trailing whitespace in the inputs
+- [ ] Remove case sensitivity on DB search
+- [ ] Allow Deck Creation to be private
+- [ ] Deck creation must have name
+- [ ] Found a seeding issue. Originally it looked like all the end points for different cards did not have any overlap but that is not true. Saw an overlap for Ducker Mobile Cannon, where it shows in both effect monsters and flip effect monsters. Will need to adjust the way seeding works to grab the card and figure out where it belongs as a result. Problem is that we now have extra cards shown, and release sets have duplicates. Can find duplicates by looking at how many cards are supposed to be in a set vs how many cards are printed in a set. Its how we found the issue in the first place. 
+ https://db.ygoprodeck.com/api/v7/cardinfo.php?num=5&offset=0 
 
 UI
 - [] Move Deck Grids into own component
