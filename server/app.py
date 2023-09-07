@@ -613,7 +613,7 @@ def invent_by_id(id):
 #Maybe query all and then filter inventory cards by name? 
 def user_invent_card(id,card_id):
 
-    card=Inventory.query.filter(Inventory.user_id==id,Inventory.card_id==card_id).first()
+    card=Inventory.query.filter(Inventory.user_id==id,Inventory.cardinSet_id==card_id).first()
 
     #What I actually want to do is use the id to filter by cards that a user owns. Then check the card_table for ones that match in name
 
@@ -655,7 +655,7 @@ def user_invent_card(id,card_id):
         response = make_response( {
             'Error':'Does not exist'},404
         )
-
+    print(response)
     return response
 
 @app.route('/Login', methods = ['POST'])

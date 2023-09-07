@@ -14,6 +14,7 @@ function Inventory({user}){
     const [cards,setCards] = useState([])
     const [newQuantity,setNewQuantity] = useState(0)
     const [filtertext,setFilterText] = useState('')
+    const [refresh,setRefresh] = useState(true)
     const [errorMessage,setErrorMessage] = useState('')
     const [isError,setIsError] = useState(false)
     //this is a set code and then a numeric code, better to store as a dictoinary of set code with a list of numeric codes wouldnt have to go through everything. Refactor after 
@@ -23,7 +24,7 @@ function Inventory({user}){
         fetch(`/inventory/${user.id}`) 
         .then((resp) => resp.json())
         .then ((data) =>setCards(data))
-    },[])
+    },[refresh])
     
 
     //We need to make sure that the user has cards to render. If not we will get an error
@@ -34,8 +35,6 @@ function Inventory({user}){
         setFilterText((filtertext) =>e.target[0].value)
         console.log(filtertext)
     }
-
-    console.log(cards)
 
     const filteredCards = cards.filter((card) => {
         return (card.cardinSet.card.name.toLowerCase().includes(filtertext.toLowerCase()))
@@ -49,7 +48,7 @@ function Inventory({user}){
         
         button ={<Button 
             onClick={ () => 
-            fetch(`/inventory/${user.id}/${card.card.id}`, {
+            fetch(`/inventory/${user.id}/${card.cardinSet.id}`, {
                 method: "PATCH",
                 headers: {
                     'Accept' : 'application/json',
@@ -57,11 +56,10 @@ function Inventory({user}){
                 },
                 body: JSON.stringify({quantity : newQuantity})
             })
-            .then(console.log('done'))
-            .then(console.log(card.card.id))
             .then((resp) => resp.json())
             .then((json) => console.log(json))
-         }
+            .then(setRefresh(!refresh))
+         } //2 options i see, do something like toggle some dummy state to force a refresh, or directly edit the value in the array that is needed. I think a force refresh is better, but both options are shit but i havent really made any effort to keep track of whats what in the state array.
          
          variant="outlined"
          size="small">
@@ -69,13 +67,17 @@ function Inventory({user}){
 
         deletebutton = {<Button  onClick={ () =>
     
-            fetch(`/inventory/${user.id}/${card.card.id}`, {
+            fetch(`/inventory/${user.id}/${card.cardinSet.id}`, {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        })}
+        })
+        .then((resp) => resp.text())
+        .then((data) => console.log(data + 'hi'))
+        .then(setRefresh(!refresh))
+    }
         variant="outlined"
         size="small">
         <DeleteIcon color="primary"/></Button>} 
