@@ -105,7 +105,7 @@ function Cards(){
                     <TextField type="text" name="search-txt" placeholder="Search..." variant="outlined" color="primary" size="small" fullWidth>
                     </TextField>
                     <Button className="searchbutton" type="submit"><SearchIcon size="small"/></Button>
-                </form>
+                
 
 
 
@@ -116,6 +116,7 @@ function Cards(){
                 <input type="search" name="card-race" list="raceList" placeholder="CardRace"/>
 
                 <input type="search" name="card-alt-spec" list="altList" />
+                </form>
             </div>
             </Stack>
 

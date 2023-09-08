@@ -150,7 +150,7 @@ def paginate(query,page, per_page):
     return query.paginate(page=page,per_page=per_page) #these all have to be deinfed with keyword only?
 
 
-@app.route('/cards') #Load all card info. Ideally we only need the info of 1 card and not reprints/etc so just the first instance of the name. Only 1 name instead of loading 5682 copies of DMG
+@app.route('/cards') #Load all card info. 
 def cards():
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page',default=20,type=int)
@@ -580,16 +580,42 @@ def invent_by_id(id):
     else: #We have a get or a delete then 
 
 
-        inventory = Inventory.query.filter(Inventory.user_id == id).all()
+        inventory = Inventory.query.filter(Inventory.user_id == id)
 
         if inventory: #if this user has an inventory
         
             if request.method == 'GET':
-                cards_in_invent = []
-                for card in inventory:
-                    cards_in_invent.append(card.to_dict())
 
-                response = make_response(jsonify(cards_in_invent),200)
+                page = request.args.get('page', default=1, type=int)
+                per_page = request.args.get('per_page',default=20,type=int)
+
+                card_name = request.args.get('search', type=str)
+                card_rarity = request.args.get('rarity', type=str)
+
+                paginated_inventory = paginate(inventory,page,per_page)
+
+                card_list = []
+                for card in paginated_inventory.items:
+                    card_list.append(card.to_dict(rules=('-cardinSet.card.card_in_deck',)))
+
+                response_data = {
+                  'cards' : card_list,
+                  'page' : page,
+                  'per_page': per_page,
+                  'total_pages':paginated_inventory.pages,
+                  'total_items':paginated_inventory.total
+                }
+
+                response = make_response(
+                    jsonify(response_data),200)
+
+
+
+                # cards_in_invent = []
+                # for card in inventory:
+                #     cards_in_invent.append(card.to_dict())
+
+                # response = make_response(jsonify(cards_in_invent),200)
             
             if request.method == 'DELETE':
                 #user deletes the entire inventory
