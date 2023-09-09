@@ -158,21 +158,52 @@ def cards():
     #basic filter terms
     card_name = request.args.get('search', type=str)
     card_type = request.args.get('type', type=str)
+    card_race = request.args.get('race', type=str)
+
+    all_cards = Card.query
+
+    # print(request.args)
+    filters = []
+
+    for key in request.args: 
+        print(key,request.args[key])
+
+        #New issue, Different filter elements need filter conditions, some need exact matches while others just need to check for substrings. We could have 2 different types of filter elements based on attribute i suppose? page and per_page are also parameters that need to be removed
+        skip_keys = ['page','per_page']
+        must_equal = ['card_type','card_race','card_attribute'] #ilike
+        partial_equal = ['name'] #contains
+
+        if key in skip_keys:
+            continue
+
+        if key == 'name':
+            filter_element = getattr(Card,key).contains(request.args[key])
+        else:
+            filter_element = getattr(Card,key).ilike(request.args[key])
+
+        filters.append(filter_element)
+
+    cardinfo = Card.query.filter(*filters)
+    paginated_cards = paginate(cardinfo,page,per_page)
+
+
+
     
-    if card_type and card_name:
-        cardinfo = Card.query.filter(Card.card_type.ilike(card_type),Card.name.contains(card_name))
-        paginated_cards = paginate(cardinfo,page,per_page)
-    elif card_name:
-        print(card_name)
-        cardinfo = Card.query.filter(Card.name.contains(card_name))
-        paginated_cards = paginate(cardinfo,page,per_page)
-    elif card_type:
-        #if we get either value we have a filter 
-        cardinfo = Card.query.filter(Card.card_type.ilike(card_type))
-        paginated_cards = paginate(cardinfo,page,per_page)
-    else:
-        cardinfo = db.session.query(Card)
-        paginated_cards = paginate(cardinfo,page,per_page) 
+    
+    # if card_type and card_name:
+    #     cardinfo = Card.query.filter(Card.card_type.ilike(card_type),Card.name.contains(card_name))
+    #     paginated_cards = paginate(cardinfo,page,per_page)
+    # elif card_name:
+    #     print(card_name)
+    #     cardinfo = Card.query.filter(Card.name.contains(card_name))
+    #     paginated_cards = paginate(cardinfo,page,per_page)
+    # elif card_type:
+    #     #if we get either value we have a filter 
+    #     cardinfo = Card.query.filter(Card.card_type.ilike(card_type))
+    #     paginated_cards = paginate(cardinfo,page,per_page)
+    # else:
+    #     cardinfo = db.session.query(Card)
+    #     paginated_cards = paginate(cardinfo,page,per_page) 
 
 
 
@@ -580,17 +611,33 @@ def invent_by_id(id):
     else: #We have a get or a delete then 
 
 
-        inventory = Inventory.query.filter(Inventory.user_id == id)
+        inventory = Inventory.query.filter(Inventory.user_id == id) #this is the base query
 
         if inventory: #if this user has an inventory
         
             if request.method == 'GET':
-
                 page = request.args.get('page', default=1, type=int)
-                per_page = request.args.get('per_page',default=20,type=int)
+                per_page = request.args.get('per_page',default=20,type=int)  
 
                 card_name = request.args.get('search', type=str)
                 card_rarity = request.args.get('rarity', type=str)
+
+                         
+                filters = []
+                    #Filter parameters
+
+                if filters:
+                        #filter the base query 
+                        print('hah')
+                else:
+                    #paginated inventory if no filters
+                    paginated_inventory = paginate(inventory,page,per_page)
+
+
+
+
+
+
 
                 paginated_inventory = paginate(inventory,page,per_page)
 
@@ -609,13 +656,6 @@ def invent_by_id(id):
                 response = make_response(
                     jsonify(response_data),200)
 
-
-
-                # cards_in_invent = []
-                # for card in inventory:
-                #     cards_in_invent.append(card.to_dict())
-
-                # response = make_response(jsonify(cards_in_invent),200)
             
             if request.method == 'DELETE':
                 #user deletes the entire inventory

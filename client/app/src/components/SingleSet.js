@@ -25,6 +25,8 @@ function SingleSet() {
         || card.rarity.toLowerCase().includes(filtertext.toLowerCase()))
     })
 
+    //some duplicates in db?
+
     const renderCards = filteredcards.map ((card) => {
         return <TableRow key={card.card_code} 
         data = {[<Link to={`/Cards/${card.card_id}`}> {card.card.name} </Link>,

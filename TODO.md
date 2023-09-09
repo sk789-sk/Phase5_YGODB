@@ -6,23 +6,23 @@ Functional
 - [x] Add Rest of Cards to Database
 - [x] Move Basic Filtering to the Backend
 - [x] Fix seeding of DB so cards match release sets( ordering issue)
-- [ ] Fix duplicate rendering due to duplite keys on react 
-- [] Create Advanced Filtering Backend
+- [x] Fix duplicate rendering due to duplite keys on react 
 - [x] Create Advanced Filtering UI 
-- [] User Profiles are clickable and accessible 
 - [x] Adding cards to inventory done by set id w/ verification
 - [x] Adding cards to a deck dont by card name w/ verification
+- 
 - [ ] Build reconciliation table between inventory and decks
 - [x] Inventory update and delete need to be updated
-- [ ] Sorting and ordering options 
-- [ ] inventory pagination
-- [ ] Fix Card Count on decks(Currently shows unique cards and does not account for duplicates)
+- [ ]
+- [x] inventory pagination on backend
+- [ ] inventory pagination on frontend
+- [ ] inventory pagination and filter
 - [ ] 
+- [ ] Fix Card Count on decks(Currently shows unique cards and does not account for duplicates)
+- [ ]  Sorting and ordering options 
 - [] Do not allow duplicates of card ID in user inventory
 - [] sessions for password hashing and authentification/authorization
 - [ ] Error Responses should give feedback to user and not just console outputs.
-- [ ] Inventory Search Options 
-- [ ] Inventory Should Have Pagination 
 - [ ] Proper User Auth with encryption and sessions or token
 - [ ] Remove trailing whitespace in the inputs
 - [ ] Remove case sensitivity on DB search

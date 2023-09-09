@@ -7,11 +7,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-
+import PaginationBar from "./PaginationBar"
 
 function Inventory({user}){
     //render States
     const [cards,setCards] = useState([])
+
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+    const [cardsPerPage, setCardsPerPage] = useState(20)
+    const [totalCards,setTotalCards] = useState(0)
+
     const [newQuantity,setNewQuantity] = useState(0)
     const [refresh,setRefresh] = useState(true)
     const [errorMessage,setErrorMessage] = useState('')
@@ -23,14 +29,13 @@ function Inventory({user}){
     const [filterSet,setFilterSet] = useState('')
     const [filterType,setFilterType] = useState('')
     
-    console.log(user)
-    
     useEffect( () => {
         fetch(`/inventory/${user.id}`) 
         .then((resp) => resp.json())
-        .then ((data) =>setCards(data))
+        .then ((data) =>(setCards(data.cards),setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items) ))
     },[refresh])
     
+    let path = `/Inventory/${user.id}?search=${filtertext}`
 
     //We need to make sure that the user has cards to render. If not we will get an error
     // what does setCards equal if there is nothing in the fetch?
@@ -38,6 +43,8 @@ function Inventory({user}){
 
     function handleSearch(e){
         e.preventDefault()
+
+        //This filter will now send a new get request with the parameters to the backend
         setFilterText((filtertext) =>e.target[0].value)
     }
 
@@ -191,6 +198,11 @@ function Inventory({user}){
             </div>
             
             <h1 className="header">Your Inventory</h1>
+
+            <div className="pagination-wrapper">
+                <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPages} cardsPerPage = {cardsPerPage} totalCards={totalCards} setCards={setCards} path={path} />
+
+            </div>
             <table className="tables">
                 <tbody>
                 <tr>
