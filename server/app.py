@@ -156,11 +156,6 @@ def cards():
     per_page = request.args.get('per_page',default=20,type=int)
 
     #basic filter terms
-    card_name = request.args.get('search', type=str)
-    card_type = request.args.get('type', type=str)
-    card_race = request.args.get('race', type=str)
-
-    all_cards = Card.query
 
     # print(request.args)
     filters = []
@@ -185,27 +180,6 @@ def cards():
 
     cardinfo = Card.query.filter(*filters)
     paginated_cards = paginate(cardinfo,page,per_page)
-
-
-
-    
-    
-    # if card_type and card_name:
-    #     cardinfo = Card.query.filter(Card.card_type.ilike(card_type),Card.name.contains(card_name))
-    #     paginated_cards = paginate(cardinfo,page,per_page)
-    # elif card_name:
-    #     print(card_name)
-    #     cardinfo = Card.query.filter(Card.name.contains(card_name))
-    #     paginated_cards = paginate(cardinfo,page,per_page)
-    # elif card_type:
-    #     #if we get either value we have a filter 
-    #     cardinfo = Card.query.filter(Card.card_type.ilike(card_type))
-    #     paginated_cards = paginate(cardinfo,page,per_page)
-    # else:
-    #     cardinfo = db.session.query(Card)
-    #     paginated_cards = paginate(cardinfo,page,per_page) 
-
-
 
     #cards = paginated_cards.items   #this is an instance of each card basically 1 row in table or 1 object
 
@@ -619,27 +593,44 @@ def invent_by_id(id):
                 page = request.args.get('page', default=1, type=int)
                 per_page = request.args.get('per_page',default=20,type=int)  
 
-                card_name = request.args.get('search', type=str)
-                card_rarity = request.args.get('rarity', type=str)
+
 
                          
                 filters = []
                     #Filter parameters
-
-                if filters:
-                        #filter the base query 
-                        print('hah')
-                else:
-                    #paginated inventory if no filters
-                    paginated_inventory = paginate(inventory,page,per_page)
+                for key in request.args:
+                    print(key,request.args[key])
+                    skip_keys = ['page','per_page']
+                    must_equal = ['rarity','card_type']
+                    partial_equal = ['name','card_code']
 
 
+                    if key in skip_keys:
+                        continue
+
+                    if key == 'name':
+                        filter_element = Card.name.contains(request.args[key])
+                    if key == 'card_code':
+                        filter_element = CardinSet.card_code.contains(request.args[key])
+                    if key =='rarity':
+                        filter_element = CardinSet.rarity.ilike(request.args[key])
+                    if key == 'card_type':
+                        filter_element = Card.card_type.ilike(request.args[key])
+
+                    filters.append(filter_element)
+
+                    
+                    #maybe have a functionary for each key with the associated filter query
+                
 
 
+                base = db.session.query(Inventory)
 
+                invent = base.filter(Inventory.user_id==id).outerjoin(CardinSet,Inventory.cardinSet_id==CardinSet.id).outerjoin(Card,CardinSet.card_id==Card.id) #this is the joined table
 
-
-                paginated_inventory = paginate(inventory,page,per_page)
+                return_inventory = invent.filter(*filters) #this is the query with all the filters
+                
+                paginated_inventory = paginate(return_inventory,page,per_page)
 
                 card_list = []
                 for card in paginated_inventory.items:

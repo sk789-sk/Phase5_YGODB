@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import { Link } from "react-router-dom";
-import { Button, Icon, IconButton } from "@mui/material";
+import { Button, Icon, IconButton, getStepContentUtilityClass } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
@@ -22,20 +22,18 @@ function Inventory({user}){
     const [refresh,setRefresh] = useState(true)
     const [errorMessage,setErrorMessage] = useState('')
     const [isError,setIsError] = useState(false)
+    const [path,setPath] = useState(`/inventory?`)
     
     //Filter States
     const [filtertext,setFilterText] = useState('')
-    const [filterRarity,setFilterRarity] = useState('')    
-    const [filterSet,setFilterSet] = useState('')
-    const [filterType,setFilterType] = useState('')
+
     
     useEffect( () => {
         fetch(`/inventory/${user.id}`) 
         .then((resp) => resp.json())
-        .then ((data) =>(setCards(data.cards),setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items) ))
+        .then ((data) =>(setCards(data.cards),setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items),setPath(`/inventory/${user.id}?`) ))
     },[refresh])
     
-    let path = `/Inventory/${user.id}?search=${filtertext}`
 
     //We need to make sure that the user has cards to render. If not we will get an error
     // what does setCards equal if there is nothing in the fetch?
@@ -44,13 +42,24 @@ function Inventory({user}){
     function handleSearch(e){
         e.preventDefault()
 
-        //This filter will now send a new get request with the parameters to the backend
-        setFilterText((filtertext) =>e.target[0].value)
-    }
+        console.log(e)
+        let new_path = `/inventory/${user.id}?` 
+        let form = document.getElementById("inventory-search-form")
+        let inputs = form.querySelectorAll("input")
 
-    const filteredCards = cards.filter((card) => {
-        return (card.cardinSet.card.name.toLowerCase().includes(filtertext.toLowerCase()))
-    })
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].value !== ""){
+                new_path = new_path+`${inputs[i].dataset.key}=${inputs[i].value}&`
+                console.log(new_path)
+            }
+        }
+
+        console.log(new_path)
+
+        fetch(new_path)
+        .then(resp =>resp.json())
+        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items),setPath(new_path)))        
+    }
 
 
     function handleSubmit(e){
@@ -96,7 +105,7 @@ function Inventory({user}){
 
 
     //Render Functions
-    const renderRows = filteredCards.map( (card) => {
+    const renderRows = cards.map( (card) => {
         
         return <TableRow  
         
@@ -166,21 +175,22 @@ function Inventory({user}){
 
             <div className="Search-Filter">
 
-            <form onSubmit={handleSearch} className="search">
-                <input type="text" placeholder="Search by Name..." />
-                <button className="searchbutton" type="submit">Search</button>
-            </form>
+            <form onSubmit={handleSearch} className="search" id="inventory-search-form">
+                
+                <input type="text" data-key="name" placeholder="Search by Name..." />
 
-            {/* Datalist with search of just search */}
+    
             
-            <form>
-                <input type="search" placeholder="Search by Rarity" list="rarityList" />
-                <input type="search" placeholder="Search by Set" list="setList"/>
-                <input type="search" placeholder="Card Type"  list="typeList"/>
+            
+                <input type="search" placeholder="Search by Rarity" list="rarityList" data-key="rarity"/>
+                <input type="search" placeholder="Search by Set" list="setList" data-key="card_code"/>
+                <input type="search" placeholder="Card Type"  list="typeList" data-key="card_type"/>
+
+                <button className="searchbutton" type="submit">Search</button>
+
+            
             </form>
             
-{/* 
-            Move these datalists into a render function */}
             <datalist id="typeList">
                 {renderMST}
             </datalist>

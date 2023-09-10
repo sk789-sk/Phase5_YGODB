@@ -21,11 +21,11 @@ function Cards(){
     const [totalPage,setTotalPages] = useState(1)
     const [cardsPerPage,setCardsPerPage] = useState(20)
     const [totalCards,setTotalCards] = useState(0)
-    // const [path,setPath] = useState(`/cards?search=${filtertext}&type=${cardtype}`)
+    const [path,setPath] = useState(`/cards?`)
     
     //this path needs to consider all equalities. Filters by greater than or less maybe do with 
     //base path should just be /cards? then we can add the filter elements with the onclick.
-    let path = `/cards?search=${filtertext}&type=${cardtype}`
+
 
 
     useEffect( () => {
@@ -73,39 +73,16 @@ function Cards(){
         e.preventDefault()
         console.log(e)
         
-        let path = `/cards?`
-
-
-        // const val1 = (e.target['search-text'].value)
-        // const key1 = (e.target['search-text'].dataset.key) //these are the column names in db for the fetch
-
-        // const val2=(e.target['card-attribute'].value)
-        // const key2=(e.target['card-attribute'].dataset.key)
-
-        // const val3=(e.target['card-type'].value)
-        // const key3=(e.target['card-type'].dataset.key)
-
-        // const val4=(e.target['card-race'].value)
-        // const key4=(e.target['card-race'].dataset.key)
-
+        let new_path = `/cards?`
         let form = document.getElementById("card-search-form")
         let inputs = form.querySelectorAll("input")
 
         for (let i = 0; i < inputs.length; i++) {
-            console.log(inputs[i].value, inputs[i].dataset.key)
-
             if (inputs[i].value !== ""){
-                path = path+`${inputs[i].dataset.key}=${inputs[i].value}&`
-                console.log(path)
+                new_path = new_path+`${inputs[i].dataset.key}=${inputs[i].value}&`
+                console.log(new_path)
             }
         }
-
-        //there should be a way to iterate over the different inputs i think so i can discard the empty ones. and create the fetch url with that
-
-
-
-
-
 
 
         setFilterText((filtertext) => e.target[0].value)
@@ -119,9 +96,9 @@ function Cards(){
         // fetch(`/cards?name=${filtertext}&card_type=${cardtype}`)
 
 
-        fetch(path) //${key1}=${val1}&${key2}=${val2}&${key3}=${val3}&${key4}=${val4}`
+        fetch(new_path)
         .then(resp =>resp.json())
-        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items)))
+        .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items),setPath(new_path)))
     }
 
     function handleSelect(e){

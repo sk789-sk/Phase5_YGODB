@@ -82,6 +82,10 @@ class Inventory(db.Model, SerializerMixin):
     serialize_rules = ('-user.card_in_inventory','-cardinSet.card_in_inventory','-card.releaseSet','-card.card_in_deck','-user.user_decks')  
     
     #repr
+    # def __repr__(self):
+    #     return f'Inventory belongs to user with id {self.user_id}'
+
+    
 
 class Card(db.Model, SerializerMixin):
     __tablename__ = 'Cards'

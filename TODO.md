@@ -12,12 +12,22 @@ Functional
 - [x] Adding cards to a deck dont by card name w/ verification
 - 
 - [ ] Build reconciliation table between inventory and decks
+
+Inventory Section
 - [x] Inventory update and delete need to be updated
-- [ ]
+- [ ] make it so refresh doesnt reset back to original page
 - [x] inventory pagination on backend
-- [ ] inventory pagination on frontend
-- [ ] inventory pagination and filter
-- [ ] 
+- [x] inventory pagination on frontend
+- [x] inventory pagination and filter
+
+Cards Sections
+- [x] Card Filter backend supports variable amount of filters
+- [ ] Card Filter advanced filter options (POST req)
+- [ ] Card Filter inputs need to be sanitized
+- [x] Cards FrontEnd inputs need to match backend
+- [ ] Cards Pagination Bar needs correct path now and needs to match new fetch. 
+
+
 - [ ] Fix Card Count on decks(Currently shows unique cards and does not account for duplicates)
 - [ ]  Sorting and ordering options 
 - [] Do not allow duplicates of card ID in user inventory
