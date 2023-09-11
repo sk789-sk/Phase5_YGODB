@@ -186,7 +186,7 @@ def cards():
     card_list = []
 
     for card in paginated_cards.items:
-        card_list.append(card.to_dict(rules=('-card_in_deck','-card_in_inventory','-card_on_banlist','-releaseSet')))
+        card_list.append(card.to_dict(rules=('-card_in_deck','-card_in_inventory','-card_on_banlist','-releaseSet','-card_in_set')))
 
     response_data = {
         'cards' : card_list,
@@ -205,7 +205,7 @@ def cards():
 @app.route('/cards/<int:id>')
 def cards_by_id(id):
     card = Card.query.filter(Card.id == id).first()
-    response = make_response(card.to_dict(),200)
+    response = make_response(card.to_dict(rules=('-card_in_deck',)),200)
     return response
 
 

@@ -4,6 +4,7 @@ import TableRow from "./Tablerow";
 import TableRowLink from "./Tablerow_and_Link";
 import SingleDeck from "./SingleDeckView";
 import { Routes, Route, useMatch } from "react-router-dom";
+import Header from "./Header";
 
 function Decks () {
 
@@ -47,7 +48,7 @@ function Decks () {
 
     return(
         <div className="componentdiv">
-            <NavBar />
+            <Header />
             <br></br>
             <form onSubmit={handleSubmit} className="search">
                 <input type="text" placeholder="Search by deck name or username" />

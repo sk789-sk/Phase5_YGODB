@@ -1,5 +1,6 @@
 import React, {useEffect,useState} from "react";
 import NavBar from "./NavBar";
+import Header from "./Header";
 
 function Login( {user, setUser}){
 
@@ -77,7 +78,7 @@ function Login( {user, setUser}){
 
     return(
         <div className="componentdiv">
-            <NavBar />
+            <Header />
             <h1>Login Page</h1>
 
             <form onSubmit={handleLogIn} class="loginform">

@@ -7,7 +7,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import PaginationBar from "./PaginationBar"
+import Header from "./Header";
 
 function Inventory({user}){
     //render States
@@ -22,7 +24,7 @@ function Inventory({user}){
     const [refresh,setRefresh] = useState(true)
     const [errorMessage,setErrorMessage] = useState('')
     const [isError,setIsError] = useState(false)
-    const [path,setPath] = useState(`/inventory?`)
+    const [path,setPath] = useState(`/inventory?${user.id}`)
     
     //Filter States
     const [filtertext,setFilterText] = useState('')
@@ -170,9 +172,12 @@ function Inventory({user}){
 
     return(
         <div className="componentdiv">
-            <NavBar />
+            <Header />
             <br></br>
 
+            <h1 className="header">Your Inventory</h1>
+            
+            <div className="main-content">
             <div className="Search-Filter">
 
             <form onSubmit={handleSearch} className="search" id="inventory-search-form">
@@ -186,7 +191,7 @@ function Inventory({user}){
                 <input type="search" placeholder="Search by Set" list="setList" data-key="card_code"/>
                 <input type="search" placeholder="Card Type"  list="typeList" data-key="card_type"/>
 
-                <button className="searchbutton" type="submit">Search</button>
+                <Button className="searchbutton" type="submit"><SearchIcon size="small"/></Button>
 
             
             </form>
@@ -207,7 +212,7 @@ function Inventory({user}){
             
             </div>
             
-            <h1 className="header">Your Inventory</h1>
+            
 
             <div className="pagination-wrapper">
                 <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPages} cardsPerPage = {cardsPerPage} totalCards={totalCards} setCards={setCards} path={path} />
@@ -229,7 +234,7 @@ function Inventory({user}){
 
             </table>
 
-            <h3 className="header">Add Card to Inventory</h3>
+            <h3 >Add Card to Inventory</h3>
             <form  id = "New-CardinInventory-form" onSubmit={handleSubmit}>
                 <label>
                     Card Name: 
@@ -254,6 +259,7 @@ function Inventory({user}){
             <br></br>
             <h3>Enter New Quantity Below and Press Edit Quantity Button</h3>
         <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
+        </div>
         </div>
     )
 

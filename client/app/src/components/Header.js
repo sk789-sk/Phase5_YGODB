@@ -10,17 +10,9 @@ function Header(){
 
     return(
         <div className="header">
-            <Box>
-            <AppBar color="secondary">
-                <Toolbar>
-                    <Typography variant="h2" color="textPrimary">
-                        YGO-DB
-                    </Typography> 
+ 
                     <NavBar />
-                </Toolbar>
-            </AppBar>
-            </Box>
-            <NavBar />
+
         </div>
     ) 
 

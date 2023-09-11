@@ -4,6 +4,9 @@ import TableRow from "./Tablerow";
 import { Link } from "react-router-dom";
 import TableRowLink from "./Tablerow_and_Link";
 import TableRowEdit from "./TableRowLinkEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Button } from "@mui/material";
+import Header from "./Header";
 
 function UserDecks ({user}) {
     //Load all the decks that a user has. Pass in the users id
@@ -30,7 +33,7 @@ function UserDecks ({user}) {
         data = { [deck.name, deck.card_in_deck.length,deck.created_at.split(' ')[0]]}
         id={deck.id} 
         
-        deletebutton = {<button onClick={ () =>
+        deletebutton = {<Button onClick={ () =>
     
             fetch(`/Decks/${user.id}/${deck.id}`, {
             method: "DELETE",
@@ -39,7 +42,7 @@ function UserDecks ({user}) {
                 'Content-Type': 'application/json'
             }
         })}>
-        Delete</button>}
+        <DeleteIcon/></Button>}
         />
     })
 
@@ -77,7 +80,7 @@ function UserDecks ({user}) {
 
     return ( 
         <div className="componentdiv">
-            <NavBar />
+            <Header />
             <br></br>
             <form onSubmit={handleSubmit} className="search">
                 <input type="text" placeholder="Search by deck name " />

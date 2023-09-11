@@ -2,6 +2,7 @@ import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import { useParams, Link } from "react-router-dom";
+import Header from "./Header";
 
 function SingleSet() {
 
@@ -42,7 +43,7 @@ function SingleSet() {
 
     return (
         <div>
-            <NavBar />
+            <Header />
             <h3>set information</h3>
             <form onSubmit={handleSubmit} className="Deck-search-bar">
                 <input type="text" placeholder="Search by card name or rarity" />

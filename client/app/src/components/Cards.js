@@ -85,10 +85,6 @@ function Cards(){
         }
 
 
-        setFilterText((filtertext) => e.target[0].value)
-
-
-
         //dataset.key to get the custom key
         //e.target[name].value and e.target[name].dataset.key
         //since this is now fetching new data no need to store these values in statei think, 
@@ -112,13 +108,13 @@ function Cards(){
 
     return(
         <div className="componentdiv">
-            <Header/>
-            <NavBar/>    
+            <Header/>    
 
             <br></br>
             
-            <h1 className="header">Card Database</h1>
+            <h1 className="text-header">Card Database</h1>
             
+            <div className="main-content">
             
             <Stack direction="row">
             <div className="Search-Filter">
@@ -126,18 +122,13 @@ function Cards(){
                     <input type="text" name="search-text" placeholder="Search..." data-key='name'>
                     </input>
 
+                    <input onChange={handleSelect} type="search" name="card-type" list="typeList" placeholder="Search by Card Type" data-key='card_type' /> 
+
+                    <input type="search" name='card-attribute' list="attributeList" placeholder="Search by Card Attribute" data-key='card_attribute'/>
+
+                    <input type="search" name="card-race" list="raceList" placeholder="CardRace" data-key='card_race'/>
+
                     <Button className="searchbutton" type="submit"><SearchIcon size="small"/></Button>
-                
-
-
-
-                <input onChange={handleSelect} type="search" name="card-type" list="typeList" placeholder="Search by Card Type" data-key='card_type' /> 
-
-                <input type="search" name='card-attribute' list="attributeList" placeholder="Search by Card Attribute" data-key='card_attribute'/>
-
-                <input type="search" name="card-race" list="raceList" placeholder="CardRace" data-key='card_race'/>
-
-                <input type="search" name="card-alt-spec" list="altList" />
                 </form>
             </div>
             </Stack>
@@ -168,7 +159,7 @@ function Cards(){
                     {renderRowTest}
                 </tbody>
             </table>
-
+            </div>
 
             {/* <table className="tables" id="card-table">
                 <tbody>

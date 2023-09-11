@@ -1,5 +1,6 @@
 import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
+import Header from "./Header";
 
 
 function UserProfile ({user}) {
@@ -28,7 +29,7 @@ function UserProfile ({user}) {
 
     return( 
         <div className="componentdiv">
-            <NavBar/>
+            <Header/>
         <p>{userInfo ? null : 'loading '}</p>
         <div>
 

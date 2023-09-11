@@ -9,6 +9,11 @@ function CardTableRow({data, path}){
     
     //Make the whole row return a link next
 
+    function renderlevel(){}
+    function renderrace(){}
+    function renderattribute(){}
+
+
     return(
             <tr>
                 <td className="image-cell">
@@ -19,22 +24,25 @@ function CardTableRow({data, path}){
 
                 <td className="text-cell">
                     <table className="innerDataTable">
-                        <tr>
-                            <td>{data.name}</td>
+                        <tr className="inner-row">
+                            <td colSpan={8} width="100%">
+                                <h4>{data.name}</h4>
+                            </td>
                         </tr>
-                        <tr>
-                            <td>{data.card_type}</td>
-                            <td>{data.card_race}</td>
+                        <tr className="inner-row">
+                            <td colSpan={4} width="50%">{data.card_type}</td>
+                            <td colSpan={4} width="50%">{data.card_race}</td>
                         </tr>
-                        <tr>
-                            {data.attack ? <td>{data.attack} ATK</td> : null }
-                            {data.defense ? <td>{data.defense} DEF</td> : null}
-                            {data.level ? <td>level {data.level}</td>:null}
+                        <tr className="inner-row">
+                            {data.attack ? <td colSpan={2} width="25%">{data.attack} ATK</td> : null }
+                            {data.defense ? <td colSpan={2} width="25%">{data.defense} DEF</td> : null}
+                            {data.level ? <td colSpan={2} width="25%">LEVEL {data.level}</td>:null}
+                            {data.card_attribute ? <td colSpan={2} width="25%">{data.card_attribute}</td>:null}
                         </tr>
                         <br></br>
-                        <tr>
-                            <td>
-                                {data.description}
+                        <tr className="inner-row">
+                            <td colSpan={8} width="100%">
+                                <p>{data.description}</p>
                             </td>
                         </tr>
                     </table>

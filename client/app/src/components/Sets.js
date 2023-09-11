@@ -2,6 +2,7 @@ import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import { Link } from "react-router-dom";
+import Header from "./Header";
 
 
 function Sets() {
@@ -41,7 +42,7 @@ function Sets() {
     
     return(
         <div className="componentdiv">
-            <NavBar />
+            <Header />
             <br></br>
             <form onSubmit={handleSubmit} className="search">
                 <input type="text" placeholder="Search by Set Name" />
