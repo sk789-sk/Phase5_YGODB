@@ -290,7 +290,7 @@ def Decks():
     decks = db.session.query(Deck).all()
     deckList = []
     for deck in decks:
-        deckList.append(deck.to_dict())
+        deckList.append(deck.to_dict(rules=('-card_in_deck.card',)))
     response = make_response(
         jsonify(deckList),200
     )

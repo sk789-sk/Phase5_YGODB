@@ -29,9 +29,12 @@ function UserDecks ({user}) {
     })
 
     const renderDecks = filteredDecks.map( (deck) => {
-        return <TableRowEdit key={deck.id} 
-        data = { [deck.name, deck.card_in_deck.length,deck.created_at.split(' ')[0]]}
-        id={deck.id} 
+        return <TableRow key={deck.id} 
+        data = { [
+            <Link to={`/UsersDecks/${deck.id}`}>{deck.name}</Link>, 
+            deck.card_in_deck.length,
+            deck.created_at.split(' ')[0]]}
+            id={deck.id} 
         
         deletebutton = {<Button onClick={ () =>
     

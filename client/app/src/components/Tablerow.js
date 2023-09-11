@@ -7,8 +7,6 @@ function TableRow({data, button,deletebutton}){
 
     //each one of these values should have a key 
     
-
-
     const renderData = data.map( (val) => {
         return <td>{val}</td>
     })
@@ -17,8 +15,8 @@ function TableRow({data, button,deletebutton}){
     return(
         <tr>
             {renderData}
-            <td>{button}</td>
-            <td>{deletebutton}</td>
+            {button? <td>{button}</td>:null}
+            {deletebutton? <td>{deletebutton}</td>:null}
         </tr>
 
     )

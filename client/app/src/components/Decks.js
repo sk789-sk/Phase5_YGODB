@@ -3,7 +3,7 @@ import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import TableRowLink from "./Tablerow_and_Link";
 import SingleDeck from "./SingleDeckView";
-import { Routes, Route, useMatch } from "react-router-dom";
+import { Routes, Route, useMatch, Link } from "react-router-dom";
 import Header from "./Header";
 
 function Decks () {
@@ -33,9 +33,15 @@ function Decks () {
 
     const renderRows = renderDecks.map((deck) => {
         // console.log(deck.created_at.split(' ')[0])
-        return <TableRowLink key={deck.id} 
+        let totalCards=0
+        for(let i=0; i<deck.card_in_deck.length;i++){
+            totalCards = totalCards+ deck.card_in_deck[i].quantity
+        }
+        return <TableRow key={deck.id} 
         
-        data={ [deck.name, deck.user.username , deck.card_in_deck.length, deck.created_at.split(' ')[0]]  }
+        data={ [
+        <Link to={`/Decks/${deck.id}`}> {deck.name}</Link>, 
+        deck.user.username , totalCards, deck.created_at.split(' ')[0]]  }
         id={deck.id} path={`/Decks/`}
         />
     })
