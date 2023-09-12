@@ -49,7 +49,7 @@ function SingleSet() {
                 <input type="text" placeholder="Search by card name or rarity" />
                 <button type="submit">Search</button>
             </form>
-            <table className="tables">
+            <table className="tabletest">
                 <tbody>
                     <tr>
                         <th>Card Name</th>
@@ -59,6 +59,8 @@ function SingleSet() {
                     {renderCards}
                 </tbody>
             </table>
+
+
         </div>
     )
 }

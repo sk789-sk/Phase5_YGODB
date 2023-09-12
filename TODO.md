@@ -25,11 +25,28 @@ Cards Sections
 - [ ] Card Filter advanced filter options (POST req)
 - [ ] Card Filter inputs need to be sanitized
 - [x] Cards FrontEnd inputs need to match backend
-- [ ] Cards Pagination Bar needs correct path now and needs to match new fetch. 
+- [x] Cards Pagination Bar needs correct path now and needs to match new fetch. 
+
+Decks Section
+- [x] Table needs to remove edit and delete 
+- [ ] Move filter to backend 
+
+Sets Section
+- [x] Table needs to remove Edit and Delete
+- [x] Fix Card Count on decks(Currently shows unique cards and does not account for duplicates)
 
 
-- [ ] Fix Card Count on decks(Currently shows unique cards and does not account for duplicates)
+Personal Decks Section
+
+Individual Cards Section
+- [x] Single Card table Data is up
+- [x] Single Card release set table Data is up
+
+Individual Sets Section
+
+
 - [ ]  Sorting and ordering options 
+- [ ]  add reset filters options to search
 - [] Do not allow duplicates of card ID in user inventory
 - [] sessions for password hashing and authentification/authorization
 - [ ] Error Responses should give feedback to user and not just console outputs.

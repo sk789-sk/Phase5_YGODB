@@ -15,7 +15,7 @@ function CardTableRow({data, path}){
 
 
     return(
-            <tr>
+            <tr className="cardtable-row">
                 <td className="image-cell">
                     <Link to={`${path}${data.id}`}>
                         <img className="tableImage" src={data.card_image}/>
@@ -39,7 +39,7 @@ function CardTableRow({data, path}){
                             {data.level ? <td colSpan={2} width="25%">LEVEL {data.level}</td>:null}
                             {data.card_attribute ? <td colSpan={2} width="25%">{data.card_attribute}</td>:null}
                         </tr>
-                        <br></br>
+                        
                         <tr className="inner-row">
                             <td colSpan={8} width="100%">
                                 <p>{data.description}</p>

@@ -4,7 +4,7 @@ import TableRow from "./Tablerow";
 import TableRowLink from "./Tablerow_and_Link";
 import SingleDeck from "./SingleDeckView";
 import { Link, Routes, Route, useMatch, useParams } from "react-router-dom";
-
+import SingleCardTable from "./IndividualCardTable";
 
 function SingleCard () {
 
@@ -15,16 +15,11 @@ function SingleCard () {
     const [releaseInfo,setReleaseInfo] = useState([])
 
 
-    console.log(params)
-
     useEffect( () => {
         fetch(`/cards/${params.id}`)
         .then((resp) => resp.json())
         .then((data) => (setCardInfo(data),setReleaseInfo(data.card_in_set)))
     }, [])
-
-    console.log(cardInfo.name)
-    console.log(releaseInfo)
 
     const renderRows = releaseInfo.map( (singleRelease) => {
 
@@ -41,6 +36,8 @@ function SingleCard () {
             <NavBar />
             <h1>Render Card Info</h1>
             <h2>{cardInfo.name}</h2>
+
+            <SingleCardTable data={cardInfo}/>
 
             <table className="tables" id="SingleCard" >
                 <tbody>

@@ -29,10 +29,16 @@ function UserDecks ({user}) {
     })
 
     const renderDecks = filteredDecks.map( (deck) => {
+        
+        let totalCards=0
+        for(let i=0; i<deck.card_in_deck.length;i++){
+            totalCards = totalCards+ deck.card_in_deck[i].quantity
+        }
+        
         return <TableRow key={deck.id} 
         data = { [
             <Link to={`/UsersDecks/${deck.id}`}>{deck.name}</Link>, 
-            deck.card_in_deck.length,
+            totalCards,
             deck.created_at.split(' ')[0]]}
             id={deck.id} 
         
