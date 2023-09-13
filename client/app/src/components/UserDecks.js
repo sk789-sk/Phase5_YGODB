@@ -7,6 +7,7 @@ import TableRowEdit from "./TableRowLinkEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "@mui/material";
 import Header from "./Header";
+import ReconTable from "./ReconcilTable";
 
 function UserDecks ({user}) {
     //Load all the decks that a user has. Pass in the users id
@@ -22,7 +23,7 @@ function UserDecks ({user}) {
         .then ((data) => setUserDecks(data))
     }, [])
 
-    console.log(user)
+    console.log(userDecks)
 
     const filteredDecks = userDecks.filter((deck) => {
         return (deck.name.toLowerCase().includes(filtertext.toLowerCase()))
@@ -115,6 +116,8 @@ function UserDecks ({user}) {
                     <input type="text" placeholder= "Enter Deck Name" />
                     <button className="confirm" type="submit">Create New Deck</button>   
                 </form>
+
+            <ReconTable userDecks = {userDecks} id={user.id}/>
         </div>
         )
 }

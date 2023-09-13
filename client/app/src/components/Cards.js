@@ -173,6 +173,9 @@ function Cards(){
                 </tbody>
 
             </table> */}
+            <div className="footer">
+                <Header />
+            </div>
         </div>
     )}
 

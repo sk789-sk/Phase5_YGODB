@@ -345,3 +345,8 @@ a {
   height: 100%;
   width: 50%;
 }
+
+.footer .header .main-nav { 
+  display: flex;
+  flex-direction: row-reverse;
+}

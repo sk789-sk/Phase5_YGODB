@@ -624,7 +624,7 @@ def invent_by_id(id):
                 
 
 
-                base = db.session.query(Inventory)
+                base = db.session.query(Inventory) #what we want returned
 
                 invent = base.filter(Inventory.user_id==id).outerjoin(CardinSet,Inventory.cardinSet_id==CardinSet.id).outerjoin(Card,CardinSet.card_id==Card.id) #this is the joined table
 
@@ -750,8 +750,43 @@ def Login():
 def Logout():
     return make_response( {},200)
 
+@app.route('/InventRecon/<int:id>', methods=['POST'])
+def InventRecon(id):
 
+    base = db.session.query(Inventory) #what we want returned from
+    #We want to convert cardInSet_id into card ID.
 
+    invent = base.filter(Inventory.user_id==id).outerjoin(CardinSet,Inventory.cardinSet_id==CardinSet.id).outerjoin(Card,CardinSet.card_id==Card.id)
+
+    print(invent.all())
+
+    card_list = request.get_json()
+    x=0
+
+    owned_list = {}
+
+    for key in card_list:
+        
+        cards_owned = invent.filter(Card.id == key).all() #All instances of user owning that card
+        #now get the quantity listed in that inventory value, sum them all up and compare against card_list. Use that to create the response back. 
+
+        c_name = db.session.query(Card.name).filter(Card.id==key).first()[0]
+        
+        
+        if cards_owned:
+            quantity = 0
+            for inventory in cards_owned:
+                quantity += inventory.quantity
+            owned_list[c_name] = quantity - card_list[key]
+
+        else:
+            owned_list[c_name] = 0 - card_list[key]
+        
+    print(owned_list)
+    response_data = owned_list
+
+    response = make_response( jsonify(response_data),200)
+    return response
 
 
 
