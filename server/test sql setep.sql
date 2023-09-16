@@ -65,3 +65,5 @@ UPDATE Decks Set created_at = '2023-09-05 23:43:24' where id <4;
 
 SELECT * FROM CardsinSets Where card_code='YS15-ENY09';
 SELECT * From Cards Where name='DUCKER Mobile Cannon';
+
+SELECT * From Cards Where id=12319;

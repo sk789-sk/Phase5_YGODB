@@ -530,7 +530,7 @@ def cardindeck(id):
         elif request.method == 'DELETE': #I dont know if this is what I would really want.
             db.session.delete(card)
             db.session.commit()
-            response = make_response ( {},204)
+            response = make_response ({},204)
             
     else:
         response = make_response({},404)

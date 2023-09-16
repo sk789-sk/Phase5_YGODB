@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom"
+import TableRow from "./Tablerow";
 
 
 function ReconTable({userDecks, id}){
@@ -50,6 +51,16 @@ function ReconTable({userDecks, id}){
         }
     }
 
+    function objtoArr(cards_obj) {        //theres an object.entires method that just does this easily 
+        const cardsArr = []
+        for (let key in cards_obj){
+            const tempArr = []
+            tempArr.push(key)
+            tempArr.push(cards_obj[key])
+            cardsArr.push(tempArr)
+        }
+        return cardsArr
+    }
 
     // now we need to send this information to the backend, we have card_id and quantity and compare this to the inventory
 
@@ -68,7 +79,8 @@ function ReconTable({userDecks, id}){
         .then(resp => {
             if (resp.ok) {
                 resp.json()
-                .then(data => setCardsNeeded(data))
+                .then(data => objtoArr(data)) //convert data into array here
+                .then(val => setCardsNeeded(val))
             }
             else{
                 resp.json()
@@ -77,13 +89,39 @@ function ReconTable({userDecks, id}){
         })
 
         console.log(cardsNeeded)
-    }
-    
+
+
+    }  
+
+    const renderRows = cardsNeeded.map( (val) => {
+        return (
+            <tr>
+                <td>{val[0]}</td>
+                <td>{val[1]}</td>
+            </tr>
+        )
+    } 
+     )
 
     return (
         <div>
-            hello   
             <button onClick={createTableData}>Reconcile Inventory and All Decks</button>
+
+            <div>
+            {(cardsNeeded.length !==0) ?
+            
+            <table>
+            <tbody>
+                <th>
+                    <td>Card Name</td>
+                    <td>Quantity needed</td>
+                </th>
+                {renderRows}
+            </tbody>
+        </table>
+            
+            : null}
+            </div>
         </div>
     )
 }

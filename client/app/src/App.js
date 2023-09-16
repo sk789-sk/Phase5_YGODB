@@ -13,6 +13,7 @@ import SingleSet from "./components/SingleSet";
 import UserProfile from "./components/UserProfile";
 import NavBar from "./components/NavBar";
 import SingleCard from "./components/SingleCard";
+import DeckViewer from "./components/DeckView";
 
 //No index over the app? might just have to make not included in template?
 
@@ -58,6 +59,8 @@ function App() {
         <Route path = '/TestUserSingleDeck' element = {<SingleUsersDeck />} />
         <Route path = '/TestSingleSet' element = {<SingleSet />} />
         <Route path= "/TestSingleCardAll" />
+
+        <Route path = '/TestDeckView' element= {<DeckViewer/>}></Route>
         
         </Routes>
       </BrowserRouter>

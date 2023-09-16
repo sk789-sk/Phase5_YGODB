@@ -2,6 +2,15 @@ import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import { json, useParams, Link } from "react-router-dom";
+import EditIcon from '@mui/icons-material/Edit';
+import { Button } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import Header from "./Header";
+import PublishIcon from '@mui/icons-material/Publish';
+import DeckViewer from "./DeckView";
+
+
+
 
 function SingleUsersDeck() {
     //Basically a single deck but we have edit options
@@ -12,11 +21,13 @@ function SingleUsersDeck() {
     const [deckName,setDeckName] = useState('')
     const [newQuantity,setNewQuantity] = useState(0)
 
+    const [refresh,setRefresh] = useState(true)
+
     useEffect( () => {
         fetch(`/Deck/${params.id}`)
         .then((resp) => resp.json())
         .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name) ))
-    },[])
+    },[refresh])
 
     //Now we want to render rows with all card info but we want to have the edit buttons to edit quantity or delete from the deck. These will go to the cardinDeck endpoint since that is what we are edditing now .
 
@@ -49,7 +60,7 @@ function SingleUsersDeck() {
         return <TableRow key={card.id} 
         data = {[card.card.name, card.quantity]}
 
-        button ={<button onClick={ () => 
+        button ={<Button onClick={ () => 
             fetch(`/cardindeck/${card.id}`, {
                 method: "PATCH",
                 headers: {
@@ -58,14 +69,20 @@ function SingleUsersDeck() {
                 },
                 body: JSON.stringify({'quantity' : newQuantity})
             })
-            .then(console.log('done'))
-            .then(console.log(card.card.id))
-            .then((resp) => resp.json())
-            .then((json) => console.log(json))
+            .then( resp => {
+                if (resp.ok) {
+                    resp.json()
+                    .then(setRefresh(!refresh))
+                }
+                else{
+                    resp.json()
+                    .then(data => console.log(data))
+                }
+            })
          }>
-        Edit Quantity</button>}
+        <EditIcon /></Button>}
 
-        deletebutton = {<button onClick={ () =>
+        deletebutton = {<Button onClick={ () =>
     
             fetch(`/cardindeck/${card.id}`, {
             method: "DELETE",
@@ -73,8 +90,19 @@ function SingleUsersDeck() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        })}>
-        Delete</button>}
+        })
+        .then (resp => {
+            if (resp.ok) {
+                (setRefresh(!refresh))
+                // .then( data => console.log(data))
+            }
+            else {
+                resp.json()
+                .then(data => console.log(data))
+            }
+        })
+        }>
+        <DeleteIcon/></Button>}
 
 
         />
@@ -142,52 +170,70 @@ function SingleUsersDeck() {
 
     }
 
-    console.log(cardsInDeck)
-    console.log(cardsInDeck.length)
-
     return(
-        <div className="componentdiv">
-            <NavBar/>
+        <div>
+            <Header/>
 
             <br></br>
 
-            <h1 className="header">{deckName}</h1>        
+            <h1 className="header">{deckName}</h1>   
+            {/* this can be a small table of info  */}
 
-            <div className="img-grid">
-                {renderDeckGridElements}
-            </div>    
+            <div className="main-content-singleDeck">
 
-            <table className="tables">
-                <tbody>
-                    <tr>
-                        <th>Card Name</th>
-                        <th>Quantity</th>
-                    </tr>
-                    {renderRows}
-                </tbody>
-            </table>
+                <div className="deck-image-container">
+                    <div className="deck-image">     
 
-        <h3>Add Card to Deck</h3>
-        <form id = "New-Card-form" onSubmit={handleSubmit} >
-            <label>
-                Card Name: 
-                <input type="text" name="card-name"/>
-            </label>
-            <label>
-                Quantity
-                <input type="integer" name="quantity" />
-            </label>
-            <button type="submit">Submit</button>
-        </form>
-        <br></br>
-        <h3>Enter New Quantity Below and Press Edit Quantity Button</h3>
-        <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
-        
-        <h3 className="header"> Edit Deck Name</h3>
-            <form onSubmit={editName}>
-                <input type="text" placeholder="Edit Name" />
-                <button type="submit">Confirm</button>
-            </form>
+                        <div className="img-grid">
+                            {renderDeckGridElements}
+                        </div>    
+                    </div>
+                    <div className="deck-image-buttons">
+                    <form onSubmit={editName}>
+                        <input className="Edit-Deck-Name" type="text" placeholder="Edit Name" />
+                        <Button type="submit"><PublishIcon/></Button>
+
+                    </form>
+                    </div>
+                </div>
+
+                <div className="deck-table-container">
+
+                    <div className="table-wrapper">
+                        <table className="tables-deck-content">
+                            <tbody>
+                                <tr>
+                                    <th>Card Name</th>
+                                    <th>Quantity</th>
+                                </tr>
+                                {renderRows}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="buttons-wrapper">     
+                    
+                        <div className="add-to-deck">
+                            <p>Add Card to Deck</p>
+
+
+                            <form id="New-Card-form" onSubmit={handleSubmit} >
+                                    <label htmlFor="card-name">Card Name: </label>
+                                    <input type="text" name="card-name"/>
+                                    <br></br>
+                                    <label htmlFor="card-quantity">Card Quantity: </label>
+                                    <input type="integer" name="card-quantity" />
+                                <button type="submit">Submit</button>
+                            </form>
+                        </div>
+
+                        <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
+                    </div>
+                </div>        
+            </div>
+            <div className="footer">
+                <Header />
+            </div>
         </div>
     )
 }

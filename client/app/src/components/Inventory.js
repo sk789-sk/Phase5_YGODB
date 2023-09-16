@@ -212,8 +212,6 @@ function Inventory({user}){
             
             </div>
             
-            
-
             <div className="pagination-wrapper">
                 <PaginationBar currentPage={currentPage} setCurrentPage={setCurrentPage} lastPage={totalPages} cardsPerPage = {cardsPerPage} totalCards={totalCards} setCards={setCards} path={path} />
 
@@ -232,8 +230,11 @@ function Inventory({user}){
 
                 </tbody>
 
+            
+            
             </table>
 
+            <div className="add-Card-Bar">
             <h3 >Add Card to Inventory</h3>
             <form  id = "New-CardinInventory-form" onSubmit={handleSubmit}>
                 <label>
@@ -254,6 +255,7 @@ function Inventory({user}){
                 </label>
                 <button type="submit">Submit</button>
             </form>
+            </div> 
 
             <br></br>
             <br></br>

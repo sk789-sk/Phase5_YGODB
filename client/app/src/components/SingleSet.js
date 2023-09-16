@@ -19,8 +19,6 @@ function SingleSet() {
         .then((data) => setSetData(data))
     }, [])
 
-    console.log(setData)
-
     const filteredcards = setData.filter( (card) => {
         return(card.card.name.toLowerCase().includes(filtertext.toLowerCase())
         || card.rarity.toLowerCase().includes(filtertext.toLowerCase()))

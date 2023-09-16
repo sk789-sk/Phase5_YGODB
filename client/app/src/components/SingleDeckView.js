@@ -2,6 +2,7 @@ import React, { useEffect,useState } from "react";
 import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import { resolvePath, useParams, Link } from "react-router-dom";
+import Header from "./Header";
 
 
 function SingleDeck () {
@@ -25,9 +26,6 @@ function SingleDeck () {
         data = { [card.card.name, card.quantity ]} />
     })
 
-    console.log(deckName)
-    console.log(deckCreater)
-    console.log('hello')
 
     let cardstorender = []
     for (let card of cardsInDeck){
@@ -49,23 +47,39 @@ function SingleDeck () {
      )
 
     return (
-        <div className="componentdiv">
-            <NavBar />
-            <h3>{deckName} created by {deckCreater}</h3>
+        <div>
+            <Header />
+            <br></br>
+            <h1 id="Single-Deck-View-Global">{deckName} created by {deckCreater}</h1>
+            <br></br>
+            <br></br>
+            <div className="main-content-singleDeck">
+                <div className="deck-image-container">
+                   <div className="deck-image">     
+                        <div className="img-grid">
+                            {renderDeckGridElements}
+                        </div>    
+                    </div>
+                </div>
 
-            <div className="img-grid">
+            {/* <div className="img-grid">
                 {renderDeckGridElements}
-            </div> 
+            </div>  */}
+                <div className="deck-table-container-view">
+                    <div className="table-wrapper-view">
+                        <table className="tables-deck-content">
+                            <tbody>
+                                <tr>
+                                    <th>Card Name</th>
+                                    <th>Quantity</th>
+                                </tr>
+                                {renderCards}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-            <table className="tables">
-                <tbody>
-                    <tr>
-                        <th>Card Name</th>
-                        <th>Quantity</th>
-                    </tr>
-                    {renderCards}
-                </tbody>
-            </table>
+            </div>
         </div>
     )
 
