@@ -11,7 +11,7 @@ Functional
 - [x] Adding cards to inventory done by set id w/ verification
 - [x] Adding cards to a deck dont by card name w/ verification
 - 
-- [ ] Build reconciliation table between inventory and decks
+- [x] Build reconciliation table between inventory and decks
 
 Inventory Section
 - [x] Inventory update and delete need to be updated

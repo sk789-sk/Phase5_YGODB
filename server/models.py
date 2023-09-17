@@ -41,7 +41,7 @@ class User(db.Model, SerializerMixin):
         raise ValueError
 
     #email validation,username length
-    
+    #username has to be unique
     
     #Serializer Rules
 

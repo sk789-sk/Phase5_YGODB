@@ -8,8 +8,6 @@ function DeckViewer(id){
 
     const [cardsInDeck,setCardsInDeck] = useState([])
 
-    id = 3
-
     useEffect( () => {
         fetch(`/Deck/${id}`)
         .then(resp => resp.json())
@@ -35,9 +33,8 @@ function DeckViewer(id){
             }
     )
     
-    let cards = [{id:1,name:'Dark Magician',quantity:1},{id:2,name:'Blue Eyes White Dragon of doom and gloom',quantity:2}]
     const renderTableRow = cardsInDeck.map ( (card) => {
-        console.log(card)
+
         return (
             <tr>
                 

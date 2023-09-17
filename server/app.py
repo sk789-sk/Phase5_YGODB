@@ -10,23 +10,28 @@ from flask import Flask, make_response, jsonify, request, session
 import os
 
 # Local imports
-from config import app, db, api
+
+from config import app, db, test
 from models import User, Card, Deck, CardinSet, Banlist, BanlistCard
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATABASE = os.environ.get(
-    "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.json.compact = False
+# BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+# DATABASE = os.environ.get(
+#     "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 
-migrate = Migrate(app, db)
+# app = Flask(__name__)
 
-db.init_app(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.json.compact = False
+# app.secret_key='fasfa'
 
-api = Api(app)
+
+# migrate = Migrate(app, db)
+
+# # db.init_app(app)
+
+# api = Api(app)
 
 #Home Page
 
@@ -134,12 +139,6 @@ def user_id(id):
 
     return response
 
-
-
-
-@app.route('/LogIn')
-def logIn():
-    return 'login'
 
 
 #Card Routes
@@ -721,8 +720,14 @@ def Login():
     #Get username and pass form client, 
     #Check if the data matches
     #If so we set the session user id to the user and then return a sucess or failure
-    
+
+
     user_info = request.get_json() 
+
+    print(app.config)
+    print(test)
+
+    print(user_info)
     
     user = User.query.filter(User.username == user_info['username']).first()
     
@@ -733,7 +738,7 @@ def Login():
         if pass_match: 
             #if password matches
 
-            # session['user_id'] = user.id
+            session['user_id'] = user.id
             #No secret_key. I can still return a user and then use that to create a state of the user and pass that. I guess I can make the delete just change the user. The delete orute does nothing then
 
             response = make_response( 

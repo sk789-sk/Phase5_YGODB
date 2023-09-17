@@ -234,6 +234,10 @@ function SingleUsersDeck() {
             <div className="footer">
                 <Header />
             </div>
+
+            <div className="main-content-singleDeck">
+                <DeckViewer id={params.id}/>
+            </div>
         </div>
     )
 }

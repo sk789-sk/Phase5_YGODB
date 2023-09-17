@@ -339,6 +339,7 @@ a {
   margin-right: auto;
   justify-content: space-between;
   margin-bottom: 5vw;
+  overflow: auto;
 }
 
 .deck-image-container {
