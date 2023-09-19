@@ -55,7 +55,7 @@ def register():
     try:
         new_user = User(
             username = data['username'],
-            password = data['password']
+            password_hash = data['password']
         )
 
         db.session.add(new_user)
@@ -295,44 +295,70 @@ def Decks():
     )
     return response
 
+@app.route('/DeckViewer/<int:id>', methods =['GET'])
+def deckViewer(id):
+    deck = Deck.query.filter(Deck.id==id).first()
+
+    if deck:
+        response = make_response(deck.to_dict(),200)
+    else:
+        response = make_response({},404)
+    return response
+
+
+
+
 @app.route('/Deck/<int:id>', methods = (['GET','PATCH']))
 def singleDeck(id): 
-    #A single deck by id 
+    #A single deck by id. This one is authorized by user and can only be seen with authorization and edited. 
 
     deck = Deck.query.filter(Deck.id == id).first()
-
+    
     if deck: 
-        if request.method == 'GET':
 
+        #for authorization check if the deck.user_id matches the session id
+
+        isAuthorized = (session['user_id']==deck.user_id)
+
+        if isAuthorized:
+
+            if request.method == 'GET':
+
+                response = make_response(
+                    deck.to_dict(),200)
+                
+            elif request.method == 'PATCH':
+                data = request.get_json()
+                print(data)
+
+                try:
+                    for key in data:
+                        setattr(deck,key,data[key])
+                        db.session.add(deck)
+                        db.session.commit()  
+
+                    response = make_response(deck.to_dict(),202)
+                    print('setattr succ')
+                except ValueError:
+                    print('setattr failed')
+                    response = make_response(
+                        { "errors": ["validation errors"] },
+                        400
+                        )
+        else:
             response = make_response(
-                deck.to_dict(),200)
-            
-        elif request.method == 'PATCH':
-            data = request.get_json()
-            print(data)
+                {'Error':'UnAuthorized'},401
+            )
 
-            try:
-                for key in data:
-                    setattr(deck,key,data[key])
-                    db.session.add(deck)
-                    db.session.commit()  
-
-                response = make_response(deck.to_dict(),202)
-                print('setattr succ')
-            except ValueError:
-                 print('setattr failed')
-                 response = make_response(
-                    { "errors": ["validation errors"] },
-                    400
-                    )
     else:
         response = make_response(
-            {},404
+            {'Error':'Deck Does Not Exist'},404
         )
     return response
 
 @app.route('/Decks/<int:id>', methods = (['GET','POST']))
-def all_user_deck(id): #'all decks a user has'. 'Can create a deck id and then go to that deck'
+def all_user_deck(id): 
+    #'all decks a user has'. 'Can create a deck id and then go to that deck'
 
 
     decks_all = Deck.query.filter(Deck.user_id == id).all()
@@ -380,27 +406,6 @@ def all_user_deck(id): #'all decks a user has'. 'Can create a deck id and then g
 
     return response
 
-
-@app.route('/Decks/<int:id>/<string:deck_name>', methods = ['GET','PATCH','POST','DELETE'] )
-
-def one_user_deck_id(id,deck_name): #Singular Deck for an owner by name is this needed i am doubting?
-    deck = Deck.query.filter((Deck.user_id==id),(Deck.id==deck_name)).first()
-
-    if deck:
-
-        if request.method == 'GET':
-            response = make_response(deck.to_dict(),200)
-        
-        if request.method == 'POST':
-            response = 'post'
-        
-        if request.method == 'PATCH':
-            response = 'patch'
-        if request.method == 'DELETE':
-            response = 'delete'
-    else:
-        response = 'nodeck'
-    return response
 
 @app.route('/Decks/<int:id>/<int:deckid>', methods = ['GET','PATCH','POST','DELETE'])
 def one_user_deck_name(id,deckid): #Singular Deck for an owner
@@ -717,29 +722,18 @@ def user_invent_card(id,card_id):
 @app.route('/Login', methods = ['POST'])
 def Login():
 
-    #Get username and pass form client, 
-    #Check if the data matches
-    #If so we set the session user id to the user and then return a sucess or failure
-
-
-    user_info = request.get_json() 
-
-    print(app.config)
-    print(test)
-
-    print(user_info)
-    
+    user_info = request.get_json()     
     user = User.query.filter(User.username == user_info['username']).first()
-    
+
     if user:
 
-        pass_match = (user_info['password'] == user.password)
-        
+        pass_match = user.authenticate(user_info['password'])
+
         if pass_match: 
             #if password matches
 
             session['user_id'] = user.id
-            #No secret_key. I can still return a user and then use that to create a state of the user and pass that. I guess I can make the delete just change the user. The delete orute does nothing then
+            print(session)
 
             response = make_response( 
                 jsonify(user.to_dict()), 201
@@ -753,7 +747,25 @@ def Login():
 
 @app.route('/Logout', methods = ['DELETE'])
 def Logout():
-    return make_response( {},200)
+    session['user_id']=None
+    return make_response( {},204)
+
+@app.route('/CheckSession', methods = ['GET'])
+def checksession():
+    
+    id = session['user_id']
+
+
+    if id:
+    
+        user = User.query.filter(User.id == id).first()
+        response = make_response(jsonify(user.to_dict()),201)
+
+    else:
+        response = make_response({},401)
+
+    return response
+
 
 @app.route('/InventRecon/<int:id>', methods=['POST'])
 def InventRecon(id):
@@ -766,7 +778,6 @@ def InventRecon(id):
     print(invent.all())
 
     card_list = request.get_json()
-    x=0
 
     owned_list = {}
 

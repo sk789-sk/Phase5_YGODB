@@ -4,8 +4,10 @@ from sqlalchemy import MetaData
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.ext.hybrid import hybrid_property
 
-from config import db
+
+from config import db, bcrypt
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'Users'
@@ -13,7 +15,7 @@ class User(db.Model, SerializerMixin):
         #usesrname, password, email, profile picture, created at
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String, unique = True)
-    password = db.Column(db.String) #hash after
+    _password_hash = db.Column(db.String) #hash after
     email = db.Column(db.String) #encrypt?
     
     profile = db.Column(db.String) #path to profile
@@ -33,12 +35,21 @@ class User(db.Model, SerializerMixin):
         if len(username) >0:
             return username
         raise ValueError
+
+    @hybrid_property 
+    def password_hash(self):
+        return self._password_hash
     
-    @validates('password')
-    def validate_password(self,key,password):
-        if len(password) >0:
-            return password
-        raise ValueError
+    @password_hash.setter
+    def password_hash(self, password):
+        password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
+        self._password_hash = password_hash.decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+
+     
+
 
     #email validation,username length
     #username has to be unique

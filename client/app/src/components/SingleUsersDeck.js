@@ -15,18 +15,35 @@ import DeckViewer from "./DeckView";
 function SingleUsersDeck() {
     //Basically a single deck but we have edit options
 
-    const params = useParams()
+    const params = useParams();
 
     const [cardsInDeck,setCardsInDeck] = useState([{card : {card_image:'loading', name:'loading' }, card_id:1,deck_id:1,quantity:1}]) //let load value be something? {cards : {card_image:'loading', name:'loading' }, card_id:1,deck_id:1,quantity:1}
     const [deckName,setDeckName] = useState('')
     const [newQuantity,setNewQuantity] = useState(0)
-
     const [refresh,setRefresh] = useState(true)
+    const [isError,setIsError] = useState(false)
 
-    useEffect( () => {
+    // useEffect( () => {
+    //     fetch(`/Deck/${params.id}`)
+    //     .then((resp) => resp.json())
+    //     .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name) ))
+    // },[refresh])
+
+
+    useEffect ( () => {
         fetch(`/Deck/${params.id}`)
-        .then((resp) => resp.json())
-        .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name) ))
+        .then(resp => {
+            if (resp.ok) {
+                resp.json()
+                .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name)))
+            }
+            else{
+                resp.json()
+                .then(data => console.log(data))
+                .then(setIsError(true))
+                .then(console.log(isError))
+            }
+        })
     },[refresh])
 
     //Now we want to render rows with all card info but we want to have the edit buttons to edit quantity or delete from the deck. These will go to the cardinDeck endpoint since that is what we are edditing now .
@@ -38,7 +55,6 @@ function SingleUsersDeck() {
 
     let cardstorender = []
     for (let card of cardsInDeck){
-        console.log(card)
         for (let i=0; i<card.quantity;i++){
             let card_obj = {name:card.card.name, image:card.card.card_image,id:card.card_id}
             cardstorender.push(card_obj)

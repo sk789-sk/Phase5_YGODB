@@ -14,17 +14,33 @@ import UserProfile from "./components/UserProfile";
 import NavBar from "./components/NavBar";
 import SingleCard from "./components/SingleCard";
 import DeckViewer from "./components/DeckView";
+import SignUp from "./components/SignUp";
 
 //No index over the app? might just have to make not included in template?
 
 
 function App() {
   // Code goes here!
+  //this is the first load in the app so we should check for a login right here 
 
-  {}
+  const [user, setUser] = useState({ 'username': 'DEFAULT', 'id': 1}) 
 
 
-    const [user, setUser] = useState({ 'username': 'DEFAULT', 'id': 1}) 
+  useEffect( () => {
+    fetch(`/CheckSession`)
+    .then(resp => {
+      if (resp.ok) {
+        resp.json()
+        .then((data) => setUser(data))
+      }
+      else{
+        resp.json()
+        .then(data => console.log(data))
+      }
+    })
+  },[])
+
+
     //initially nobody is logged in. 
     //Turn this into a use context would be the best so we dont pass user to each page.
 
@@ -59,6 +75,7 @@ function App() {
         <Route path = '/TestUserSingleDeck' element = {<SingleUsersDeck />} />
         <Route path = '/TestSingleSet' element = {<SingleSet />} />
         <Route path= "/TestSingleCardAll" />
+        <Route path = '/Testregister' element = {<SignUp />} />
 
         <Route path = '/TestDeckView' element= {<DeckViewer/>}></Route>
         

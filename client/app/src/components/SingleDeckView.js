@@ -12,9 +12,10 @@ function SingleDeck () {
     const [cardsInDeck,setCardsInDeck] = useState([{card:{name:'loading'},quantity:0,card_id:1}])
     const [deckName,setDeckName] = useState('')
     const [deckCreater,setDeckCreater] = useState('')
+    const [isError,setisError] = useState(false)
 
     useEffect( () => {
-        fetch(`/Deck/${params.id}`)
+        fetch(`/DeckViewer/${params.id}`)
         .then((resp) => resp.json())
         .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name),setDeckCreater(data.user.username)))
     },[])
