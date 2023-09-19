@@ -291,7 +291,6 @@ header{
 .submit {
   width: 100%;
   height: 30px;
-  border: none;
 }
 
 .loginform .form-link {
@@ -560,6 +559,12 @@ Deck container test */
   height: auto;
   border: 1px;
   object-fit: cover;
+}
+
+.error-div{
+  margin: auto;
+  justify-content: center;
+  display: flex;
 }
 
 

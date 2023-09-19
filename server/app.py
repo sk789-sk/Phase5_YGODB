@@ -57,11 +57,16 @@ def register():
             username = data['username'],
             password_hash = data['password']
         )
-
         db.session.add(new_user)
         db.session.commit() 
+        session['user_id'] = new_user.id
+
+
 
         response = make_response(new_user.to_dict(),200)
+        
+        #need to update session id i think on registuer
+
    
     except ValueError:
         response = make_response(
@@ -757,7 +762,7 @@ def checksession():
 
 
     if id:
-    
+        print(id)
         user = User.query.filter(User.id == id).first()
         response = make_response(jsonify(user.to_dict()),201)
 

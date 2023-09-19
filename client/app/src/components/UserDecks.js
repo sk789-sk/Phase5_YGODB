@@ -8,11 +8,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "@mui/material";
 import Header from "./Header";
 import ReconTable from "./ReconcilTable";
+import Error404 from "./Error404"
+
 
 function UserDecks ({user}) {
     //Load all the decks that a user has. Pass in the users id
     //We can use the same solution we had for the decks. 
-
+    
     const [userDecks,setUserDecks] = useState([])
     const [filtertext,setFilterText] = useState('')
     const [refresh,setRefresh] = useState(true)
@@ -100,12 +102,14 @@ function UserDecks ({user}) {
             <h1 className="header">Your Decks</h1>
             
             <table className="tables">
-                <tbody>
+                <thead>
                     <tr>
                         <th>Deck Name</th>
                         <th>Card Count</th>
                         <th>Creation Date</th>
                     </tr>
+                </thead>
+                <tbody>
                     {renderDecks}
                 </tbody>
             </table>
@@ -118,6 +122,7 @@ function UserDecks ({user}) {
                 </form>
 
             <ReconTable userDecks = {userDecks} id={user.id}/>
+            <Error404/>
         </div>
         )
 }

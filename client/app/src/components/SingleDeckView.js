@@ -3,6 +3,7 @@ import NavBar from "./NavBar";
 import TableRow from "./Tablerow";
 import { resolvePath, useParams, Link } from "react-router-dom";
 import Header from "./Header";
+import Error404 from "./Error404";
 
 
 function SingleDeck () {
@@ -16,9 +17,22 @@ function SingleDeck () {
 
     useEffect( () => {
         fetch(`/DeckViewer/${params.id}`)
-        .then((resp) => resp.json())
-        .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name),setDeckCreater(data.user.username)))
+        .then (resp => {
+            if (resp.ok) {
+                resp.json()
+                .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name),setDeckCreater(data.user.username)))
+            }
+            else{
+                resp.json()
+                .then((data) => console.log(data))
+                .then(setisError(isError => true),setDeckName('404 - Deck Does Not Exist'))
+            }
+        })
     },[])
+
+    //     .then((resp) => resp.json())
+    //     .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name),setDeckCreater(data.user.username)))
+    // },[])
 
     console.log(cardsInDeck)
         
@@ -51,9 +65,10 @@ function SingleDeck () {
         <div>
             <Header />
             <br></br>
-            <h1 id="Single-Deck-View-Global">{deckName} created by {deckCreater}</h1>
+            <h1 id="Single-Deck-View-Global">{ isError? deckName: deckName +' created by ' + deckCreater }</h1>
             <br></br>
             <br></br>
+            {isError? <Error404/> : 
             <div className="main-content-singleDeck">
                 <div className="deck-image-container">
                    <div className="deck-image">     
@@ -81,6 +96,8 @@ function SingleDeck () {
                 </div>
 
             </div>
+            }
+            
         </div>
     )
 

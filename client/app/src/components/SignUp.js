@@ -7,6 +7,7 @@ function SignUp({setUser, setIsLogin}){
         e.preventDefault()
         //On register we send a post request to the user page
         let username = (e.target[0].value)
+        let email = (e.target[1].value)
         let password = (e.target[2].value)
 
         fetch("/Register", {
@@ -17,7 +18,7 @@ function SignUp({setUser, setIsLogin}){
             body: JSON.stringify( {username,password})
         })
         .then((resp) => resp.json())
-        .then((data) => console.log(data))
+        .then((data) => setUser(data))
     }
 
     return(

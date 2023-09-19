@@ -24,6 +24,7 @@ function CardTableRow({data, path}){
 
                 <td className="text-cell">
                     <table className="innerDataTable">
+                        <tbody>
                         <tr className="inner-row">
                             <td colSpan={8} width="100%">
                                 <h4>{data.name}</h4>
@@ -45,6 +46,7 @@ function CardTableRow({data, path}){
                                 <p>{data.description}</p>
                             </td>
                         </tr>
+                        </tbody>
                     </table>
                 </td>
             </tr>
