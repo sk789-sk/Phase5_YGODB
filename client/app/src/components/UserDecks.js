@@ -9,6 +9,7 @@ import { Button } from "@mui/material";
 import Header from "./Header";
 import ReconTable from "./ReconcilTable";
 import Error404 from "./Error404"
+import Error401 from "./Error401"
 
 
 function UserDecks ({user}) {
@@ -122,7 +123,6 @@ function UserDecks ({user}) {
                 </form>
 
             <ReconTable userDecks = {userDecks} id={user.id}/>
-            <Error404/>
         </div>
         )
 }

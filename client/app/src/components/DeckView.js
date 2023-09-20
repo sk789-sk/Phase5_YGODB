@@ -2,17 +2,14 @@ import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom"
 
 
-function DeckViewer(id){
+function DeckViewer({cardsInDeck, id}){
 
     //input will be an array cards that make up a deck
 
-    const [cardsInDeck,setCardsInDeck] = useState([])
 
-    useEffect( () => {
-        fetch(`/Deck/${id}`)
-        .then(resp => resp.json())
-        .then(data => setCardsInDeck(data.card_in_deck))
-    },[])
+    console.log(id)
+
+    console.log(cardsInDeck)
 
     let cardstorender = []
     for (let card of cardsInDeck){
@@ -24,7 +21,7 @@ function DeckViewer(id){
 
     const renderDeckGridElements = cardstorender.map( (card) => {
         return (
-            <div className="main-deck-grid-item">
+            <div className="img-grid-item">
                 <Link to={`/Cards/${card.id}`}>
                     <img src={card.image} alt={card.name} />  
                 </Link> 
@@ -32,6 +29,29 @@ function DeckViewer(id){
                 )
             }
     )
+
+    const renderSideDeckGridElements = cardstorender.slice(0,15).map( (card) => {
+        return (
+            <div className="img-grid-item">
+                <Link to={`/Cards/${card.id}`}>
+                    <img src={card.image} alt={card.name} />  
+                </Link> 
+            </div>
+                )
+            }
+    )
+
+    const renderExtraDeckGridElements = cardstorender.slice(15,30).map( (card) => {
+        return (
+            <div className="img-grid-item">
+                <Link to={`/Cards/${card.id}`}>
+                    <img src={card.image} alt={card.name} />  
+                </Link> 
+            </div>
+                )
+            }
+    )
+
     
     const renderTableRow = cardsInDeck.map ( (card) => {
 
@@ -47,31 +67,58 @@ function DeckViewer(id){
     })
 
     return (
-        <div className="deck-container">  { /*everything image and table */}
+        <div className="deck-container">  
             <div className="deck-image-container-t">
-                <div className="main-deck">
-                    <div className="main-deck-grid">
-                        {renderDeckGridElements}
+                    <div className="main-deck">
+                        <div className="main-deck-grid">
+                            {renderDeckGridElements}
+                        </div>
                     </div>
-                </div>
-                <div className="side-deck">
-                    <div className="side-deck-grid">
-                        render side deck grid elements
+                    <div className="side-deck">
+                        <div className="side-deck-grid">
+                            {renderSideDeckGridElements}
+                        </div>
                     </div>
-                </div>
-                <div className="extra-deck">
-                    <div className="extra-deck-grid">
-                        r
-                    </div>
-                </div>                
+                    <div className="extra-deck">
+                        <div className="extra-deck-grid">
+                            {renderExtraDeckGridElements}
+                        </div>
+                    </div>                
             </div>
+
+
             <div className="deck-table-container-t">
-                <div className="table-wrapper">
+                <div className="table-wrapper-view">
+                    <h3>Main Deck</h3>
                     <table className="deck-table-content">
                         <thead>
-                            <tr>
-                                
-                                <th className="name-header">Name</th>
+                            <tr>   
+                                <th className="name-header"></th>
+                                <th className="quant-header"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderTableRow}
+                        </tbody>
+                    </table>
+                    <h3>Side Deck</h3>
+                    <table className="deck-table-content">
+                    <thead>
+                            <tr>   
+                                <th className="name-header"></th>
+                                <th className="quant-header"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderTableRow}
+                        </tbody>
+                    </table>
+                    <h3>Extra Deck</h3>
+
+                    <table className="deck-table-content">
+                    <thead>
+                            <tr>   
+                                <th className="name-header"></th>
                                 <th className="quant-header"></th>
                             </tr>
                         </thead>

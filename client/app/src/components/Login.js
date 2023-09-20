@@ -8,33 +8,10 @@ function Login( {user, setUser}){
 
     const [islogin,setIsLogin] = useState(true)
 
-    // setIsLogin(!islogin)
-
     function togglelogin(){
         setIsLogin(!islogin)
     }
 
-    function handleLogIn(e){
-        e.preventDefault()
-        let username = (e.target[0].value)
-        let password = (e.target[1].value)
-
-        fetch("/Login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify( {username,password})
-        })
-        .then((resp => {
-            if (resp.ok) {
-                resp.json()
-                .then((user) => setUser(user))
-                .then(console.log(user))
-            }
-        }))
-
-    }
   
     function handleLogOut(){
         fetch("/Logout", {

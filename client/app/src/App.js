@@ -77,7 +77,7 @@ function App() {
         <Route path= "/TestSingleCardAll" />
         <Route path = '/Testregister' element = {<SignUp />} />
 
-        <Route path = '/TestDeckView' element= {<DeckViewer/>}></Route>
+        <Route path = '/TestDeckView' element= {<DeckViewer id={5}/>}></Route>
         
         </Routes>
       </BrowserRouter>

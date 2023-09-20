@@ -8,6 +8,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Header from "./Header";
 import PublishIcon from '@mui/icons-material/Publish';
 import DeckViewer from "./DeckView";
+import DeckViewEditer from "./DeckViewEdit";
+import Error401 from "./Error401";
+import Error404 from "./Error404";
 
 
 
@@ -17,17 +20,22 @@ function SingleUsersDeck() {
 
     const params = useParams();
 
-    const [cardsInDeck,setCardsInDeck] = useState([{card : {card_image:'loading', name:'loading' }, card_id:1,deck_id:1,quantity:1}]) //let load value be something? {cards : {card_image:'loading', name:'loading' }, card_id:1,deck_id:1,quantity:1}
+    const [cardsInDeck,setCardsInDeck] = useState([{card : {card_image:'loading', name:'loading' }, card_id:1,deck_id:1,quantity:1}]) 
     const [deckName,setDeckName] = useState('')
     const [newQuantity,setNewQuantity] = useState(0)
     const [refresh,setRefresh] = useState(true)
     const [isError,setIsError] = useState(false)
+    const [errorCode,setErrorCode] = useState(0)
 
     // useEffect( () => {
     //     fetch(`/Deck/${params.id}`)
     //     .then((resp) => resp.json())
     //     .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name) ))
     // },[refresh])
+
+    function toggleRefresh(){
+        setRefresh(!refresh)
+    }
 
 
     useEffect ( () => {
@@ -38,10 +46,16 @@ function SingleUsersDeck() {
                 .then((data) => (setCardsInDeck(data.card_in_deck),setDeckName(data.name)))
             }
             else{
-                resp.json()
-                .then(data => console.log(data))
-                .then(setIsError(true))
-                .then(console.log(isError))
+                if (resp.status === 404){
+                    setErrorCode(404); setIsError(true) ; setDeckName('404 - Deck Does Not Exist')
+                }
+                else {
+                    setErrorCode(401); setIsError(true) ; setDeckName('401 - Not Authorized ')
+                }
+                (console.log(errorCode))
+                // .then(data => console.log(data))
+                // .then(setIsError(true))
+                // .then(console.log(isError))
             }
         })
     },[refresh])
@@ -187,72 +201,23 @@ function SingleUsersDeck() {
     }
 
     return(
-        <div>
+        <div className="componentdiv">
             <Header/>
 
             <br></br>
 
-            <h1 className="header">{deckName}</h1>   
+            <h1 className="Single-Deck-View-Global">{deckName}</h1>   
             {/* this can be a small table of info  */}
-
+            <br></br>
+            <br></br>
+            {errorCode===404 ? <Error404/> : 
+            errorCode==401 ? <Error401/> : 
             <div className="main-content-singleDeck">
-
-                <div className="deck-image-container">
-                    <div className="deck-image">     
-
-                        <div className="img-grid">
-                            {renderDeckGridElements}
-                        </div>    
-                    </div>
-                    <div className="deck-image-buttons">
-                    <form onSubmit={editName}>
-                        <input className="Edit-Deck-Name" type="text" placeholder="Edit Name" />
-                        <Button type="submit"><PublishIcon/></Button>
-
-                    </form>
-                    </div>
-                </div>
-
-                <div className="deck-table-container">
-
-                    <div className="table-wrapper">
-                        <table className="tables-deck-content">
-                            <tbody>
-                                <tr>
-                                    <th>Card Name</th>
-                                    <th>Quantity</th>
-                                </tr>
-                                {renderRows}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="buttons-wrapper">     
-                    
-                        <div className="add-to-deck">
-                            <p>Add Card to Deck</p>
-
-
-                            <form id="New-Card-form" onSubmit={handleSubmit} >
-                                    <label htmlFor="card-name">Card Name: </label>
-                                    <input type="text" name="card-name"/>
-                                    <br></br>
-                                    <label htmlFor="card-quantity">Card Quantity: </label>
-                                    <input type="integer" name="card-quantity" />
-                                <button type="submit">Submit</button>
-                            </form>
-                        </div>
-
-                        <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
-                    </div>
-                </div>        
+            <DeckViewEditer cardsInDeck={cardsInDeck} toggleRefresh={toggleRefresh} id={params.id} setCardsInDeck={setCardsInDeck} setDeckName={setDeckName}/>
             </div>
+            }
             <div className="footer">
                 <Header />
-            </div>
-
-            <div className="main-content-singleDeck">
-                <DeckViewer id={params.id}/>
             </div>
         </div>
     )

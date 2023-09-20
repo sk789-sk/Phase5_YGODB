@@ -486,6 +486,8 @@ def cardindeckpost():
         if card:
             print(card.id) 
 
+            print(data)
+
             try:
                 new_card_in_deck = CardinDeck(
                     deck_id = data['deck_id'],
