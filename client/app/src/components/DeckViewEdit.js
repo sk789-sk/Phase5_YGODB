@@ -14,7 +14,9 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
     const [newQuantity,setNewQuantity] = useState(0)
 
     console.log(id)
+    console.log(cardsInDeck)
 
+    console.log(cardsInDeck.length)
 
     let cardstorender = []
     for (let card of cardsInDeck){
@@ -137,7 +139,8 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
             if (resp.ok) {
                 console.log('hi')
                 resp.json()
-                .then((data => setCardsInDeck([...cardsInDeck,data])))
+                .then(toggleRefresh())
+                // .then((data => setCardsInDeck([...cardsInDeck,data])))
             }
 
             else{ //in reality this is to toggle some error message
@@ -225,6 +228,7 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
                             </tr>
                         </thead>
                         <tbody>
+                            {cardsInDeck.length===0 ? <tr><td></td><td></td><td></td><td></td></tr> : null}
                             {renderRows}
                         </tbody>
                     </table>

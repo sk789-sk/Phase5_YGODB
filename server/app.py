@@ -479,31 +479,52 @@ def cardindeckpost():
         data = request.get_json()
 
         card = Card.query.filter((Card.name==data['name'])).first()
+
+        # cardindeck_exists = CardinDeck.query.filter(CardinDeck.deck_id==data['deck_id'],CardinDeck.card_id==card.id).first()
+
         #Check if name is in DB if so get the associated ID 
-        print(card)
-        print(data['name'])       
+
+
+        #We also need to see if there is an instance of the card in deck already and in that case convert the post into a patch.
 
         if card:
-            print(card.id) 
 
-            print(data)
+            cardindeck_exists = CardinDeck.query.filter(CardinDeck.deck_id==data['deck_id'],CardinDeck.card_id==card.id).first()
 
-            try:
-                new_card_in_deck = CardinDeck(
-                    deck_id = data['deck_id'],
-                    card_id = card.id,
-                    quantity = data['quantity']
-                )
+            if cardindeck_exists:
+                try:
+                    cardindeck_exists.quantity += int(data['quantity'])
+                    print('hehaw')
+                    db.session.add(cardindeck_exists)
+                    db.session.commit()
 
-                db.session.add(new_card_in_deck)
-                db.session.commit()
-                response = make_response(new_card_in_deck.to_dict(),200)
-                
-            except ValueError:
-                response = make_response(
-                { "errors": ["validation errors"] },
+                    response = make_response(card.to_dict(),202)
+                except ValueError:
+                    response = make_response(
+                    { "errors": ["validation errors"] },
                     400
-                )
+                    )
+
+            else:
+
+                try:
+                    new_card_in_deck = CardinDeck(
+                        deck_id = data['deck_id'],
+                        card_id = card.id,
+                        quantity = data['quantity'],
+                        location = 'main'
+                    )
+
+                    db.session.add(new_card_in_deck)
+                    db.session.commit()
+                    response = make_response(new_card_in_deck.to_dict(),200)
+                    
+                except ValueError:
+                    print('hit block')
+                    response = make_response(
+                    { "errors": ["validation errors"] },
+                        400
+                    )
         else:
             response = make_response({},404)
         return response

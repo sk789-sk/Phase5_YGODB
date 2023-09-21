@@ -1,6 +1,6 @@
 from sqlalchemy_serializer import SerializerMixin
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, event
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy_serializer import SerializerMixin
@@ -163,6 +163,7 @@ class Deck(db.Model, SerializerMixin):
 
     #validations
     #Cards in a deck can not have more than 3 copies. 
+
     #Serializer Rules
     
     serialize_rules = ('-card_in_deck.deck','-user.user_decks','-user.card_in_inventory')
@@ -173,24 +174,106 @@ class CardinDeck(db.Model, SerializerMixin):
     __tablename__ = 'CardsinDecks'
     id = db.Column(db.Integer, primary_key = True)
     quantity = db.Column(db.Integer)
+    location = db.Column(db.String)
     
     #foreignKeys
     deck_id = db.Column(db.Integer, db.ForeignKey('Decks.id'))
     card_id = db.Column(db.Integer, db.ForeignKey('Cards.id'))
 
+    location_list = ['main','side','extra']
+
     #Validation
     #At its core can not have more than 3 of a card. If we reference accross a banlist that should be done at a higher level since banlist change and etc.
-
+    @validates('location')
+    def validate_location(self,key,location):
+        if location not in self.location_list:
+            raise ValueError('Invalid location')
+        return location
 
     @validates('quantity')
     def validate_quantity(self,key,quantity):
         if  0 < int(quantity) <=3:
             return quantity
         raise ValueError
+    
+    def validate_self(self):
+        location = self.location
+        deck = Deck.query.filter(Deck.id==self.deck_id).first()
+        limits = {
+            'main':60,
+            'side':15,
+            'extra':15
+        }
+
+        
+        count = {
+                'main':0,
+                'side':0,
+                'extra':0,
+        }
+
+        for val in deck.card_in_deck:
+            #this gets every card_in_deck for the deck we are trying to insert into 
+            print(val)
+            print(val.quantity)
+            count[val.location] += val.quantity
+            print(count)
+        
+        #Now add the self quantity.
+
+        count[self.location] += int(self.quantity)
+
+        for key in limits:
+            if count[key] > limits[key]:
+                raise ValueError('Addition Exceeds Deck Size Limit')
+
+    
+    #@validates('card_in_deck')
+    # def validate_cards_in_Deck(self,values):
+    #     limits = {
+    #         'main':60,
+    #         'side':15,
+    #         'extra':15
+    #     }   
+
+    #     #the value is list of card_in_deck. for each of these we get a quantity and a location. We create a list/dict of the quantites and locations. Compare and see if it validates. 
+
+    #     count = {
+    #         'main':0,
+    #         'side':0,
+    #         'extra':0
+    #     }
+
+    #     print(values)
+    #     for val in self.card_in_deck:
+    #         print(val)
+    #         print(val.quantity)
+    #         # count[val.location] += val.quantity
+        
+    #     for key in limits:
+    #         if count[key] > limits[key]:
+    #             raise ValueError(' Addition Exceeds Deck Size Limit')
+        
+    #     return values
+
+    #Card in Deck event listener 
+
+
+# event.listen(CardinDeck,'before_insert',validate_card_in_deck_insert_deck)
+
 
     #SeralizerRules
 
     serialize_rules = ('-deck.card_in_deck','-card.card_in_deck','-card.card_in_inventory','-card.releaseSet')
+
+
+def validate_card_in_deck_insert_deck(mapper,connection,target):
+    print(target)
+    target.validate_self()
+
+event.listen(CardinDeck, 'before_insert',validate_card_in_deck_insert_deck)
+
+
 
 class ReleaseSet(db.Model, SerializerMixin):
     __tablename__ = 'ReleaseSets'
