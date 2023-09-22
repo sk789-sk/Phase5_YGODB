@@ -789,6 +789,82 @@ def checksession():
     return response
 
 
+@app.route('/InventRecon/<int:userid>/<int:deckid>', methods=['GET'])
+def ReconSingleDeck(userid,deckid):
+    #This reconciled 1 persons inventory against any deck. 
+
+    #First lets get the users inventory
+    
+    #YDK id is in the YGOpro as the id. We can use DB links and ydk files to get the cards as well to upload to the db as cardsindeck
+
+
+    base = db.session.query(Inventory) #what we want returned from
+    #We want to convert cardInSet_id into card ID.
+
+    invent = base.filter(Inventory.user_id==userid).outerjoin(CardinSet,Inventory.cardinSet_id==CardinSet.id).outerjoin(Card,CardinSet.card_id==Card.id)
+
+    #Lets get all the cards in the deck
+    cards_list = CardinDeck.query.filter(CardinDeck.deck_id==deckid).all()
+
+    print(invent.all())
+
+    #A card can be present in side/main/extra so there can be duplicate cardinDecks that need to be consolidated before seeing how many we actually have.
+
+    id_count = {}
+
+    for card in cards_list:
+        if card.card_id in id_count:
+            id_count[card.card_id] = id_count[card.card_id] + card.quantity
+        else:
+            id_count[card.card_id] = card.quantity
+    
+    print(id_count) 
+
+    #now we need to go through each value in the id_count and compare it against what is owned
+
+    data_arr = []
+
+    for key in id_count:
+        #the key is the card_id
+        cards_owned = invent.filter(Card.id ==key).all()
+        c_name = db.session.query(Card.name).filter(Card.id==key).first()[0]
+        
+        if cards_owned:
+            q = 0
+            for inventory in cards_owned:
+                q += inventory.quantity
+            
+            needed = q - id_count[key]
+
+            if needed <0:
+                needed = -1*needed
+            elif needed>0:
+                needed = 0
+
+
+            data_obj = {'name':c_name,
+                        'id':key,
+                        'owned':q,
+                        'required':id_count[key],
+                        'need':needed}
+            
+            data_arr.append(data_obj)
+        
+        else:
+            q = 0 
+            needed = id_count[key] 
+            data_obj = {'name':c_name,
+                'id':key,
+                'owned':q,
+                'required':id_count[key],
+                'need':needed}
+
+            data_arr.append(data_obj)
+
+    response = make_response(jsonify(data_arr),200)
+    return response 
+
+
 @app.route('/InventRecon/<int:id>', methods=['POST'])
 def InventRecon(id):
 
@@ -797,14 +873,13 @@ def InventRecon(id):
 
     invent = base.filter(Inventory.user_id==id).outerjoin(CardinSet,Inventory.cardinSet_id==CardinSet.id).outerjoin(Card,CardinSet.card_id==Card.id)
 
-    # print(invent.all())
+    print(invent.all())
 
     card_list = request.get_json()
 
-    print(card_list)
+    # print(card_list)
 
     owned_list = {}
-
 
     data_arr = []
 
@@ -853,7 +928,7 @@ def InventRecon(id):
 
 
     # print(owned_list)
-    print(data_arr)
+    # print(data_arr)
 
     response_data = owned_list
 
