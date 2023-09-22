@@ -33,13 +33,18 @@ function ReconTable({userDecks, id}){
 
     //Lets create our object with card_id and the quantities needed.
 
+    const path = `/Cards/`
+
     const cardsInDecks = {}
+    const cardsperDeck = {}
 
     for (let i=0; i < userDecks.length ;i++) {
         for (let j=0; j < userDecks[i].card_in_deck.length;j++) {
 
             let card_id = (userDecks[i].card_in_deck[j].card_id)
             let quantity = (userDecks[i].card_in_deck[j].quantity)
+            let deck_name = (userDecks[i].name)
+            let card_name = (userDecks[i].card_in_deck[j].card.name)
 
             if (card_id in cardsInDecks){
                 let new_q = cardsInDecks[card_id] + quantity
@@ -48,6 +53,13 @@ function ReconTable({userDecks, id}){
             else{
                 cardsInDecks[card_id] = quantity
             }
+
+            if (card_name in cardsperDeck){
+                cardsperDeck[card_name] = [...cardsperDeck[card_name],`${quantity} used in ${deck_name}`]
+            }
+            else(
+                cardsperDeck[card_name] = [`${quantity} used in ${deck_name}`]
+            )
         }
     }
 
@@ -79,7 +91,7 @@ function ReconTable({userDecks, id}){
         .then(resp => {
             if (resp.ok) {
                 resp.json()
-                .then(data => objtoArr(data)) //convert data into array here
+                // .then(data => objtoArr(data)) //convert data into array here
                 .then(val => setCardsNeeded(val))
             }
             else{
@@ -88,16 +100,32 @@ function ReconTable({userDecks, id}){
             } 
         })
 
-        console.log(cardsNeeded)
-
-
     }  
 
+    console.log(cardsNeeded)
+
+    //need a function that takes an string input. then goes through the object array and for each one it retuns a <p>text<p><br><br>
+
     const renderRows = cardsNeeded.map( (val) => {
+    
+        // console.log(cardsperDeck[val[0]])
+
         return (
             <tr>
-                <td>{val[0]}</td>
-                <td>{val[1]}</td>
+                <td>
+                    <Link to={`${path}${val.id}`}> {val.name} </Link>
+                </td>
+                <td>{val.owned}</td>
+                <td>{val.required}</td>
+                <td>{val.need}</td>
+                <td>
+                    <ul>
+                        {cardsperDeck[val.name].map((value,idx) => {
+                            return (<li className="uncenter" key={idx}>{value}</li> )
+                        })}
+                        <br></br>
+                    </ul>
+                </td>
             </tr>
         )
     } 
@@ -111,11 +139,16 @@ function ReconTable({userDecks, id}){
             {(cardsNeeded.length !==0) ?
             
             <table>
+            <thead>
+                <tr>
+                    <th>Card Name</th>
+                    <th>Owned</th>
+                    <th>Required</th>
+                    <th>Needed</th>
+                    <th>Usage Breakdown</th>
+                </tr>
+            </thead>
             <tbody>
-                <th>
-                    <td>Card Name</td>
-                    <td>Quantity needed</td>
-                </th>
                 {renderRows}
             </tbody>
         </table>

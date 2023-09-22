@@ -210,52 +210,20 @@ class CardinDeck(db.Model, SerializerMixin):
                 'main':0,
                 'side':0,
                 'extra':0,
-        }
+        }     
 
         for val in deck.card_in_deck:
             #this gets every card_in_deck for the deck we are trying to insert into 
-            print(val)
-            print(val.quantity)
-            count[val.location] += val.quantity
-            print(count)
+            count[val.location] += int(val.quantity)
         
         #Now add the self quantity.
 
         count[self.location] += int(self.quantity)
-
+        #issue here is that on a patch request we have the card already in a card_in_deck so if i try to update from 1 to 2 this will read it as we already have 1 and now we are adding 2. This will break the validation. We should if we already have the card in the deck we should remove it form the list and just add the new quantity and see if that breaks it. Implement it in the morning im about to pass out. 
         for key in limits:
             if count[key] > limits[key]:
                 raise ValueError('Addition Exceeds Deck Size Limit')
-
     
-    #@validates('card_in_deck')
-    # def validate_cards_in_Deck(self,values):
-    #     limits = {
-    #         'main':60,
-    #         'side':15,
-    #         'extra':15
-    #     }   
-
-    #     #the value is list of card_in_deck. for each of these we get a quantity and a location. We create a list/dict of the quantites and locations. Compare and see if it validates. 
-
-    #     count = {
-    #         'main':0,
-    #         'side':0,
-    #         'extra':0
-    #     }
-
-    #     print(values)
-    #     for val in self.card_in_deck:
-    #         print(val)
-    #         print(val.quantity)
-    #         # count[val.location] += val.quantity
-        
-    #     for key in limits:
-    #         if count[key] > limits[key]:
-    #             raise ValueError(' Addition Exceeds Deck Size Limit')
-        
-    #     return values
-
     #Card in Deck event listener 
 
 
@@ -272,7 +240,7 @@ def validate_card_in_deck_insert_deck(mapper,connection,target):
     target.validate_self()
 
 event.listen(CardinDeck, 'before_insert',validate_card_in_deck_insert_deck)
-
+event.listen(CardinDeck, 'before_update',validate_card_in_deck_insert_deck)
 
 
 class ReleaseSet(db.Model, SerializerMixin):

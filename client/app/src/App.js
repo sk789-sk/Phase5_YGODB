@@ -23,7 +23,7 @@ function App() {
   // Code goes here!
   //this is the first load in the app so we should check for a login right here 
 
-  const [user, setUser] = useState({ 'username': 'DEFAULT', 'id': 1}) 
+  const [user, setUser] = useState(null) 
 
 
   useEffect( () => {

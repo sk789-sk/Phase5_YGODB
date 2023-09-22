@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom"
 import TableRow from "./Tablerow";
-import { Button } from "@mui/material";
+import { Button, Checkbox } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PublishIcon from '@mui/icons-material/Publish';
@@ -13,20 +13,27 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
 
     const [newQuantity,setNewQuantity] = useState(0)
 
-    console.log(id)
-    console.log(cardsInDeck)
-
-    console.log(cardsInDeck.length)
-
     let cardstorender = []
     for (let card of cardsInDeck){
         for (let i=0; i<card.quantity;i++){
-            let card_obj = {name:card.card.name, image:card.card.card_image,id:card.card_id}
+            let card_obj = {name:card.card.name, image:card.card.card_image,id:card.card_id,location:card.location}
             cardstorender.push(card_obj)
         }
     }
+
+    const maindeck = cardstorender.filter( (card) => 
+        card.location==='main'
+    )
+
+    const sidedeck = cardstorender.filter( (card) => 
+        card.location==='side'
+    )
+
+    const extradeck = cardstorender.filter( (card) => 
+        card.location==='extra'
+    )
     
-    const renderDeckGridElements = cardstorender.map( (card) => {
+    const renderDeckGridElements = maindeck.map( (card) => {
     return (
         <div className="img-grid-item">
             <Link to={`/Cards/${card.id}`}>
@@ -37,7 +44,7 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
         }
      ) 
 
-     const renderSideDeckGridElements = cardstorender.slice(0,15).map( (card) => {
+     const renderSideDeckGridElements = sidedeck.map( (card) => {
         return (
             <div className="img-grid-item">
                 <Link to={`/Cards/${card.id}`}>
@@ -48,7 +55,7 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
             }
     )
 
-    const renderExtraDeckGridElements = cardstorender.slice(15,30).map( (card) => {
+    const renderExtraDeckGridElements = extradeck.map( (card) => {
         return (
             <div className="img-grid-item">
                 <Link to={`/Cards/${card.id}`}>
@@ -59,7 +66,7 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
             }
     )
 
-    const renderRows = cardsInDeck.map( (card) => {
+    function renderRowT(card) {
         return <TableRow key={card.id} 
         data = {[card.card.name, card.quantity]}
 
@@ -105,25 +112,32 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
             }
         })
         }>
-        <DeleteIcon/></Button>}
+        <DeleteIcon/></Button>}/>
+    }
 
 
-        />
-    })
+
+    //filter the cardsInDeck to appropriate vals i guess
+
+    const renderMaindeckTable = cardsInDeck.filter((card) => card.location === 'main').map(renderRowT)
+    const renderSidedeckTable = cardsInDeck.filter((card)=>card.location==='side').map(renderRowT)
+    const renderExtradecktable = cardsInDeck.filter((card)=>card.location==='extra').map(renderRowT)
+
 
     function handleSubmit(e){
         e.preventDefault()
+        console.log(e)
+        console.log(e.target['location'].value)
         let deck_id = id
         let card_name = e.target[0].value
         let card_quantity = e.target[1].value
-
-        console.log(id)
-
+        let location = e.target['location'].value
 
         const newCardinDeck = {
             'name' : card_name,
             'deck_id' : deck_id,
-            'quantity' : card_quantity
+            'quantity' : card_quantity,
+            'location' : location
         }
 
         fetch(`/cardindeck`, {
@@ -213,7 +227,7 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
                             </tr>
                         </thead>
                         <tbody>
-                            {renderRows}
+                            {renderMaindeckTable}
                         </tbody>
                     </table>
 
@@ -229,7 +243,7 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
                         </thead>
                         <tbody>
                             {cardsInDeck.length===0 ? <tr><td></td><td></td><td></td><td></td></tr> : null}
-                            {renderRows}
+                            {renderSidedeckTable}
                         </tbody>
                     </table>
 
@@ -244,7 +258,7 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
                             </tr>
                         </thead>
                         <tbody>
-
+                            {renderExtradecktable}
                         </tbody>
                     </table>
                 </div>
@@ -253,10 +267,22 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
                         <p>Add Card to Deck</p>
 
                         <form className="DeckEdit-new-card-form" onSubmit={handleSubmit}>
-                            <input type="text" name="card-name" placeholder="Card Name"/>
-                            <input type="integer" name="card-quantity" placeholder="Card Quantity"/>
+                            <input className="deck-edit-input" type
+                            ="text" name="card-name" placeholder="Card Name"/>
+                            <input className="deck-edit-input" type="integer" name="card-quantity" placeholder="Card Quantity"/>
 
-                            <button type="submit">Submit</button>
+                            <div className="Deck-Edit-Buttons">                        
+                                <input id="main" type="radio" name="location" value={'main'}></input>
+                                <label htmlFor="main">Main</label>
+
+                                <input id="side" type="radio" name="location" value={'side'}></input>
+                                <label htmlFor="side">Side</label>
+                                
+                                <input id="extra" type="radio" name="location" value={'extra'}></input>
+                                <label htmlFor="extra">Extra</label>
+
+                                <button type="submit">Submit</button>
+                            </div>
                         </form>
                     </div>
                     <div className="edit-quantity-input">

@@ -22,9 +22,19 @@ function UserDecks ({user}) {
 
     useEffect( () => {
         fetch(`/Decks/${user.id}`)
-        .then((resp) => resp.json())
-        .then ((data) => setUserDecks(data))
-    }, [])
+        .then((resp) => {
+            if (resp.ok){
+                resp.json()
+                .then((data) => (setUserDecks(data)))
+            }
+            else{
+                resp.json()
+                .then(data => console.log(data))
+            }
+        }
+        )
+        
+    }, [refresh])
 
     console.log(userDecks)
 
@@ -120,7 +130,7 @@ function UserDecks ({user}) {
             <form onSubmit={createDeck} className="CreateForm">
                     <input type="text" placeholder= "Enter Deck Name" />
                     <button className="confirm" type="submit">Create New Deck</button>   
-                </form>
+            </form>
 
             <ReconTable userDecks = {userDecks} id={user.id}/>
         </div>

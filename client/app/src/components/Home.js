@@ -1,5 +1,6 @@
 import React from "react";
 import NavBar from "./NavBar";
+import Header from "./Header";
 
 
 //import dependencies 
@@ -8,7 +9,7 @@ function Home(){
 
     return(
         <div className="componentdiv">
-            <NavBar />
+            <Header />
             <h1 className="main-header" >Yugioh Card Mapping</h1>
 
             <h3>Map Your physical collection to a digital database. </h3>

@@ -44,13 +44,13 @@ Individual Cards Section
 
 Individual Sets Section
 
-
+- [] on refresh the session goes back to id 1. 
 - [ ]  Sorting and ordering options 
 - [ ]  add reset filters options to search
 - [] Do not allow duplicates of card ID in user inventory
 - [] sessions for password hashing and authentification/authorization
 - [ ] Error Responses should give feedback to user and not just console outputs.
-- [ ] Proper User Auth with encryption and sessions or token
+- [x] Proper User Auth with encryption and sessions or token
 - [ ] Remove trailing whitespace in the inputs
 - [ ] Remove case sensitivity on DB search
 - [ ] Allow Deck Creation to be private
@@ -59,9 +59,9 @@ Individual Sets Section
  https://db.ygoprodeck.com/api/v7/cardinfo.php?num=5&offset=0 
 
 UI
-- [] Move Deck Grids into own component
+- [x] Move Deck Grids into own component
 
-- [ ] Soft Limit on cards that are added into a deck(can be bypassed since decks arent used for playing actually)
+- [x] Soft Limit on cards that are added into a deck(can be bypassed since decks arent used for playing actually)
 - [ ] Deck Creation Info should be in tabular form on Individual User and Deck Page
 - [ ] Home screen should have resources for the game maybe
 

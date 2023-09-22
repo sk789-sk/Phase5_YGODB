@@ -398,16 +398,9 @@ def all_user_deck(id):
 
     else:
 
-        init_deck_invent = []
-        init_deck = Deck.query.filter(Deck.user_id == 1).first()
-
-        init_deck_invent.append(init_deck.to_dict())
-
-        response = make_response(jsonify(init_deck_invent),200)
-
-        # response = make_response(
-        #     {"error":"User has no decks"},404
-        # )
+        response = make_response(
+            {"error":"User has no decks"},404
+        )
 
     return response
 
@@ -471,6 +464,7 @@ def one_user_deck_name(id,deckid): #Singular Deck for an owner
     else:
         response = make_response({'error':'deck doesnt exist'},404)
     return response
+
 @app.route('/cardindeck', methods = ['POST'])
 def cardindeckpost():
 
@@ -512,7 +506,7 @@ def cardindeckpost():
                         deck_id = data['deck_id'],
                         card_id = card.id,
                         quantity = data['quantity'],
-                        location = 'main'
+                        location = data['location']
                     )
 
                     db.session.add(new_card_in_deck)
@@ -803,11 +797,16 @@ def InventRecon(id):
 
     invent = base.filter(Inventory.user_id==id).outerjoin(CardinSet,Inventory.cardinSet_id==CardinSet.id).outerjoin(Card,CardinSet.card_id==Card.id)
 
-    print(invent.all())
+    # print(invent.all())
 
     card_list = request.get_json()
 
+    print(card_list)
+
     owned_list = {}
+
+
+    data_arr = []
 
     for key in card_list:
         
@@ -821,13 +820,44 @@ def InventRecon(id):
             quantity = 0
             for inventory in cards_owned:
                 quantity += inventory.quantity
+
+            #in the end quantity is how many cards i own, card_list[key] is how many copies i need
             owned_list[c_name] = quantity - card_list[key]
+
+            needed = quantity- card_list[key]
+
+            if needed <0:
+                needed = -1*needed
+            elif needed>0:
+                needed = 0
+
+            data_obj = {'name':c_name,
+                        'id':key,
+                        'owned':quantity,
+                        'required':card_list[key],
+                        'need':needed}
+            
+            data_arr.append(data_obj)
 
         else:
             owned_list[c_name] = 0 - card_list[key]
-        
-    print(owned_list)
+            needed = -1*(0-card_list[key])
+            
+            data_obj = {'name':c_name,
+                        'id':key,
+                        'owned':0,
+                        'required':card_list[key],
+                        'need':needed}
+            
+            data_arr.append(data_obj)
+
+
+    # print(owned_list)
+    print(data_arr)
+
     response_data = owned_list
+
+    response_data = data_arr
 
     response = make_response( jsonify(response_data),200)
     return response

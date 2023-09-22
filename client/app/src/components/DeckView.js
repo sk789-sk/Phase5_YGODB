@@ -14,34 +14,24 @@ function DeckViewer({cardsInDeck, id}){
     let cardstorender = []
     for (let card of cardsInDeck){
         for (let i=0; i<card.quantity;i++){
-            let card_obj = {name:card.card.name, image:card.card.card_image,id:card.card_id}
+            let card_obj = {name:card.card.name, image:card.card.card_image,id:card.card_id,location:card.location}
             cardstorender.push(card_obj)
         }
     }
 
-    const renderDeckGridElements = cardstorender.map( (card) => {
-        return (
-            <div className="img-grid-item">
-                <Link to={`/Cards/${card.id}`}>
-                    <img src={card.image} alt={card.name} />  
-                </Link> 
-            </div>
-                )
-            }
+    const maindeck = cardstorender.filter( (card) => 
+        card.location==='main'
     )
 
-    const renderSideDeckGridElements = cardstorender.slice(0,15).map( (card) => {
-        return (
-            <div className="img-grid-item">
-                <Link to={`/Cards/${card.id}`}>
-                    <img src={card.image} alt={card.name} />  
-                </Link> 
-            </div>
-                )
-            }
+    const sidedeck = cardstorender.filter( (card) => 
+        card.location==='side'
     )
 
-    const renderExtraDeckGridElements = cardstorender.slice(15,30).map( (card) => {
+    const extradeck = cardstorender.filter( (card) => 
+        card.location==='extra'
+    )
+
+    const renderMainDeckGridElements = maindeck.map( (card) => {
         return (
             <div className="img-grid-item">
                 <Link to={`/Cards/${card.id}`}>
@@ -50,14 +40,34 @@ function DeckViewer({cardsInDeck, id}){
             </div>
                 )
             }
-    )
+         ) 
+    
+         const renderSideDeckGridElements = sidedeck.map( (card) => {
+            return (
+                <div className="img-grid-item">
+                    <Link to={`/Cards/${card.id}`}>
+                        <img src={card.image} alt={card.name} />  
+                    </Link> 
+                </div>
+                    )
+                }
+        )
+    
+        const renderExtraDeckGridElements = extradeck.map( (card) => {
+            return (
+                <div className="img-grid-item">
+                    <Link to={`/Cards/${card.id}`}>
+                        <img src={card.image} alt={card.name} />  
+                    </Link> 
+                </div>
+                    )
+                }
+        )
 
     
-    const renderTableRow = cardsInDeck.map ( (card) => {
-
+    const renderMaindeckTableRow = cardsInDeck.filter((card) => card.location === 'main').map ( (card) => {
         return (
             <tr>
-                
                 <td className="card-name">
                 <Link to={`/Cards/${card.card_id}`}>{card.card.name}</Link>
                 </td>    
@@ -66,12 +76,35 @@ function DeckViewer({cardsInDeck, id}){
         )
     })
 
+    const renderSidedeckTableRow = cardsInDeck.filter((card) => card.location === 'side').map ( (card) => {
+        return (
+            <tr>
+                <td className="card-name">
+                <Link to={`/Cards/${card.card_id}`}>{card.card.name}</Link>
+                </td>    
+                <td className="card-quantity">{card.quantity}</td>
+            </tr>
+        )
+    })
+
+    const renderExtradeckTableRow = cardsInDeck.filter((card) => card.location === 'extra').map ( (card) => {
+        return (
+            <tr>
+                <td className="card-name">
+                <Link to={`/Cards/${card.card_id}`}>{card.card.name}</Link>
+                </td>    
+                <td className="card-quantity">{card.quantity}</td>
+            </tr>
+        )
+    })
+
+
     return (
         <div className="deck-container">  
             <div className="deck-image-container-t">
                     <div className="main-deck">
                         <div className="main-deck-grid">
-                            {renderDeckGridElements}
+                            {renderMainDeckGridElements}
                         </div>
                     </div>
                     <div className="side-deck">
@@ -98,7 +131,7 @@ function DeckViewer({cardsInDeck, id}){
                             </tr>
                         </thead>
                         <tbody>
-                            {renderTableRow}
+                            {renderMaindeckTableRow}
                         </tbody>
                     </table>
                     <h3>Side Deck</h3>
@@ -110,7 +143,7 @@ function DeckViewer({cardsInDeck, id}){
                             </tr>
                         </thead>
                         <tbody>
-                            {renderTableRow}
+                            {renderSidedeckTableRow}
                         </tbody>
                     </table>
                     <h3>Extra Deck</h3>
@@ -123,7 +156,7 @@ function DeckViewer({cardsInDeck, id}){
                             </tr>
                         </thead>
                         <tbody>
-                            {renderTableRow}
+                            {renderExtradeckTableRow}
                         </tbody>
                     </table>
                 </div>
