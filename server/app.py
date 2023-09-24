@@ -483,7 +483,9 @@ def cardindeckpost():
 
         if card:
 
-            cardindeck_exists = CardinDeck.query.filter(CardinDeck.deck_id==data['deck_id'],CardinDeck.card_id==card.id).first()
+            cardindeck_exists = CardinDeck.query.filter(CardinDeck.deck_id==data['deck_id'],CardinDeck.card_id==card.id,CardinDeck.location==data['location']).first()
+            
+            #Validation issue will be that now a card in side deck and main deck are considered completely independent of each other. I could have 3 copies of a card in main deck and side deck bringing the card count to 6 which should not be allowed. 
 
             if cardindeck_exists:
                 try:
@@ -789,8 +791,88 @@ def checksession():
     return response
 
 
+@app.route('/InventReconSomeDeck/<int:userid>', methods = ['POST'])
+def ReconMultipleDecks(userid):
+
+    #With this one we get a list of decks that are send as deck id to the server. We then just do the whole recon process. Should just put the recond procress into its own function so much copy paste but ill do that later. 
+
+    base = db.session.query(Inventory)
+    invent = base.filter(Inventory.user_id==userid).outerjoin(CardinSet,Inventory.cardinSet_id==CardinSet.id).outerjoin(Card,CardinSet.card_id==Card.id)
+
+    deck_list = request.get_json()
+
+    id_count = {}
+    cards_by_deck = {}
+
+    for val in deck_list:
+        #val is the is the deck id.
+        cards_list = CardinDeck.query.filter(CardinDeck.deck_id==val).all()
+        #card_list is all the cards used in the deck. 
+
+        deck_name = db.session.query(Deck.name).filter(Deck.id == val).scalar()
+
+        for card in cards_list:
+        
+            if card.card_id in id_count:
+                id_count[card.card_id] = id_count[card.card_id] + card.quantity
+            else:
+                id_count[card.card_id] = card.quantity
+
+            if card.card_id in cards_by_deck:
+                cards_by_deck[card.card_id].append(f'{card.quantity} used in {deck_name}')
+            else:
+                cards_by_deck[card.card_id] = [f'{card.quantity} used in {deck_name}']
+
+    print(cards_by_deck)
+    data_arr = []
+
+    for key in id_count:
+        #the key is the card_id
+        cards_owned = invent.filter(Card.id ==key).all()
+        c_name = db.session.query(Card.name).filter(Card.id==key).first()[0]
+        
+        if cards_owned:
+            q = 0
+            for inventory in cards_owned:
+                q += inventory.quantity
+            
+            needed = q - id_count[key]
+
+            if needed <0:
+                needed = -1*needed
+            elif needed>0:
+                needed = 0
+
+
+            data_obj = {'name':c_name,
+                        'id':key,
+                        'owned':q,
+                        'required':id_count[key],
+                        'need':needed,
+                        'usage': cards_by_deck[key] 
+                        }
+            
+            data_arr.append(data_obj)
+        
+        else:
+            q = 0 
+            needed = id_count[key] 
+            data_obj = {'name':c_name,
+                'id':key,
+                'owned':q,
+                'required':id_count[key],
+                'need':needed,
+                'usage':cards_by_deck[key]}
+
+            data_arr.append(data_obj)
+
+    response = make_response(jsonify(data_arr),200)
+    
+    return response
+        
 @app.route('/InventRecon/<int:userid>/<int:deckid>', methods=['GET'])
 def ReconSingleDeck(userid,deckid):
+
     #This reconciled 1 persons inventory against any deck. 
 
     #First lets get the users inventory
@@ -805,10 +887,7 @@ def ReconSingleDeck(userid,deckid):
 
     #Lets get all the cards in the deck
     cards_list = CardinDeck.query.filter(CardinDeck.deck_id==deckid).all()
-
-    print(invent.all())
-
-    #A card can be present in side/main/extra so there can be duplicate cardinDecks that need to be consolidated before seeing how many we actually have.
+    deck_name = db.session.query(Deck.name).filter(Deck.id==deckid).scalar()
 
     id_count = {}
 
@@ -846,7 +925,8 @@ def ReconSingleDeck(userid,deckid):
                         'id':key,
                         'owned':q,
                         'required':id_count[key],
-                        'need':needed}
+                        'need':needed,
+                        'usage':[f'{id_count[key]} used in {deck_name}']}
             
             data_arr.append(data_obj)
         
@@ -857,7 +937,8 @@ def ReconSingleDeck(userid,deckid):
                 'id':key,
                 'owned':q,
                 'required':id_count[key],
-                'need':needed}
+                'need':needed,
+                'usage':[f'{id_count[key]} used in {deck_name}']}
 
             data_arr.append(data_obj)
 
@@ -867,6 +948,11 @@ def ReconSingleDeck(userid,deckid):
 
 @app.route('/InventRecon/<int:id>', methods=['POST'])
 def InventRecon(id):
+
+    #NOT USING JUST EXPAND THE LIST DECKS TO BE A LIST OF ALL
+
+
+    #Reconcile 1 persons inventory against all decks that they own. The Post is from the your decks page. Should probably got and change this but im lazy. 
 
     base = db.session.query(Inventory) #what we want returned from
     #We want to convert cardInSet_id into card ID.

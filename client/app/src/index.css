@@ -250,6 +250,7 @@ a {
   margin-right: auto;
 }
 
+
 .Login-Content-Box {
   border-radius: 10px;
   border: #1e1e24 10px;
@@ -623,4 +624,61 @@ DECK DISPLAY CSS */
 
 .row-red{
   background-color: red;
+}
+
+.Decks-main-content-div {
+  width: 100;
+  display: flex;
+  justify-content: space-around;
+}
+
+.Deck-table-div {
+  margin-top: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around ;
+}
+
+.Deck-table {
+  width: 100%;
+}
+
+.User-Decks-input-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  outline: none;
+  gap: 10px;
+  border: none;
+  line-height: 1.15;
+  border: 1px solid;
+  white-space: nowrap;
+
+}
+
+.Deck-table-buttons{
+  flex: 9;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+.Deck-table .tables {
+  border: 1px solid;
+  border-top: 0px;
+  width: 100%;
+}
+
+
+.Deck-table .tables td {
+  margin-right: 0;
+  border-left: 0px;
+  border-right: 0px;
+}
+
+.main-body {
+  margin: 5vh;
 }
