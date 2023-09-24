@@ -140,6 +140,10 @@ body {
   background-color: #e3e6e6;
 }
 
+.innerDataTable tbody{
+  width: 100%;
+}
+
 .innerDataTable{
   display: flex;
   flex-direction: column;
@@ -615,15 +619,15 @@ DECK DISPLAY CSS */
 }
 
 .row-green{
-  background-color: green;
+  background-color: rgb(149, 211, 149);
 }
 
 .row-yellow{
-  background-color: yellow;
+  background-color: rgb(249, 249, 206);
 }
 
 .row-red{
-  background-color: red;
+  background-color: rgb(247, 189, 187);
 }
 
 .Decks-main-content-div {

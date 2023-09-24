@@ -48,12 +48,40 @@ function ReconTable({cardsNeeded,setShowRecon}){
 
     // console.log(filteredCards)
 
+    function findClass(obj) {
+        if (obj.need === 0){
+            return 'row-green'
+        }
+        
+        let min_for_any = 0
+        obj['usage'].map(val => {
+            if (parseInt(val[0])>min_for_any){
+                min_for_any=parseInt(val[0])
+            }
+        })
+
+        if (obj.owned >= min_for_any){
+            return 'row-yellow'
+        }
+
+        if (obj.owned < min_for_any){
+            return 'row-red'
+        }
+
+        return 'placeholder'
+
+    }
+
     const renderRows = filteredCards.slice(0+(per_page*page_num),19+(per_page*page_num)).map( (val) => {
     
         // console.log(cardsperDeck[val.name])
 
+        //for renderRows here we can add the color 
+
+        
+
         return (
-            <tr>
+            <tr className={findClass(val)}>
                 <td>
                     <Link to={`${path}${val.id}`}> {val.name} </Link>
                 </td>
@@ -65,7 +93,6 @@ function ReconTable({cardsNeeded,setShowRecon}){
                         {val['usage'].map((value,idx) => {
                             return (<li className="uncenter" key={idx}>{value}</li> )
                         })}
-                        <br></br>
                     </ul>
                 </td>
             </tr>
@@ -100,7 +127,7 @@ function ReconTable({cardsNeeded,setShowRecon}){
                 <div className="User-Decks-input-filters">
 
                     <form onSubmit={handleSubmit} className="search">
-                            <input type="text" placeholder="Search by deck name " />
+                            <input type="text" placeholder="Search by Card name " />
                             <Button type="submit"><SearchIcon/></Button>
                     </form>
                     

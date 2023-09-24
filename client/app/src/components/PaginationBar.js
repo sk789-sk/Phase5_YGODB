@@ -49,7 +49,7 @@ function PaginationBar ({currentPage,setCurrentPage,lastPage,cardsPerPage,totalC
                 <button disabled= {(currentPage+1>lastPage)} onClick={handleClick} value={1}><NavigateNextIcon/> </button>
                 <button disabled={currentPage===lastPage} onClick={handleClick} value={lastPage-currentPage}><LastPageIcon/> </button>
             </div>
-            <h4 className="ResultInfo">Results: {(currentPage*cardsPerPage)-19}-{ totalCards >=currentPage*cardsPerPage? (currentPage*cardsPerPage):totalCards} of {totalCards}</h4>
+            <h4 className="ResultInfo">Showing: {(currentPage*cardsPerPage)-19}-{ totalCards >=currentPage*cardsPerPage? (currentPage*cardsPerPage):totalCards} of {totalCards}</h4>
 
         </div>
     )
