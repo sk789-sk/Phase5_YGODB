@@ -242,7 +242,6 @@ function DeckViewEditer( {cardsInDeck, toggleRefresh, id ,setDeckName, setCardsI
                             </tr>
                         </thead>
                         <tbody>
-                            {cardsInDeck.length===0 ? <tr><td></td><td></td><td></td><td></td></tr> : null}
                             {renderSidedeckTable}
                         </tbody>
                     </table>

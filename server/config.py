@@ -24,8 +24,16 @@ test = 'hi'
 app.secret_key = 'fdasfafafa'
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
 DATABASE = os.environ.get(
     "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@hostname/database_name'
+
+
+
+
+DATABASE = 'postgresql://ygo_db_rfqp_user:g8kKQxoG6bMOr5gavtO83Rt18FXb2lSQ@dpg-ck966hmgtj9c73a8pi20-a.ohio-postgres.render.com/ygo_db_rfqp'
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE

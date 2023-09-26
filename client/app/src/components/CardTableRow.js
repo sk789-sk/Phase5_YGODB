@@ -27,7 +27,7 @@ function CardTableRow({data, path}){
                         <tbody>
                         <tr className="inner-row">
                             <td colSpan={8} width="100%">
-                                <h4>{data.name}</h4>
+                                <h4 style={{margin: '0'}}>{data.name}</h4>
                             </td>
                         </tr>
                         <tr className="inner-row">

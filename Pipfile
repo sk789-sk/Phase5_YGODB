@@ -15,6 +15,8 @@ requests = "*"
 faker = "*"
 flask-bcrypt = "*"
 flask-login = "*"
+psycopg2-binary = "*"
+gunicorn = "*"
 
 [dev-packages]
 

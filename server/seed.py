@@ -2224,16 +2224,16 @@ def create_counter_Trap():
 if __name__ == '__main__':
 
     with app.app_context():
-        # print("Clearing db...")
+        print("Clearing db...")
 
 
         # User.query.delete()
-        # ReleaseSet.query.delete()
+        ReleaseSet.query.delete()
 
 
-        # Card.query.delete()
+        Card.query.delete()
         # # CardinDeck.query.delete()
-        # CardinSet.query.delete()
+        CardinSet.query.delete()
         # # Inventory.query.delete()
 
         print("Seeding activities...")
@@ -2244,194 +2244,196 @@ if __name__ == '__main__':
         #     profile = 'path2file'
         # )
     
-        # # db.session.add(usertest)
+        # db.session.add(usertest)
 
-        # # cards = create_cards()
-        # # db.session.add_all(cards)
+        # cards = create_cards()
+        # db.session.add_all(cards)
         
-        # releaseSets = get_release_sets()
+        releaseSets = get_release_sets()
 
 
-        # ##CAUSE of ERROR
-        # #Since card creation does not check the actual database but instead uses a counter to see where in the database it would exist when seeding. The order in which create the cards has to match the order in which they are added into the database. If we do not do this then the mapping of the individual cards to the releases in sets will be incorrect. Safer method would be to add all the cards into the database then for each card get the DB value and then match that with release set and seed both seperately. 
+        ##CAUSE of ERROR
+        #Since card creation does not check the actual database but instead uses a counter to see where in the database it would exist when seeding. The order in which create the cards has to match the order in which they are added into the database. If we do not do this then the mapping of the individual cards to the releases in sets will be incorrect. Safer method would be to add all the cards into the database then for each card get the DB value and then match that with release set and seed both seperately. 
 
-        # normal_monster_cards = create_Normal_Monster_Cards()
-        # print(i)
-        # normal_tuner_monster_cards = create_normal_Tuner_Monster()
-        # print(i)
-        # effect_monster_cards = create_effect_Monster()
-        # print(i)
-        # tuner_monster_cards = create_tuner_Monster()
-        # print(i)
-        # flip_effect_monster = create_Flip_Effect_Monster()
-        # print(i)
-        # spirit_monster = create_Spirit_Monster()
-        # print(i)
-        # union_effect_monster = create_UnionEffectMonster()
-        # print(i)
-        # gemini_monsters = create_Gemini_Monster()
-        # print(i)
-        # pendulum_effect_monster = create_Pendulum_Effect_Monster()
-        # print(i)
-        # pendulum_normal_monster = create_Pendulum_Normal_Monster()
-        # print(i)
-        # pendulum_tuner_effect_monster = create_Pendulum_Tuner_Effect_Monster()
-        # print(i)
-        # ritual_monster = create_Ritual_Monster()
-        # print(i)
-        # ritual_effect_monster = create_Ritual_Effect_Monster()
-        # print(i)
-        # toon_monster = create_Toom_Monster()
-        # print(i)
-        # fusion_monsters = create_Fusion_Monster()
-        # print(i)
-        # synchro_monster = create_Synchro_Monster()
-        # print(i)
-        # synchro_tuner_monster = create_Synchro_Tuner_Monster()
-        # print(i)
-        # synchro_pendulum_effect_monster = create_Synchro_Pendulum_Effect_Monster()
-        # print(i)
-        # XYZ_monster = create_XYZ_Monster()
-        # print(i)
-        # XYZ_pendulum = create_XYZ_Pendulum_Monster()
-        # print(i)
-        # Link_Monster = create_Link_Monster()
-        # print(i)
-        # pendulum_flip_effect = create_Pendulum_Flip_Monster()
-        # print(i)
-        # pendulum_Effect_Fusion_Monster = create_Pendulum_Effect_Fusion_Monster()
-        # print(i)
-        # normal_spell = create_normal_Spell()
-        # print(i)
-        # field_spell = create_field_Spell()
-        # print(i)
-        # equip_spell = create_equip_Spell()
-        # print(i)
-        # continous_spell = create_Continuous_Spell()
-        # print(i)
-        # quickplay_spell = create_Quick_Spell()
-        # print(i)
-        # ritual_spell = create_Ritual_Spell()
-        # print(i)
-        # normal_trap = create_normal_Trap()
-        # print(i)
-        # continous_trap = create_continuous_Trap()
-        # print(i)
-        # counter_trap = create_counter_Trap()
-        # print(i)
+        normal_monster_cards = create_Normal_Monster_Cards()
+        print(i)
+        normal_tuner_monster_cards = create_normal_Tuner_Monster()
+        print(i)
+        effect_monster_cards = create_effect_Monster()
+        print(i)
+        tuner_monster_cards = create_tuner_Monster()
+        print(i)
+        flip_effect_monster = create_Flip_Effect_Monster()
+        print(i)
+        spirit_monster = create_Spirit_Monster()
+        print(i)
+        union_effect_monster = create_UnionEffectMonster()
+        print(i)
+        gemini_monsters = create_Gemini_Monster()
+        print(i)
+        pendulum_effect_monster = create_Pendulum_Effect_Monster()
+        print(i)
+        pendulum_normal_monster = create_Pendulum_Normal_Monster()
+        print(i)
+        pendulum_tuner_effect_monster = create_Pendulum_Tuner_Effect_Monster()
+        print(i)
+        ritual_monster = create_Ritual_Monster()
+        print(i)
+        ritual_effect_monster = create_Ritual_Effect_Monster()
+        print(i)
+        toon_monster = create_Toom_Monster()
+        print(i)
+        fusion_monsters = create_Fusion_Monster()
+        print(i)
+        synchro_monster = create_Synchro_Monster()
+        print(i)
+        synchro_tuner_monster = create_Synchro_Tuner_Monster()
+        print(i)
+        synchro_pendulum_effect_monster = create_Synchro_Pendulum_Effect_Monster()
+        print(i)
+        XYZ_monster = create_XYZ_Monster()
+        print(i)
+        XYZ_pendulum = create_XYZ_Pendulum_Monster()
+        print(i)
+        Link_Monster = create_Link_Monster()
+        print(i)
+        pendulum_flip_effect = create_Pendulum_Flip_Monster()
+        print(i)
+        pendulum_Effect_Fusion_Monster = create_Pendulum_Effect_Fusion_Monster()
+        print(i)
+        normal_spell = create_normal_Spell()
+        print(i)
+        field_spell = create_field_Spell()
+        print(i)
+        equip_spell = create_equip_Spell()
+        print(i)
+        continous_spell = create_Continuous_Spell()
+        print(i)
+        quickplay_spell = create_Quick_Spell()
+        print(i)
+        ritual_spell = create_Ritual_Spell()
+        print(i)
+        normal_trap = create_normal_Trap()
+        print(i)
+        continous_trap = create_continuous_Trap()
+        print(i)
+        counter_trap = create_counter_Trap()
+        print(i)
 
 
-        # db.session.add_all(releaseSets)
-        # db.session.add_all(normal_monster_cards[0]) #Card info
-        # db.session.add_all(normal_monster_cards[1]) #releaseCards info
+        db.session.add_all(releaseSets)
+        db.session.add_all(normal_monster_cards[0]) #Card info
+        db.session.add_all(normal_monster_cards[1]) #releaseCards info
         
-        # db.session.add_all(normal_tuner_monster_cards[0])
-        # db.session.add_all(normal_tuner_monster_cards[1])
+        db.session.add_all(normal_tuner_monster_cards[0])
+        db.session.add_all(normal_tuner_monster_cards[1])
 
-        # db.session.add_all(effect_monster_cards[0])
-        # db.session.add_all(effect_monster_cards[1])
+        db.session.add_all(effect_monster_cards[0])
+        db.session.add_all(effect_monster_cards[1])
 
-        # db.session.add_all(tuner_monster_cards[0])
-        # db.session.add_all(tuner_monster_cards[1])
+        db.session.add_all(tuner_monster_cards[0])
+        db.session.add_all(tuner_monster_cards[1])
 
-        # db.session.add_all(flip_effect_monster[0])
-        # db.session.add_all(flip_effect_monster[1])
+        db.session.add_all(flip_effect_monster[0])
+        db.session.add_all(flip_effect_monster[1])
 
-        # db.session.add_all(spirit_monster[0])
-        # db.session.add_all(spirit_monster[1])
+        db.session.add_all(spirit_monster[0])
+        db.session.add_all(spirit_monster[1])
 
-        # db.session.add_all(union_effect_monster[0])
-        # db.session.add_all(union_effect_monster[1])
+        db.session.add_all(union_effect_monster[0])
+        db.session.add_all(union_effect_monster[1])
 
-        # db.session.add_all(gemini_monsters[0])
-        # db.session.add_all(gemini_monsters[1])
+        db.session.add_all(gemini_monsters[0])
+        db.session.add_all(gemini_monsters[1])
 
-        # db.session.add_all(pendulum_effect_monster[0])
-        # db.session.add_all(pendulum_effect_monster[1])
+        db.session.add_all(pendulum_effect_monster[0])
+        db.session.add_all(pendulum_effect_monster[1])
 
-        # db.session.add_all(pendulum_normal_monster[0])
-        # db.session.add_all(pendulum_normal_monster[1])
+        db.session.add_all(pendulum_normal_monster[0])
+        db.session.add_all(pendulum_normal_monster[1])
 
-        # db.session.add_all(pendulum_tuner_effect_monster[0])
-        # db.session.add_all(pendulum_tuner_effect_monster[1])
+        db.session.add_all(pendulum_tuner_effect_monster[0])
+        db.session.add_all(pendulum_tuner_effect_monster[1])
 
-        # db.session.add_all(ritual_monster[0])
-        # db.session.add_all(ritual_monster[1])
+        db.session.add_all(ritual_monster[0])
+        db.session.add_all(ritual_monster[1])
 
-        # db.session.add_all(ritual_effect_monster[0])
-        # db.session.add_all(ritual_effect_monster[1])
+        db.session.add_all(ritual_effect_monster[0])
+        db.session.add_all(ritual_effect_monster[1])
 
-        # db.session.add_all(toon_monster[0])
-        # db.session.add_all(toon_monster[1])
+        db.session.add_all(toon_monster[0])
+        db.session.add_all(toon_monster[1])
 
-        # db.session.add_all(fusion_monsters[0])
-        # db.session.add_all(fusion_monsters[1])
+        db.session.add_all(fusion_monsters[0])
+        db.session.add_all(fusion_monsters[1])
 
-        # db.session.add_all(synchro_monster[0])
-        # db.session.add_all(synchro_monster[1])
+        db.session.add_all(synchro_monster[0])
+        db.session.add_all(synchro_monster[1])
 
-        # db.session.add_all(synchro_tuner_monster[0])
-        # db.session.add_all(synchro_tuner_monster[1])
+        db.session.add_all(synchro_tuner_monster[0])
+        db.session.add_all(synchro_tuner_monster[1])
 
-        # db.session.add_all(synchro_pendulum_effect_monster[0])
-        # db.session.add_all(synchro_pendulum_effect_monster[1])
+        db.session.add_all(synchro_pendulum_effect_monster[0])
+        db.session.add_all(synchro_pendulum_effect_monster[1])
 
-        # db.session.add_all(XYZ_monster[0])
-        # db.session.add_all(XYZ_monster[1])
+        db.session.add_all(XYZ_monster[0])
+        db.session.add_all(XYZ_monster[1])
 
-        # db.session.add_all(XYZ_pendulum[0])
-        # db.session.add_all(XYZ_pendulum[1])
+        db.session.add_all(XYZ_pendulum[0])
+        db.session.add_all(XYZ_pendulum[1])
 
-        # db.session.add_all(Link_Monster[0])
-        # db.session.add_all(Link_Monster[1])
+        db.session.add_all(Link_Monster[0])
+        db.session.add_all(Link_Monster[1])
 
-        # db.session.add_all(pendulum_flip_effect[0])
-        # db.session.add_all(pendulum_flip_effect[1])
+        db.session.add_all(pendulum_flip_effect[0])
+        db.session.add_all(pendulum_flip_effect[1])
 
-        # db.session.add_all(pendulum_Effect_Fusion_Monster[0])
-        # db.session.add_all(pendulum_Effect_Fusion_Monster[1])
+        db.session.add_all(pendulum_Effect_Fusion_Monster[0])
+        db.session.add_all(pendulum_Effect_Fusion_Monster[1])
 
-        # #Start of spells
+        #Start of spells
 
-        # db.session.add_all(normal_spell[0])
-        # db.session.add_all(normal_spell[1])
-        # #Working test
+        db.session.add_all(normal_spell[0])
+        db.session.add_all(normal_spell[1])
+        #Working test
 
 
-        # db.session.add_all(field_spell[0])
-        # db.session.add_all(field_spell[1])
+        db.session.add_all(field_spell[0])
+        db.session.add_all(field_spell[1])
 
-        # db.session.add_all(equip_spell[0])
-        # db.session.add_all(equip_spell[1])
+        db.session.add_all(equip_spell[0])
+        db.session.add_all(equip_spell[1])
 
-        # db.session.add_all(continous_spell[0])
-        # db.session.add_all(continous_spell[1])
+        db.session.add_all(continous_spell[0])
+        db.session.add_all(continous_spell[1])
 
-        # db.session.add_all(quickplay_spell[0])
-        # db.session.add_all(quickplay_spell[1])
+        db.session.add_all(quickplay_spell[0])
+        db.session.add_all(quickplay_spell[1])
 
-        # db.session.add_all(ritual_spell[0])
-        # db.session.add_all(ritual_spell[1])
+        db.session.add_all(ritual_spell[0])
+        db.session.add_all(ritual_spell[1])
 
         # #Start of Traps
 
-        # db.session.add_all(normal_trap[0])
-        # db.session.add_all(normal_trap[1])
+        db.session.add_all(normal_trap[0])
+        db.session.add_all(normal_trap[1])
 
-        # db.session.add_all(continous_trap[0])
-        # db.session.add_all(continous_trap[1])
+        db.session.add_all(continous_trap[0])
+        db.session.add_all(continous_trap[1])
 
-        # db.session.add_all(counter_trap[0])
-        # db.session.add_all(counter_trap[1])
+        db.session.add_all(counter_trap[0])
+        db.session.add_all(counter_trap[1])
 
-        # db.session.add(user4)
+        # # db.session.add(user4)
+
+        db.session.commit()
+
+        # user = User.query.filter(User.username=='sk789').first()
+        # user.password_hash='test'
 
         # db.session.commit()
 
-        user = User.query.filter(User.username=='sk789').first()
-        user.password_hash='test'
-
-        db.session.commit()
+        
 
 
         print("Done seeding!")

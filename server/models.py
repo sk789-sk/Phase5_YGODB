@@ -250,7 +250,7 @@ class ReleaseSet(db.Model, SerializerMixin):
     name = db.Column(db.String)
     releaseDate = db.Column(db.String)
     card_count = db.Column(db.Integer)
-    set_code = db.Column(db.Integer)
+    set_code = db.Column(db.String)
 
     #ForeignKeys
 
