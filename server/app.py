@@ -39,7 +39,8 @@ from models import User, Card, Deck, CardinSet, Banlist, BanlistCard
 
 
 
-
+# postgres://ygo_db_rfqp_user:g8kKQxoG6bMOr5gavtO83Rt18FXb2lSQ@dpg-ck966hmgtj9c73a8pi20-a.ohio-postgres.render.com/ygo_db_rfqp
+# "http://localhost:5555"
 
 @app.route('/')
 def home():
@@ -166,7 +167,7 @@ def cards():
 
     for key in request.args: 
         print(key,request.args[key])
-
+        
         #New issue, Different filter elements need filter conditions, some need exact matches while others just need to check for substrings. We could have 2 different types of filter elements based on attribute i suppose? page and per_page are also parameters that need to be removed
         skip_keys = ['page','per_page']
         must_equal = ['card_type','card_race','card_attribute'] #ilike
@@ -176,13 +177,16 @@ def cards():
             continue
 
         if key == 'name':
-            filter_element = getattr(Card,key).contains(request.args[key])
+            filter_element = getattr(Card,key).ilike(f'%{request.args[key]}%')
         else:
-            filter_element = getattr(Card,key).ilike(request.args[key])
+            filter_element = getattr(Card,key).ilike(f'%{request.args[key]}%')
 
         filters.append(filter_element)
 
     cardinfo = Card.query.filter(*filters)
+
+    print(cardinfo)
+    
     paginated_cards = paginate(cardinfo,page,per_page)
 
     #cards = paginated_cards.items   #this is an instance of each card basically 1 row in table or 1 object

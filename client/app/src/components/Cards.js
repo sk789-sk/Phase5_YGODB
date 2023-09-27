@@ -26,7 +26,7 @@ function Cards(){
     //this path needs to consider all equalities. Filters by greater than or less maybe do with 
     //base path should just be /cards? then we can add the filter elements with the onclick.
 
-
+    //https://ygo-test.onrender.com/cards
 
     useEffect( () => {
         fetch('/cards')
