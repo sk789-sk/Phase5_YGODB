@@ -608,7 +608,6 @@ DECK DISPLAY CSS */
 
 .DeckEdit-new-card-form {
   text-align: left;
-  background-color: orange;
 }
 
 .DeckEdit-new-card-form .deck-edit-input{
@@ -693,4 +692,9 @@ DECK DISPLAY CSS */
 
 .main-body {
   margin: 5vh;
+}
+.single-Card-Main-Content {
+  padding: auto;
+  display: flex;
+  flex-direction: row;
 }

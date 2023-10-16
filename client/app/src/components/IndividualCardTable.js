@@ -13,7 +13,14 @@ function SingleCardTable({data}){
 
     return(
         <div>
-            <table>
+            
+        </div>
+    )
+}
+
+export default SingleCardTable
+
+{/* <table>
                 <tbody>
                     <tr>
                         <td className="SingleCard-Image-Cell">
@@ -63,9 +70,4 @@ function SingleCardTable({data}){
                         </td>
                     </tr>
                 </tbody>
-            </table>
-        </div>
-    )
-}
-
-export default SingleCardTable
+            </table> */}

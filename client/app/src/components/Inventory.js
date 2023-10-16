@@ -262,6 +262,11 @@ function Inventory({user}){
             <h3>Enter New Quantity Below and Press Edit Quantity Button</h3>
         <input onChange={(e)=>setNewQuantity((newQuantity) => e.target.value)} type="integer" name="new-quantity" placeholder="Edit Quantity Here" />
         </div>
+        
+        <div className="footer">
+                <Header />
+            </div>
+
         </div>
     )
 

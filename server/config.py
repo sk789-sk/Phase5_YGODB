@@ -33,7 +33,7 @@ DATABASE = os.environ.get(
 
 
 
-DATABASE = 'postgresql://ygo_db_rfqp_user:g8kKQxoG6bMOr5gavtO83Rt18FXb2lSQ@dpg-ck966hmgtj9c73a8pi20-a.ohio-postgres.render.com/ygo_db_rfqp'
+# DATABASE = 'postgresql://ygo_db_rfqp_user:g8kKQxoG6bMOr5gavtO83Rt18FXb2lSQ@dpg-ck966hmgtj9c73a8pi20-a.ohio-postgres.render.com/ygo_db_rfqp'
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE

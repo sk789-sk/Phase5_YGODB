@@ -34,23 +34,32 @@ function SingleCard () {
     return(
         <div>
             <NavBar />
-            <h1>Render Card Info</h1>
-            <h2>{cardInfo.name}</h2>
+            <h2 className="header">{cardInfo.name}</h2>
 
-            <SingleCardTable data={cardInfo}/>
+            <div className="single-Card-Main-Content">
+                <SingleCardTable data={cardInfo}/>
 
-            <table className="tables" id="SingleCard" >
-                <tbody>
-                    <tr>
-                        <th>Rarity</th>
-                        <th>Release Set</th>
-                        <th>Card Code</th>
-                        <th>Release Date</th>
-                        <th>Purchase Link?</th>
-                    </tr>
-                    {renderRows}
-                </tbody>
-            </table>
+                
+                <table className="tables" id="SingleCard" >
+                    <tbody>
+                        <tr>
+                            <th>Rarity</th>
+                            <th>Release Set</th>
+                            <th>Card Code</th>
+                            <th>Release Date</th>
+                            {/* <th>Purchase Link?</th> */}
+                        </tr>
+                        {renderRows}
+                    </tbody>
+                </table>
+
+
+            </div>
+
+            
+
+
+
         </div>
     )
 }

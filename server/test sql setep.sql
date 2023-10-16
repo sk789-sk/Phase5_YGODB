@@ -67,3 +67,5 @@ SELECT * FROM CardsinSets Where card_code='YS15-ENY09';
 SELECT * From Cards Where name='DUCKER Mobile Cannon';
 
 SELECT * From Cards Where id=12319;
+
+SELECt * FROM ReleaseSets Where set_code = 'YS15';

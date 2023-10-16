@@ -624,12 +624,10 @@ def invent_by_id(id):
             if request.method == 'GET':
                 page = request.args.get('page', default=1, type=int)
                 per_page = request.args.get('per_page',default=20,type=int)  
-
-
-
                          
                 filters = []
                     #Filter parameters
+
                 for key in request.args:
                     print(key,request.args[key])
                     skip_keys = ['page','per_page']
@@ -645,9 +643,9 @@ def invent_by_id(id):
                     if key == 'card_code':
                         filter_element = CardinSet.card_code.contains(request.args[key])
                     if key =='rarity':
-                        filter_element = CardinSet.rarity.ilike(request.args[key])
+                        filter_element = CardinSet.rarity.ilike(f'%{request.args[key]}%')
                     if key == 'card_type':
-                        filter_element = Card.card_type.ilike(request.args[key])
+                        filter_element = Card.card_type.ilike(f'%{request.args[key]}%')
 
                     filters.append(filter_element)
 
@@ -662,9 +660,13 @@ def invent_by_id(id):
 
                 return_inventory = invent.filter(*filters) #this is the query with all the filters
                 
+                print(invent)
+
+
                 paginated_inventory = paginate(return_inventory,page,per_page)
 
                 card_list = []
+                
                 for card in paginated_inventory.items:
                     card_list.append(card.to_dict(rules=('-cardinSet.card.card_in_deck',)))
 
@@ -1028,7 +1030,45 @@ def InventRecon(id):
     return response
 
 
+@app.route('/CardNames/<string:name>', methods=['GET'])
+def get_card_names(name):
+    #So this will just have it set so that when the user types in a string of characters we can then take these characters and search the database for the top 10 cards. 
 
+    # char = request.json()
+
+
+    matches = Card.query.filter(Card.name.ilike(f'%{name}%')).limit(10).all()
+
+
+    out_arr = []
+    for card in matches:
+        out_arr.append(card.to_dict())
+
+    response = make_response(jsonify(out_arr),200)
+
+    return response
+
+    
+
+
+@app.route('/Cardids/<int:id>')
+def get_card_ids(id):
+    #This will return the card ID's of the card. Limit the info passed to only be of the card id. 
+
+    card_match = Card.query.filter(Card.id==id).first()
+
+    id_list = []
+
+    for val in card_match.card_in_set:
+        id_list.append(val.card_code)
+        print(val.card_code)
+
+    #Get the card match and then look at the cardinSets id to get the ID
+
+    response = make_response({},200)
+    response = make_response( jsonify(id_list),200)
+
+    return response
 
 
 
