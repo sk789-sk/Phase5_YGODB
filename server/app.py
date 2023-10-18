@@ -1037,7 +1037,7 @@ def get_card_names(name):
     # char = request.json()
 
 
-    matches = Card.query.filter(Card.name.ilike(f'%{name}%')).limit(10).all()
+    matches = Card.query.filter(Card.name.ilike(f'{name}%')).limit(10).all()
 
 
     out_arr = []
@@ -1051,11 +1051,16 @@ def get_card_names(name):
     
 
 
-@app.route('/Cardids/<int:id>')
-def get_card_ids(id):
+@app.route('/Cardids/<string:name>')
+def get_card_ids(name):
     #This will return the card ID's of the card. Limit the info passed to only be of the card id. 
 
-    card_match = Card.query.filter(Card.id==id).first()
+    card_match = Card.query.filter(Card.name==name).first()
+
+
+    # card_match = Card.query.filter(Card.id==id).first()
+
+
 
     id_list = []
 

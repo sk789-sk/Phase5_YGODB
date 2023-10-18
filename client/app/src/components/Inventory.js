@@ -27,7 +27,11 @@ function Inventory({user}){
     const [path,setPath] = useState(`/inventory?${user.id}`)
     
     //Filter States
+
     const [filtertext,setFilterText] = useState('')
+    const [cardtext,setCardText] = useState('')
+    const [suggestions,SetSuggestions] = useState([])
+    const [cardIDsuggestions,setCardIDSuggestions] = useState([])
 
     
     useEffect( () => {
@@ -36,6 +40,18 @@ function Inventory({user}){
         .then ((data) =>(setCards(data.cards),setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items),setPath(`/inventory/${user.id}?`) ))
     },[refresh])
     
+    useEffect( () => {
+        fetch(`CardNames/${cardtext}`)
+        .then(resp => {
+            if (resp.ok) {
+                resp.json()
+                .then((data) => SetSuggestions(data))
+            }
+            else {
+                console.log('xd')
+            }
+        })
+    },[cardtext])
 
     //We need to make sure that the user has cards to render. If not we will get an error
     // what does setCards equal if there is nothing in the fetch?
@@ -63,6 +79,24 @@ function Inventory({user}){
         .then ((data) =>(setCards(data.cards), setCurrentPage(data.page),setTotalPages(data.total_pages),setCardsPerPage(data.per_page),setTotalCards(data.total_items),setPath(new_path)))        
     }
 
+    function handleChange(e){
+        setCardText(cardtext=>e.target.value)
+    }
+
+    function handleClick() {
+        console.log('hh')
+
+        fetch(`/Cardids/${cardtext}`)
+        .then( resp => {
+            if (resp.ok) {
+                resp.json()
+                .then((data) => setCardIDSuggestions(cardIDsuggestions => data))
+            }
+            else {
+                console.log('xdd')
+            }
+        })
+    }
 
     function handleSubmit(e){
        e.preventDefault()
@@ -104,7 +138,7 @@ function Inventory({user}){
        }) 
         
     }
-
+    
 
     //Render Functions
     const renderRows = cards.map( (card) => {
@@ -170,6 +204,15 @@ function Inventory({user}){
         return <option value={val}>{val}</option>
     })
 
+    const renderNames = suggestions.map((val) => {
+        return <option value={val.name}>{val.name}</option>
+    })
+
+    const renderIDs = cardIDsuggestions.map((val) => {
+        return <option value={val}>{val}</option>
+    })
+
+
     return(
         <div className="componentdiv">
             <Header />
@@ -208,6 +251,7 @@ function Inventory({user}){
                 {renderSetCode}
             </datalist>
 
+
             {/* first ed toggle */}
             
             </div>
@@ -239,11 +283,11 @@ function Inventory({user}){
             <form  id = "New-CardinInventory-form" onSubmit={handleSubmit}>
                 <label>
                     Card Name: 
-                    <input type="text" name="card-name"/>
+                    <input onChange={handleChange} type="search" name="card-name" list="Cname-List"/>
                 </label>
                 <label> 
                     Card-id:
-                    <input type="text" name="set-id" placeholder="Ex: MRD-127" />
+                    <input onClick={handleClick} type="text" name="set-id" placeholder="Ex: MRD-127" list="id-List" />
                 </label>
                 <label>
                     Quantity
@@ -256,6 +300,14 @@ function Inventory({user}){
                 <button type="submit">Submit</button>
             </form>
             </div> 
+
+            <datalist id="Cname-List">
+                {renderNames}
+            </datalist>
+
+            <datalist id="id-List">
+                {renderIDs}
+            </datalist>
 
             <br></br>
             <br></br>
